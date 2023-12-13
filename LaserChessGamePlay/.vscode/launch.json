@@ -1,0 +1,239 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Game",
+            "request": "launch",
+            "mainClass": "Game",
+            "projectName": "LaserChessGamePlay_abf8e08a"
+        },
+        {
+            "type": "java",
+            "name": "InputHandler",
+            "request": "launch",
+            "mainClass": "InputHandler",
+            "projectName": "Try Laser Chess_30efa077"
+        },
+        {
+            "type": "java",
+            "name": "Game",
+            "request": "launch",
+            "mainClass": "Game",
+            "projectName": "Try Laser Chess_30efa077"
+        },
+        {
+            "type": "java",
+            "name": "Board",
+            "request": "launch",
+            "mainClass": "Board",
+            "projectName": "Try Laser Chess_30efa077"
+        },
+        {
+            "type": "java",
+            "name": "BoardPrinter",
+            "request": "launch",
+            "mainClass": "BoardPrinter",
+            "projectName": "Try Laser Chess_30efa077"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "week13.Main",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "HuaRongDaoGame",
+            "request": "launch",
+            "mainClass": "HuaRongDaoGame",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "Employee",
+            "request": "launch",
+            "mainClass": "week11.Employee",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "DirectoryTreePrinter",
+            "request": "launch",
+            "mainClass": "week11.DirectoryTreePrinter",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "employee",
+            "request": "launch",
+            "mainClass": "week11.employee",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "Foo",
+            "request": "launch",
+            "mainClass": "Foo",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "Example",
+            "request": "launch",
+            "mainClass": "week10.Example",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "test",
+            "request": "launch",
+            "mainClass": "test",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "GraduateStudent",
+            "request": "launch",
+            "mainClass": "GraduateStudent",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "Person",
+            "request": "launch",
+            "mainClass": "Person",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "B",
+            "request": "launch",
+            "mainClass": "B",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "MonthlyCalendar",
+            "request": "launch",
+            "mainClass": "MonthlyCalendar",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "StringTest",
+            "request": "launch",
+            "mainClass": "StringTest",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "InputTest2",
+            "request": "launch",
+            "mainClass": "InputTest2",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "DateCalculator",
+            "request": "launch",
+            "mainClass": "DateCalculator",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "Supermarket",
+            "request": "launch",
+            "mainClass": "Supermarket",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "WageCalculator",
+            "request": "launch",
+            "mainClass": "WageCalculator",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "IntraClass",
+            "request": "launch",
+            "mainClass": "IntraClass",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "personApp",
+            "request": "launch",
+            "mainClass": "test.personApp",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "UseBook",
+            "request": "launch",
+            "mainClass": "package2.UseBook",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "HelloWorld",
+            "request": "launch",
+            "mainClass": "HelloWorld",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "Book",
+            "request": "launch",
+            "mainClass": "Book",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "CountClass",
+            "request": "launch",
+            "mainClass": "CountClass",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "Student",
+            "request": "launch",
+            "mainClass": "Student",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "Shop",
+            "request": "launch",
+            "mainClass": "Shop",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "EmployeeSort",
+            "request": "launch",
+            "mainClass": "EmployeeSort",
+            "projectName": "VScode_dc90a7e"
+        },
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "hello",
+            "request": "launch",
+            "console": "externalTerminal",
+            "mainClass": "hello",
+            "projectName": "VScode_dc90a7e"
+        }
+    ]
+}
