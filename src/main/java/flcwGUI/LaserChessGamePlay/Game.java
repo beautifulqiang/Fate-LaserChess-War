@@ -1,10 +1,10 @@
-package com.example.flcw.LaserChessGamePlay;
+package flcwGUI.LaserChessGamePlay;
 
 import java.util.Scanner;
 
-import chess.ChessLaserEmitter;
-import chess.Chess.Color;
-import operate.Operate;
+import flcwGUI.LaserChessGamePlay.chess.ChessLaserEmitter;
+import flcwGUI.LaserChessGamePlay.chess.Chess.Color;
+import flcwGUI.LaserChessGamePlay.operate.Operate;
 
 public class Game {
     private static Color turn = null;

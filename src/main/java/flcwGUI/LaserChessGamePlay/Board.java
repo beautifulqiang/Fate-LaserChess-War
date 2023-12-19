@@ -1,18 +1,18 @@
-package com.example.flcw.LaserChessGamePlay;
+package flcwGUI.LaserChessGamePlay;
 
-import background.Background;
-import chess.*;
-import chess.Chess.Color;
-import chess.ChessLaserEmitter.Direction;
-import operate.*;
-import operate.Rotate.RotateDirection;
+import flcwGUI.LaserChessGamePlay.background.Background;
+import flcwGUI.LaserChessGamePlay.chess.*;
+import flcwGUI.LaserChessGamePlay.chess.Chess.Color;
+import flcwGUI.LaserChessGamePlay.chess.ChessLaserEmitter.Direction;
+import flcwGUI.LaserChessGamePlay.operate.*;
+import flcwGUI.LaserChessGamePlay.operate.Rotate.RotateDirection;
 
 public class Board {
     private boolean gameIsOver = false;
     private char theWinner;
 
-    private Chess[][] chessboard;
-    private Background[][] backgroundBoard;
+    public Chess[][] chessboard;
+    public Background[][] backgroundBoard;
 
     private int[] redLaserEmitterPos;
     private Direction redLaserEmitterDirection;

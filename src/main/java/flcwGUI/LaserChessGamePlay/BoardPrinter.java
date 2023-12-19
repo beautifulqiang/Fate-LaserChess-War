@@ -1,7 +1,7 @@
-package com.example.flcw.LaserChessGamePlay;
+package flcwGUI.LaserChessGamePlay;
 
-import background.Background;
-import chess.*;
+import flcwGUI.LaserChessGamePlay.background.Background;
+import flcwGUI.LaserChessGamePlay.chess.*;
 
 
 public class BoardPrinter {

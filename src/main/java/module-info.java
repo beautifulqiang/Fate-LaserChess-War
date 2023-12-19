@@ -7,7 +7,8 @@ module com.example.flcw {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires com.almasb.fxgl.all;
+//    requires eu.hansolo.fx.countries;
 
-    opens com.example.flcw to javafx.fxml;
-    exports com.example.flcw;
+    opens flcwGUI to javafx.fxml;
+    exports flcwGUI;
 }

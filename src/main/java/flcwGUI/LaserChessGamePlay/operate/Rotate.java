@@ -1,4 +1,4 @@
-package com.example.flcw.LaserChessGamePlay.operate;
+package flcwGUI.LaserChessGamePlay.operate;
 
 public class Rotate extends Operate {
     public enum RotateDirection {

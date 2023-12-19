@@ -1,14 +1,15 @@
-package com.example.flcw.LaserChessGamePlay.chess;
-public class ChessOneWayMirror extends Chess {
+package flcwGUI.LaserChessGamePlay.chess;
+public class ChessShield extends Chess {
     public enum Direction {
-        LEFT_TOP, RIGHT_TOP, RIGHT_BOTTOM, LEFT_BOTTOM
+        LEFT, TOP, RIGHT, BOTTOM
     }
 
     public Direction direction;
 
-    public ChessOneWayMirror(Direction direction, Color color) {
+    public ChessShield(Direction direction, Color color) {
         this.direction = direction;
         this.color = color;
+        this.ct = chess_type.Shield;
     }
 
     //要求d的取值是r或者l

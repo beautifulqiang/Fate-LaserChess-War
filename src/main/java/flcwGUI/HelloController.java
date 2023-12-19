@@ -1,4 +1,4 @@
-package com.example.flcw;
+package flcwGUI;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

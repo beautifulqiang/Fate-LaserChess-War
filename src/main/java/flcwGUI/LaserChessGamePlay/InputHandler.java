@@ -1,9 +1,9 @@
-package com.example.flcw.LaserChessGamePlay;
+package flcwGUI.LaserChessGamePlay;
 
-import operate.*;
-import chess.Chess;
-import chess.ChessLaserEmitter;
-import operate.Rotate.RotateDirection;
+import flcwGUI.LaserChessGamePlay.operate.*;
+import flcwGUI.LaserChessGamePlay.chess.Chess;
+import flcwGUI.LaserChessGamePlay.chess.ChessLaserEmitter;
+import flcwGUI.LaserChessGamePlay.operate.Rotate.RotateDirection;
 
 import java.util.Scanner;
 

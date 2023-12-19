@@ -1,27 +1,26 @@
-package com.example.flcw.LaserChessGamePlay;
+package flcwGUI.LaserChessGamePlay;
 
-import background.Background;
-import chess.*;
-import chess.ChessLaserEmitter.Direction;
+import flcwGUI.LaserChessGamePlay.background.Background;
+import flcwGUI.LaserChessGamePlay.chess.*;
 
 public class BoardInitializer {
     //这里redP和blueP代表两个发射器坐标，d[0]是红发射器的方向，d[1]是蓝发射器的方向
-    public static void initializeLaserEmitter(int type, int[] redP, int[] blueP, Direction[] d){
+    public static void initializeLaserEmitter(int type, int[] redP, int[] blueP, ChessLaserEmitter.Direction[] d){
         if(type==1){
             redP[0] = 0;
             redP[1] = 0;
-            d[0] = Direction.BOTTOM;
+            d[0] = ChessLaserEmitter.Direction.BOTTOM;
             blueP[0] = 7;
             blueP[1] = 9;
-            d[1] = Direction.TOP;
+            d[1] = ChessLaserEmitter.Direction.TOP;
         }
         else if(type==2){
             redP[0] = 0;
             redP[1] = 0;
-            d[0] = Direction.BOTTOM;
+            d[0] = ChessLaserEmitter.Direction.BOTTOM;
             blueP[0] = 7;
             blueP[1] = 9;
-            d[1] = Direction.TOP;
+            d[1] = ChessLaserEmitter.Direction.TOP;
         }
     }
 

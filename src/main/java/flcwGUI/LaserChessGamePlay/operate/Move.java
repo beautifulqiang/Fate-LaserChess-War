@@ -1,4 +1,4 @@
-package com.example.flcw.LaserChessGamePlay.operate;
+package flcwGUI.LaserChessGamePlay.operate;
 
 public class Move extends Operate {
     public int startX;

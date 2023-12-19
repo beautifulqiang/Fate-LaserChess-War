@@ -1,7 +1,7 @@
-package com.example.flcw.LaserChessGamePlay;
+package flcwGUI.LaserChessGamePlay;
 
-import chess.*;
-import chess.ChessLaserEmitter.Direction;
+import flcwGUI.LaserChessGamePlay.chess.*;
+import flcwGUI.LaserChessGamePlay.chess.ChessLaserEmitter.Direction;
 
 public class Laser {
     private int x;
