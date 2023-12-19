@@ -1,4 +1,4 @@
-module com.example.flcw {
+module flcwGUI {
     requires javafx.controls;
     requires javafx.fxml;
 

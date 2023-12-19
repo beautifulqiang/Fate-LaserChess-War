@@ -39,7 +39,7 @@ public class Game {
             //这里的char_color，只可能是'R'和'B'
             char char_color = getTurn().charAt(0);
             while(!board.operateChess(operation,char_color)){
-                //这一步操作没有成功
+//                这一步操作没有成功
                 operation = InputHandler.getOperationFromInput(board, turn);
             }
             //谁下了棋，接下来谁的激光就发射
@@ -47,7 +47,7 @@ public class Game {
             int[] LaserEmitterpos = new int[2];
             ChessLaserEmitter.Direction[] LaserEmitterdirection = new ChessLaserEmitter.Direction[1];
             int[] boardSize = board.getBoardSize();
-            board.getLaserEmitter(LaserEmitterpos, LaserEmitterdirection, char_color);
+//            board.getLaserEmitter(LaserEmitterpos, LaserEmitterdirection, char_color);
             //生成激光对象
             Laser laser = new Laser(LaserEmitterpos[0], LaserEmitterpos[1], LaserEmitterdirection[0], boardSize[0], boardSize[1]);
             //取得要杀死的棋子的坐标
@@ -74,7 +74,7 @@ public class Game {
         }
     }
 
-    private static String getTurn(){
+    public static String getTurn(){
         if(turn == Color.RED){
             return "RED";
         }

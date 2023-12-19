@@ -10,64 +10,55 @@ import java.util.Scanner;
 public class InputHandler {
 
     public static Operate getOperationFromInput(Board board, Chess.Color color) {
-        Scanner scanner = new Scanner(System.in);
+//        if(!isChessColorMatching(board, row, col, color)){
+//            System.out.println("This place is not your pawn. Please enter again.");
+//            //scanner.close();
+//            return getOperationFromInput(board, color, ); // Restart
+//        }
+//        if(isLaserEmitter(board, firstCoordinates[0], firstCoordinates[1])){
+//            System.out.println("This place is a laser emitter");
+//            //scanner.close();
+//            return getOperationFromInput(board, color); // Restart
+//        }
+//
+//
+//        // Read the second input
+//        System.out.println("Enter the second coordinate or rotation direction: ");
+//        String secondInput = scanner.nextLine();
+//        //scanner.close();
+//
+//
+//
+//        // Check if the second input is a coordinate or a rotation direction
+//        int[] secondCoordinates = parseCoordinates(secondInput);
+//        if (secondCoordinates != null) {
+//            // If it's a coordinate, return a Move object
+//            if (areCoordinatesEqual(firstCoordinates, secondCoordinates)) {
+//                System.out.println("Second coordinate is the same as the first. You put down the pieces. Please enter again.");
+//                return getOperationFromInput(board, color); // Restart
+//            } else {
+//                return new Move(firstCoordinates[0], firstCoordinates[1], secondCoordinates[0], secondCoordinates[1]);
+//            }
+//        } else {
+//            // If it's a rotation direction, return a Rotate object
+//            RotateDirection rotationDirection = parseRotationDirection(secondInput);
+//            if (rotationDirection == null) {
+//                System.out.println("Invalid input. Please enter again.");
+//                return getOperationFromInput(board, color); // Restart
+//            } else {
+//                return new Rotate(firstCoordinates[0], firstCoordinates[1], rotationDirection);
+//            }
+//        }
 
-        // Read the first coordinate
-        System.out.println("Enter the first coordinate (format: x,y): ");
-        String firstInput = scanner.nextLine();
-        int[] firstCoordinates = parseCoordinates(firstInput);
-        if (firstCoordinates == null) {
-            System.out.println("Invalid input for coordinates. Please enter again.");
-            //scanner.close();
-            return getOperationFromInput(board, color); // Restart
-        }
-        if(!isChessColorMatching(board, firstCoordinates[0], firstCoordinates[1], color)){
-            System.out.println("This place is not your pawn. Please enter again.");
-            //scanner.close();
-            return getOperationFromInput(board, color); // Restart
-        }
-        if(isLaserEmitter(board, firstCoordinates[0], firstCoordinates[1])){
-            System.out.println("This place is a laser emitter");
-            //scanner.close();
-            return getOperationFromInput(board, color); // Restart
-        }
-
-
-        // Read the second input
-        System.out.println("Enter the second coordinate or rotation direction: ");
-        String secondInput = scanner.nextLine();
-        //scanner.close();
-
-        
-
-        // Check if the second input is a coordinate or a rotation direction
-        int[] secondCoordinates = parseCoordinates(secondInput);
-        if (secondCoordinates != null) {
-            // If it's a coordinate, return a Move object
-            if (areCoordinatesEqual(firstCoordinates, secondCoordinates)) {
-                System.out.println("Second coordinate is the same as the first. You put down the pieces. Please enter again.");
-                return getOperationFromInput(board, color); // Restart
-            } else {
-                return new Move(firstCoordinates[0], firstCoordinates[1], secondCoordinates[0], secondCoordinates[1]);
-            }
-        } else {
-            // If it's a rotation direction, return a Rotate object
-            RotateDirection rotationDirection = parseRotationDirection(secondInput);
-            if (rotationDirection == null) {
-                System.out.println("Invalid input. Please enter again.");
-                return getOperationFromInput(board, color); // Restart
-            } else {
-                return new Rotate(firstCoordinates[0], firstCoordinates[1], rotationDirection);
-            }
-        }
+        return new Move(0, 0, 1, 1);
     }
     
-    private static boolean isChessColorMatching(Board board, int x, int y, Chess.Color expectedColor) {
+    public static boolean isChessColorMatching(Board board, int x, int y, Chess.Color expectedColor) {
         Chess chessPiece = board.getChessAt(x, y); // 这里需要你实现 Board 类中的获取棋子的方法
         return chessPiece != null && chessPiece.color == expectedColor;
     }
 
-    private static boolean isLaserEmitter(Board board, int x, int y) {
+    public static boolean isLaserEmitter(Board board, int x, int y) {
         Chess chessPiece = board.getChessAt(x, y); // 这里需要你实现 Board 类中的获取棋子的方法
         return chessPiece instanceof ChessLaserEmitter;
     }
