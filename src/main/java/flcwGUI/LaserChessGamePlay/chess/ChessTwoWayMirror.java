@@ -12,6 +12,11 @@ public class ChessTwoWayMirror extends Chess {
         this.ct = chess_type.TwoWayMirror;
     }
 
+    @Override
+    public int getrotate() {
+        return direction.ordinal();
+    }
+
     public void rotate(char d){
         if(direction==Direction.LEFT_TOP){
             direction = Direction.RIGHT_TOP;

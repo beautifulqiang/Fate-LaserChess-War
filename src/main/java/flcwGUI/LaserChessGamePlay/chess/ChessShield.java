@@ -12,6 +12,11 @@ public class ChessShield extends Chess {
         this.ct = chess_type.Shield;
     }
 
+    @Override
+    public int getrotate() {
+        return direction.ordinal();
+    }
+
     //要求d的取值是r或者l
     public void rotate(char d){
         // 将枚举转换为数组

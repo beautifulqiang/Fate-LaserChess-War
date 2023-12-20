@@ -1,6 +1,10 @@
 package flcwGUI.LaserChessGamePlay.chess;
 
 public class Chess {
+    public int getrotate() {
+        return -1;
+    }
+
     public enum Color {
         RED, BLUE
     }

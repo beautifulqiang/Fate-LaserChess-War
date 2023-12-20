@@ -10,4 +10,9 @@ public class ChessLaserEmitter extends Chess {
         this.color = color;
         this.ct = chess_type.LaserEmitter;
     }
+
+    @Override
+    public int getrotate() {
+        return direction.ordinal();
+    }
 }
