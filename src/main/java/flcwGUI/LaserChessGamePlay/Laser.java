@@ -8,17 +8,24 @@ public class Laser {
     private int y;
     private Direction d;
     private boolean[][] path;
+    //记录激光的方向
+    private Direction[][] vec_path;
 
     public boolean[][] getPath(){
         return path;
     }
 
-    Laser(int x, int y, Direction d, int size_x, int size_y){
+    public Direction[][] getVec_path(){
+        return vec_path;
+    }
+
+    public Laser(int x, int y, Direction d, int size_x, int size_y){
         this.x = x;
         this.y = y;
         this.d = d;
         path = new boolean[size_x][size_y];
         path[x][y] = true;
+        vec_path[x][y] = d;
     }
 
     //返回二维数组，如果杀死了棋子，则返回棋子坐标，如果没有，返回-1-1
@@ -43,9 +50,10 @@ public class Laser {
             path[x][y] = true;
             if(board[x][y] == null){
                 //传播到了一个空格子上，继续传播
+                vec_path[x][y] = d;
                 continue;
             }
-        
+
             boolean[] kill = new boolean[1];
             if(!event(board[x][y], kill)){
                 //如果返回了false，也就是进入了这个代码块，则激光传输结束了
@@ -54,8 +62,10 @@ public class Laser {
                     ret[0] = x;
                     ret[1] = y;
                 }
+                vec_path[x][y] = d;
                 break;
             }
+            vec_path[x][y] = d;
         }
         return ret;
     }
@@ -71,9 +81,9 @@ public class Laser {
             ChessShield chessShield = (ChessShield) chess;
             //这几种情况是要杀的
             if ((d == Direction.TOP && !(chessShield.direction == ChessShield.Direction.BOTTOM))
-            ||  (d == Direction.BOTTOM && !(chessShield.direction == ChessShield.Direction.TOP))
-            ||  (d == Direction.LEFT && !(chessShield.direction == ChessShield.Direction.RIGHT))
-            ||  (d == Direction.RIGHT && !(chessShield.direction == ChessShield.Direction.LEFT))) {
+                    ||  (d == Direction.BOTTOM && !(chessShield.direction == ChessShield.Direction.TOP))
+                    ||  (d == Direction.LEFT && !(chessShield.direction == ChessShield.Direction.RIGHT))
+                    ||  (d == Direction.RIGHT && !(chessShield.direction == ChessShield.Direction.LEFT))) {
                 kill[0] = true;
             }
             //无论如何，激光都会停止传播
@@ -131,7 +141,7 @@ public class Laser {
                     kill[0] = true;
                     return false;
                 }
-                
+
             }
             else if(d == Direction.BOTTOM){
                 if((chessOneWayMirror.direction == ChessOneWayMirror.Direction.LEFT_TOP)){

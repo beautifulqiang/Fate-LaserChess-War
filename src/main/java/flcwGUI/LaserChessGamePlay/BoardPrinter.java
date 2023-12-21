@@ -5,7 +5,7 @@ import flcwGUI.LaserChessGamePlay.chess.*;
 
 
 public class BoardPrinter {
-    
+
     public static void printBoard(Chess[][] chessboard, Background[][] backgroundBoard, boolean[][] path) {
         for (int i = 0; i < chessboard.length; i++) {
             System.out.print("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n|");
@@ -28,6 +28,54 @@ public class BoardPrinter {
                 //讨论激光
                 if(path[i][j]==true){
                     System.out.print('*');
+                }
+                else {
+                    System.out.print(' ');
+                }
+
+                System.out.print('|');
+            }
+            System.out.println(); // 换行
+        }
+        System.out.print("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+    }
+
+    public static void printBoard(Chess[][] chessboard, Background[][] backgroundBoard, boolean[][] path, ChessLaserEmitter.Direction [][]vec_path) {
+        for (int i = 0; i < chessboard.length; i++) {
+            System.out.print("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n|");
+            for (int j = 0; j < chessboard[i].length; j++) {
+                Chess chess = chessboard[i][j];
+                String cellContent = getCellContent(chess);
+
+                // 当没有棋子的时候，判断有没有背景
+                if(cellContent == ""){
+                    if(backgroundBoard[i][j] == null){
+                    }
+                    else{
+                        //不知道可以不可以直接.color
+                        cellContent = String.format("Block-%s", backgroundBoard[i][j].color);
+                    }
+                }
+
+                // 输出格式化的格子
+                System.out.print(String.format("%-22s", cellContent));
+                //讨论激光
+                if(path[i][j]==true){
+//                    System.out.print('*');
+                    switch (vec_path[i][j]){
+                        case TOP:
+                            System.out.println('↑');
+                            break;
+                        case LEFT:
+                            System.out.println('←');
+                            break;
+                        case RIGHT:
+                            System.out.println('→');
+                            break;
+                        case BOTTOM:
+                            System.out.println('↓');
+                            break;
+                    }
                 }
                 else {
                     System.out.print(' ');

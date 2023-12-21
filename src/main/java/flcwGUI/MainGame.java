@@ -10,6 +10,7 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -18,9 +19,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.util.Objects;
 
@@ -30,12 +31,11 @@ import static flcwGUI.LaserChessGamePlay.InputHandler.isLaserEmitter;
 
 public class MainGame extends Application {
     private static Chess.Color turn = Chess.Color.BLUE;  // 用于记录是谁的回合
-    private final Board board = new Board(1);  // 获取棋盘
+    private final Board board = new Board(1);  // 棋盘作为全局变量
     private final BorderPane root = new BorderPane();
-
     @FXML
     GridPane gameGrid = new GridPane();  // 棋盘，把棋子作为按钮放在上面
-
+    private GameStyle GS = GameStyle.elden;
     private boolean pieceSelected = false; // 用于追踪是否已经选中了棋子
     private int selectedPieceRow = -1; // 用于存储选中的棋子的行
     private int selectedPieceCol = -1; // 用于存储选中的棋子的列
@@ -47,9 +47,8 @@ public class MainGame extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Chess Game");
-        setFullscreen(primaryStage, true); // 初始全屏状态
 
-        Scene scene = new Scene(root, 1200, 900);
+        Scene scene = new Scene(root, 1280, 720);
 
         // 添加样式表到场景
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/flcwGUI/style.css")).toExternalForm());
@@ -60,18 +59,14 @@ public class MainGame extends Application {
         primaryStage.show();
     }
 
-    private void setFullscreen(Stage primaryStage, boolean isFullscreen) {
-        primaryStage.setFullScreen(isFullscreen);
-        primaryStage.initStyle(isFullscreen ? StageStyle.UNDECORATED : StageStyle.DECORATED);
-    }
-
     private void exitGame() {
         Platform.exit(); // 关闭游戏
     }
 
     private void initializeBoard(int rows, int cols) {
         gameGrid.getStyleClass().add("gameGrid");
-        gameGrid.setPadding(new Insets(100, 450, 100, 550));
+        // 为了让棋盘在正中间，直接添加空白间隔
+        gameGrid.setPadding(new Insets(0, 0, 0, 150));
 
         gameGrid.setHgap(5);
         gameGrid.setVgap(5);
@@ -101,16 +96,18 @@ public class MainGame extends Application {
 
         root.setRight(exitButton);
 
+        VBox controls = createControls();
+        root.setLeft(controls);
+
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 Button square = new Button();
-                square.setMinSize(75, 75);
-                square.setMaxSize(75, 75);
+                square.setMaxSize(65, 65);
                 square.getStyleClass().add("chess");
 
                 ImageView imageView = new ImageView();
-                imageView.setFitWidth(75); // 设置宽度
-                imageView.setFitHeight(75); // 设置高度
+                imageView.setFitWidth(65); // 设置宽度
+                imageView.setFitHeight(65); // 设置高度
 
                 // Chess_type
                 if (board.chessboard[row][col] != null) {
@@ -132,7 +129,7 @@ public class MainGame extends Application {
                 }
 
                 // 创建一个带有圆角的 Rectangle 作为 clip
-                Rectangle clip = new Rectangle(75, 75);
+                Rectangle clip = new Rectangle(65, 65);
                 clip.setArcWidth(20); // 设置圆角的宽度
                 clip.setArcHeight(20); // 设置圆角的高度
                 imageView.setClip(clip);
@@ -153,16 +150,37 @@ public class MainGame extends Application {
         root.setCenter(gameGrid);
     }
 
-    @FXML
+    private VBox createControls() {
+        // 创建按钮
+        Button switchModeButton = new Button("Switch Mode");
+        switchModeButton.getStyleClass().add("switch-mode-button");
+        switchModeButton.setOnAction(event -> switchGameMode());
+
+        // 将按钮添加到垂直布局
+        VBox controls = new VBox(10); // 设置垂直间隔
+        controls.setAlignment(Pos.CENTER);
+        controls.getChildren().add(switchModeButton);
+
+        return controls;
+    }
+
+    private void switchGameMode() {
+    }
+
     private void rotateChessBoardLeft() {
         // 只有在有棋子被选中，而且可以旋转的情况下进行旋转
         if (pieceSelected && isChessColorMatching(board, selectedPieceRow, selectedPieceCol, turn)) {
             // 处理左旋转逻辑
-            board.chessboard[selectedPieceRow][selectedPieceCol].rotate('l');
-            renderSquare(selectedPieceRow, selectedPieceCol);
-            System.out.println("棋子左旋");
-            turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
-            pieceSelected = false;  // 执行完后重置
+            if (board.chessboard[selectedPieceRow][selectedPieceCol].show_type() == Chess.chess_type.King ||
+                    board.chessboard[selectedPieceRow][selectedPieceCol].show_type() == Chess.chess_type.LaserEmitter)
+                System.out.println(board.chessboard[selectedPieceRow][selectedPieceCol].show_type() + " can't be rotated");
+            else {
+                board.chessboard[selectedPieceRow][selectedPieceCol].rotate('l');
+                renderSquare(selectedPieceRow, selectedPieceCol);
+                System.out.println("棋子左旋");
+                turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
+                pieceSelected = false;  // 执行完后重置
+            }
         } else if (!pieceSelected) {
             System.out.println("未选中棋子，不执行操作");
         } else {
@@ -175,11 +193,16 @@ public class MainGame extends Application {
         // 只有在有棋子被选中，而且可以旋转的情况下进行旋转
         if (pieceSelected && isChessColorMatching(board, selectedPieceRow, selectedPieceCol, turn)) {
             // 处理右旋转逻辑
-            board.chessboard[selectedPieceRow][selectedPieceCol].rotate('r');
-            renderSquare(selectedPieceRow, selectedPieceCol);
-            System.out.println("棋子右旋");
-            turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
-            pieceSelected = false;  // 执行完后重置
+            if (board.chessboard[selectedPieceRow][selectedPieceCol].show_type() == Chess.chess_type.King ||
+                    board.chessboard[selectedPieceRow][selectedPieceCol].show_type() == Chess.chess_type.LaserEmitter)
+                System.out.println(board.chessboard[selectedPieceRow][selectedPieceCol].show_type() + " can't be rotated");
+            else {
+                board.chessboard[selectedPieceRow][selectedPieceCol].rotate('r');
+                renderSquare(selectedPieceRow, selectedPieceCol);
+                System.out.println("棋子右旋");
+                turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
+                pieceSelected = false;  // 执行完后重置
+            }
         } else if (!pieceSelected) {
             System.out.println("未选中棋子，不执行操作");
         } else {
@@ -260,13 +283,12 @@ public class MainGame extends Application {
 
         // 创建ImageView并设置图片
         ImageView imageView = new ImageView(get_image);
-        imageView.setFitWidth(75); // 设置宽度
-        imageView.setFitHeight(75); // 设置高度
+        imageView.setFitWidth(65); // 设置宽度
+        imageView.setFitHeight(65); // 设置高度
         imageView.setPreserveRatio(true); // 保持宽高比
 
         // 设置按钮的尺寸
-        square.setMinSize(75, 75);
-        square.setMaxSize(75, 75);
+        square.setMaxSize(65, 65);
 
         // 旋转到合适方向
         if (chess != null) {
@@ -278,7 +300,7 @@ public class MainGame extends Application {
         }
 
         // 创建一个带有圆角的 Rectangle 作为 clip
-        Rectangle clip = new Rectangle(75, 75);
+        Rectangle clip = new Rectangle(65, 65);
         clip.setArcWidth(20); // 设置圆角的宽度
         clip.setArcHeight(20); // 设置圆角的高度
         imageView.setClip(clip);
@@ -288,7 +310,22 @@ public class MainGame extends Application {
     }
 
     private Image getChessImage(Chess chess) {
-        String imagePath = "/images/";
+        String imagePath = "";
+
+        switch (GS) {
+            case classic:
+                imagePath = "/images/classic/";
+                break;
+            case elden:
+                imagePath = "/images/elden/";
+                break;
+            case memes:
+                imagePath = "/images/memes/";
+                break;
+            case PvZ:
+                imagePath = "/images/PvZ/";
+                break;
+        }
 
         if (chess != null) {
             switch (chess.show_type()) {
@@ -308,20 +345,35 @@ public class MainGame extends Application {
                         imagePath += "red_emitter.png";
                     }
                     break;
-//                case OneWayMirror:
-//                    imagePath += "one_way_mirror.png";
-//                    break;
-//                case TwoWayMirror:
-//                    imagePath += "two_way_mirror.png";
-//                    break;
-//                case Shield:
-//                    imagePath += "shield.png";
-//                    break;
+                case OneWayMirror:
+                    imagePath += "one_way_mirrors/";
+                    if (chess.color == Chess.Color.BLUE) {
+                        imagePath += "blue_one.jpg";
+                    } else {
+                        imagePath += "red_one.jpg";
+                    }
+                    break;
+                case TwoWayMirror:
+                    imagePath += "two_way_mirrors/";
+                    if (chess.color == Chess.Color.BLUE) {
+                        imagePath += "blue_two.jpg";
+                    } else {
+                        imagePath += "red_two.jpg";
+                    }
+                    break;
+                case Shield:
+                    imagePath += "shields/";
+                    if (chess.color == Chess.Color.BLUE) {
+                        imagePath += "blue_shield.jpg";
+                    } else {
+                        imagePath += "red_shield.jpg";
+                    }
+                    break;
                 default:
-                    imagePath += "Kobe.jpg";
+                    imagePath += "default.png";
             }
         } else {
-            imagePath += "default.jpg";
+            imagePath += "default.png";
         }
 
 
@@ -329,7 +381,22 @@ public class MainGame extends Application {
     }
 
     private Image getBackgroundImage(Background bg) {
-        String imagePath = "/images/background/";
+        String imagePath = "";
+
+        switch (GS) {
+            case classic:
+                imagePath = "/images/classic/background/";
+                break;
+            case elden:
+                imagePath = "/images/elden/background/";
+                break;
+            case memes:
+                imagePath = "/images/memes/background/";
+                break;
+            case PvZ:
+                imagePath = "/images/PvZ/background/";
+                break;
+        }
 
         if (bg != null) {  // 此时说明背景有限制颜色
             switch (bg.color) {
@@ -342,7 +409,7 @@ public class MainGame extends Application {
             }
         } else {
             // 如果没有棋子，使用默认图片
-            imagePath += "default.jpg";
+            imagePath += "default.png";
         }
 
         return new Image(getClass().getResource(imagePath).toExternalForm());
@@ -369,5 +436,9 @@ public class MainGame extends Application {
 
         // 如果没有找到匹配的按钮，则返回 null
         return null;
+    }
+
+    private enum GameStyle {
+        classic, elden, memes, PvZ
     }
 }

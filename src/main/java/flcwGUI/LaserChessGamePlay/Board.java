@@ -74,9 +74,9 @@ public class Board {
     public boolean gameOver(){
         return gameIsOver;
     }
-    
-    public void print(boolean[][] path) {
-        BoardPrinter.printBoard(chessboard, backgroundBoard, path);
+
+    public void print(boolean[][] path,Direction [][]vec_path) {
+        BoardPrinter.printBoard(chessboard, backgroundBoard, path,vec_path);
     }
 
     public void print() {
@@ -207,7 +207,7 @@ public class Board {
                 return false;
             }
         }
-        
+
         //不是双面镜，不能交换
         if(!(chessboard[startX][startY] instanceof ChessTwoWayMirror) && chessboard[endX][endY]!=null){
             System.out.println("Error: There are already pieces at the target location");

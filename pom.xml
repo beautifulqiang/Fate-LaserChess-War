@@ -103,6 +103,11 @@
       <artifactId>javafx-base</artifactId>
       <version>21-ea+24</version>
     </dependency>
+      <dependency>
+          <groupId>eu.hansolo.fx</groupId>
+          <artifactId>countries</artifactId>
+          <version>21-ea+24</version>
+      </dependency>
   </dependencies>
 
   <build>

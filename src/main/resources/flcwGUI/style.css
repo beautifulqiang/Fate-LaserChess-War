@@ -1,19 +1,19 @@
 /* styles.css */
 
-/* 设置场景的背景颜色 */
+/* 设置背景 */
 .root {
-    -fx-background-image: url(../images/background.png);
+    -fx-background-image: url(../images/elden/background.png);
     -fx-background-size: cover;
-    -fx-opacity: 0.8;
+    -fx-opacity: 0.85;
 }
 
 /* 设置旋转按钮的样式 */
 .rotate-button {
-    -fx-background-color: #ffdd00; /* Green */
-    -fx-min-width:  100;
-    -fx-min-height: 100;
-    -fx-text-fill: white;
-    -fx-font-size: 15;
+    -fx-background-color: #ffdd00;
+    -fx-min-width:  70;
+    -fx-min-height: 70;
+    -fx-text-fill: #ff3333;
+    -fx-font-size: 20;
 }
 
 /* 设置旋转按钮容器的样式 */
@@ -26,10 +26,17 @@
 /* 设置退出按钮的样式 */
 .exit-button {
     -fx-background-color: #fd3232; /* Red */
-    -fx-min-width:  60;
-    -fx-min-height: 50;
+    -fx-min-width:  70;
+    -fx-min-height: 70;
     -fx-text-fill: #c2fff3;
     -fx-font-size: 14;
+}
+.switch-mode-button {
+    -fx-background-color: #ffdd00;
+    -fx-min-width:  70;
+    -fx-min-height: 70;
+    -fx-text-fill: #ff3333;
+    -fx-font-size: 20;
 }
 
 .gameGrid {
@@ -39,10 +46,12 @@
 
 /* 设置棋子的基础样式 */
 .chess {
-    -fx-min-width: 75;
-    -fx-min-height: 75;
-    -fx-background-radius: 20; /* 背景圆角 */
-    -fx-border-radius: 20; /* 边框圆角 */
+    -fx-min-width: 65;
+    -fx-min-height: 65;
+    -fx-background-radius: 15; /* 背景圆角 */
+    -fx-border-radius: 15; /* 边框圆角 */
+    -fx-border-color: #f3ae27;
+    -fx-border-width: 2px;
 }
 
 /* 设置red_king样式 */

@@ -54,12 +54,12 @@ public class Game {
             int[] posToKill = laser.disseminate(board.getChessBoard());
             //输出激光路径
             System.out.println("Laser path");
-            board.print(laser.getPath());
+            board.print(laser.getPath(),laser.getVec_path());
             //杀死棋子。杀死大海！杀死大海！
             board.killChess(posToKill[0], posToKill[1]);
 
             changeTurn();
-            
+
         }
         //游戏结束
         System.out.println("Game is over. The winner is "+ board.getWinner());
