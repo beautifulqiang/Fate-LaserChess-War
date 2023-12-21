@@ -9,10 +9,22 @@ import flcwGUI.LaserChessGamePlay.operate.Operate;
 public class Game {
     private static Color turn = null;
     public static void main(String[] args) {
+
+        Board board;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Please select the type of board (enter the number 1 or 2, etc.):");
-        //错误输入处理之后再说
-        int boardType = scanner.nextInt();
+        System.out.println("Do you want to DIY?(Y,N)");
+        char DiyOrNot = scanner.nextLine().charAt(0);
+        if(DiyOrNot=='Y'){
+            board = new Board(0, true);
+        }
+        else{
+            System.out.println("Please select the type of board (enter the number 1 or 2, etc.):");
+            //错误输入处理之后再说
+            int boardType = scanner.nextInt();
+            board = new Board(boardType, false);
+        }
+        
+
         //读取谁先手
         System.out.println("Who comes first? (R or B)");
         String input = scanner.next();
@@ -26,8 +38,7 @@ public class Game {
         else{
             //wdnmd
         }
-
-        Board board = new Board(boardType);
+        
 
         while(!board.gameOver()){
             System.out.println("Now the chess game");

@@ -21,7 +21,8 @@ import java.util.Objects;
 import static flcwGUI.ImageRender.getChessImage;
 
 public class MainGame extends Application {
-    final static Board board = new Board(1);  // 棋盘作为全局变量
+    //这里在12.21晚改了一下，多加了一个参数，因为我把棋盘类的构造函数给改了
+    final static Board board = new Board(1, false);  // 棋盘作为全局变量
     public static GameStyle gameStyle = GameStyle.elden;
     @FXML
     static GridPane gameGrid = new GridPane();  // 棋盘，把棋子作为按钮放在上面
