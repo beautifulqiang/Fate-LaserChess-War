@@ -75,7 +75,7 @@ public class ButtonController {
             Operate op = new Move(selectedPieceRow, selectedPieceCol, row, col);
             if (board.operateChess(op, getTurn().charAt(0))) {
                 System.out.println("Move to: " + row + ", " + col);
-                move_update(op);
+                moveUpdate(op);
             }
             // 重置选中状态
             pieceSelected = false;
@@ -84,7 +84,7 @@ public class ButtonController {
         }
     }
 
-    private static void move_update(Operate op) {
+    private static void moveUpdate(Operate op) {
         turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
 
         // 调试使用的测试信息
@@ -105,6 +105,7 @@ public class ButtonController {
             renderSquare(startX, startY);
             renderSquare(endX, endY);
         } else {
+            // 这个函数只处理Move的指令，如果不是Move则出错了
             System.out.println("Error occurred! Move fail!");
         }
     }

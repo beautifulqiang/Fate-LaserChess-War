@@ -18,23 +18,14 @@ public class ImageLoader {
     private static final String IMAGE_ROOT = "/images/";
 
     public static Image getChessImage(Chess chess) {
-        String imagePath = "";
+        String imagePath = switch (GS) {
+            case classic -> "/images/classic/";
+            case elden -> "/images/elden/";
+            case memes -> "/images/memes/";
+            case PvZ -> "/images/PvZ/";
+        };
 
         // 提供四个风格的素材包
-        switch (GS) {
-            case classic:
-                imagePath = "/images/classic/";
-                break;
-            case elden:
-                imagePath = "/images/elden/";
-                break;
-            case memes:
-                imagePath = "/images/memes/";
-                break;
-            case PvZ:
-                imagePath = "/images/PvZ/";
-                break;
-        }
 
         if (chess != null) {
             switch (chess.show_type()) {
