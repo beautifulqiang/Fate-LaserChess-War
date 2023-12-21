@@ -75,7 +75,7 @@ public class Board {
         return gameIsOver;
     }
 
-    public void print(boolean[][] path,Direction [][]vec_path) {
+    public void print(boolean[][] path,Direction[][] vec_path) {
         BoardPrinter.printBoard(chessboard, backgroundBoard, path,vec_path);
     }
 

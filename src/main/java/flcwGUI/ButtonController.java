@@ -6,14 +6,13 @@ import flcwGUI.LaserChessGamePlay.operate.Operate;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 
-import static flcwGUI.ImageLoader.renderSquare;
-import static flcwGUI.LaserChessGamePlay.Game.getTurn;
+import static flcwGUI.ImageRender.renderSquare;
 import static flcwGUI.LaserChessGamePlay.InputHandler.isChessColorMatching;
 import static flcwGUI.LaserChessGamePlay.InputHandler.isLaserEmitter;
 import static flcwGUI.MainGame.board;
 
 public class ButtonController {
-    private static Chess.Color turn = Chess.Color.BLUE;  // 用于记录是谁的回合
+    public static Chess.Color turn = Chess.Color.BLUE;  // 用于记录是谁的回合
     private static boolean pieceSelected = false; // 用于追踪是否已经选中了棋子
     private static int selectedPieceRow = -1; // 用于存储选中的棋子的行
     private static int selectedPieceCol = -1; // 用于存储选中的棋子的列
@@ -29,6 +28,10 @@ public class ButtonController {
                 board.chessboard[selectedPieceRow][selectedPieceCol].rotate('l');
                 renderSquare(selectedPieceRow, selectedPieceCol);
                 System.out.println("棋子左旋");
+
+                // 激光发射
+                ImageRender.laser_out();
+
                 turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
                 pieceSelected = false;  // 执行完后重置
             }
@@ -51,6 +54,10 @@ public class ButtonController {
                 board.chessboard[selectedPieceRow][selectedPieceCol].rotate('r');
                 renderSquare(selectedPieceRow, selectedPieceCol);
                 System.out.println("棋子右旋");
+
+                // 激光发射
+                ImageRender.laser_out();
+
                 turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
                 pieceSelected = false;  // 执行完后重置
             }
@@ -73,7 +80,7 @@ public class ButtonController {
             System.out.println("Piece selected: " + row + ", " + col);
         } else if (pieceSelected) {
             Operate op = new Move(selectedPieceRow, selectedPieceCol, row, col);
-            if (board.operateChess(op, getTurn().charAt(0))) {
+            if (board.operateChess(op, (turn == Chess.Color.BLUE ? 'B' : 'R'))) {
                 System.out.println("Move to: " + row + ", " + col);
                 moveUpdate(op);
             }
@@ -85,8 +92,6 @@ public class ButtonController {
     }
 
     private static void moveUpdate(Operate op) {
-        turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
-
         // 调试使用的测试信息
         System.out.println("----------------------");
         if (turn == Chess.Color.BLUE) {
@@ -104,6 +109,12 @@ public class ButtonController {
             // 更新 UI，这里可以根据棋子类型和颜色进行相应的渲染
             renderSquare(startX, startY);
             renderSquare(endX, endY);
+
+            // 激光发射
+            ImageRender.laser_out();
+
+            turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
+
         } else {
             // 这个函数只处理Move的指令，如果不是Move则出错了
             System.out.println("Error occurred! Move fail!");

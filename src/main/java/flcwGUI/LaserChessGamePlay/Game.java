@@ -47,13 +47,15 @@ public class Game {
             int[] LaserEmitterpos = new int[2];
             ChessLaserEmitter.Direction[] LaserEmitterdirection = new ChessLaserEmitter.Direction[1];
             int[] boardSize = board.getBoardSize();
-//            board.getLaserEmitter(LaserEmitterpos, LaserEmitterdirection, char_color);
+            board.getLaserEmitter(LaserEmitterpos, LaserEmitterdirection, char_color);
             //生成激光对象
             Laser laser = new Laser(LaserEmitterpos[0], LaserEmitterpos[1], LaserEmitterdirection[0], boardSize[0], boardSize[1]);
             //取得要杀死的棋子的坐标
             int[] posToKill = laser.disseminate(board.getChessBoard());
+            System.out.println(posToKill[0]+","+posToKill[1]);
             //输出激光路径
             System.out.println("Laser path");
+//            board.print(laser.getPath(),laser.getVec_path());
             board.print(laser.getPath(),laser.getVec_path());
             //杀死棋子。杀死大海！杀死大海！
             board.killChess(posToKill[0], posToKill[1]);

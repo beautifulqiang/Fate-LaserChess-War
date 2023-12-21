@@ -1,8 +1,20 @@
 /* styles.css */
 
 /* 设置背景 */
-.root {
+.root-classic {
+    -fx-background-image: url(../images/classic/background.png);
+    -fx-background-size: cover;
+    -fx-opacity: 0.85;
+}
+
+.root-elden {
     -fx-background-image: url(../images/elden/background.png);
+    -fx-background-size: cover;
+    -fx-opacity: 0.85;
+}
+
+.root-PvZ {
+    -fx-background-image: url(../images/PvZ/background.png);
     -fx-background-size: cover;
     -fx-opacity: 0.85;
 }
@@ -40,8 +52,10 @@
 }
 
 .gameGrid {
-    -fx-border-color: #f8f2f2;
-    -fx-border-width: 10px;
+    /*-fx-border-color: #f8f2f2;*/
+    /*-fx-border-width: 10px;*/
+    -fx-hgap: 5;
+    -fx-vgap: 5;
 }
 
 /* 设置棋子的基础样式 */
@@ -50,17 +64,15 @@
     -fx-min-height: 65;
     -fx-background-radius: 15; /* 背景圆角 */
     -fx-border-radius: 15; /* 边框圆角 */
-    -fx-border-color: #f3ae27;
-    -fx-border-width: 2px;
 }
 
 /* 设置red_king样式 */
-.red_king {
-    -fx-background-image: url('../images/kings/red_king.png');
+.red-king {
+    -fx-background-image: url('../images/elden/kings/red_king.png');
 }
 
 /* 设置blue_king样式 */
-.blue_king {
-    -fx-background-image: url('../images/kings/blue_king.png');
+.blue-king {
+    -fx-background-image: url('../images/elden/kings/blue_king.png');
 }
 

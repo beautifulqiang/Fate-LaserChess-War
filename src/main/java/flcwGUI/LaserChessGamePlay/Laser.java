@@ -25,6 +25,7 @@ public class Laser {
         this.d = d;
         path = new boolean[size_x][size_y];
         path[x][y] = true;
+        vec_path = new Direction[size_x][size_y] ;
         vec_path[x][y] = d;
     }
 

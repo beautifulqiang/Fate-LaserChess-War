@@ -18,11 +18,11 @@ import javafx.stage.Stage;
 
 import java.util.Objects;
 
-import static flcwGUI.ImageLoader.getChessImage;
+import static flcwGUI.ImageRender.getChessImage;
 
 public class MainGame extends Application {
     final static Board board = new Board(1);  // 棋盘作为全局变量
-    public static GameStyle GS = GameStyle.elden;
+    public static GameStyle gameStyle = GameStyle.elden;
     @FXML
     static GridPane gameGrid = new GridPane();  // 棋盘，把棋子作为按钮放在上面
     private final BorderPane root = new BorderPane();
@@ -46,27 +46,30 @@ public class MainGame extends Application {
     }
 
     private void initializeBoard(int rows, int cols) {
+        switch (gameStyle) {
+            case classic -> root.getStyleClass().add("root-classic");
+            case elden -> root.getStyleClass().add("root-elden");
+            case PvZ -> root.getStyleClass().add("root-PvZ");
+        }
+
+        // 设置棋盘的位置，使其居中
         gameGrid.getStyleClass().add("gameGrid");
-
-        // 为了让棋盘在正中间，直接添加空白间隔
-        gameGrid.setPadding(new Insets(0, 0, 0, 150));
-
-        gameGrid.setHgap(5);
-        gameGrid.setVgap(5);
+        gameGrid.setPadding(new Insets(30, 0, 0, 145));
 
         // 添加左旋转按钮
         Button rotateLeftButton = new Button("Rotate Left");
-        rotateLeftButton.getStyleClass().add("rotate-button");
         rotateLeftButton.setOnAction(e -> ButtonController.rotateChessBoardLeft());
 
         // 添加右旋转按钮
         Button rotateRightButton = new Button("Rotate Right");
-        rotateRightButton.getStyleClass().add("rotate-button");
         rotateRightButton.setOnAction(e -> ButtonController.rotateChessBoardRight());
 
         // 将按钮添加到 HBox 中
         HBox rotate_button_container = new HBox(10); // 设置垂直间隔
         rotate_button_container.getChildren().addAll(rotateLeftButton, rotateRightButton);
+
+        rotateLeftButton.getStyleClass().add("rotate-button");
+        rotateRightButton.getStyleClass().add("rotate-button");
         rotate_button_container.getStyleClass().add("rotate-button-container");
 
         // 添加 HBox 到 BorderPane 的底部
@@ -107,7 +110,7 @@ public class MainGame extends Application {
                             break;
                     }
                 } else {
-                    Image background_image = ImageLoader.getBackgroundImage(board.backgroundBoard[row][col]);
+                    Image background_image = ImageRender.getBackgroundImage(board.backgroundBoard[row][col]);
                     imageView.setImage(background_image);
                 }
 
@@ -148,6 +151,7 @@ public class MainGame extends Application {
     }
 
     enum GameStyle {
-        classic, elden, memes, PvZ
+        // 三种地图风格
+        classic, elden, PvZ
     }
 }
