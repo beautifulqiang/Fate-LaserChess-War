@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import javafx.util.*;
 
 import static flcwGUI.ImageRender.renderSquare;
@@ -94,6 +95,22 @@ public class ButtonController {
         }
     }
 
+    public static void handleStyleButtonClick(String styleName, Stage primaryStage) {
+        switch (styleName) {
+            case "Classic":
+                MainGame.gameStyle = MainGame.GameStyle.classic;
+                break;
+            case "Elden":
+                MainGame.gameStyle = MainGame.GameStyle.elden;
+                break;
+            case "PvZ":
+                MainGame.gameStyle = MainGame.GameStyle.PvZ;
+                break;
+        }
+
+        MainGame.game_start(primaryStage);
+    }
+
     static void handleChessPieceClick(int row, int col) {
         // 处理棋子点击事件
         System.out.println("Clicked on square: " + row + ", " + col);
@@ -164,7 +181,7 @@ public class ButtonController {
 //    }
       public static void rotateImage_l(ImageView imageView) {
           // 创建 RotateTransition，并设置持续时间和旋转角度
-          RotateTransition rotateTransition = new RotateTransition(Duration.seconds(1), imageView);
+          RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.2), imageView);
           rotateTransition.setByAngle(-90); // 旋转
           // 播放动画
           rotateTransition.play();
@@ -176,7 +193,7 @@ public class ButtonController {
       }
     public static void rotateImage_r(ImageView imageView) {
         // 创建 RotateTransition，并设置持续时间和旋转角度
-        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(1), imageView);
+        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.2), imageView);
         rotateTransition.setByAngle(90); // 旋转
 
         // 播放动画

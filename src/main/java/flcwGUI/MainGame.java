@@ -23,7 +23,7 @@ public class MainGame extends Application {
     public static GameStyle gameStyle = GameStyle.elden;
     @FXML
     static GridPane gameGrid = new GridPane();  // 棋盘，把棋子作为按钮放在上面
-    private final BorderPane root = new BorderPane();
+    private static final BorderPane root = new BorderPane();
     private boolean map_selected = false;
 
     public static void main(String[] args) {
@@ -31,68 +31,62 @@ public class MainGame extends Application {
     }
 
 
-    public void new_start(Stage primaryStage) {
+    public static void game_start(Stage primaryStage) {
         primaryStage.setTitle("Chess Game");
 
         Scene scene_game = new Scene(root, 1280, 720);
 
         // 添加样式表到场景
-        scene_game.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/flcwGUI/style.css")).toExternalForm());
+        scene_game.getStylesheets().add(Objects.requireNonNull(MainGame.class.getResource("/flcwGUI/style.css")).toExternalForm());
 
         initializeBoard(8, 10); // 初始化棋盘
         primaryStage.setScene(scene_game);
         primaryStage.show();
     }
+
     @Override
     public void start(Stage primaryStage) {
-    // 创建 Label 和按钮
-         Label label = new Label("地图风格：");
-         Button style1Button = new Button("Classic");
-         Button style2Button = new Button("Elden");
-         Button style3Button = new Button("PvZ");
+        // 创建 Label 和按钮
+        Label label = new Label("地图风格：");
+        Button style1Button = new Button("Classic");
+        Button style2Button = new Button("Elden");
+        Button style3Button = new Button("PvZ");
 
-         // 创建 HBox，并添加 Label 和按钮
-         HBox hbox = new HBox();
-         hbox.getChildren().addAll(label, style1Button, style2Button, style3Button);
+        // 创建 HBox，并添加 Label 和按钮
+        HBox hbox = new HBox();
+        hbox.getChildren().addAll(label, style1Button, style2Button, style3Button);
 
-         // 创建 StackPane 放置 HBox
-         StackPane root = new StackPane();
-         root.getChildren().add(hbox);
+        hbox.setPadding(new Insets(310, 0, 0, 250));
 
-         // 创建 Scene
-         Scene sceneInit = new Scene(root, 1280, 720);
+        // 创建 StackPane 放置 HBox
+        StackPane root = new StackPane();
+        root.getChildren().add(hbox);
 
-         // 添加按钮点击事件处理
-         style1Button.setOnAction(event -> handleStyleButtonClick("Classic",primaryStage));
-         style2Button.setOnAction(event -> handleStyleButtonClick("Elden",primaryStage));
-         style3Button.setOnAction(event -> handleStyleButtonClick("PvZ",primaryStage));
+        // 创建 Scene
+        Scene sceneInit = new Scene(root, 1280, 720);
 
-         // 将场景设置到主舞台
-         primaryStage.setScene(sceneInit);
+        sceneInit.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/flcwGUI/style.css")).toExternalForm());
 
-         // 显示主舞台
-         primaryStage.setTitle("地图风格选择");
-         primaryStage.show();
+        // 添加按钮点击事件处理
+        style1Button.setOnAction(event -> ButtonController.handleStyleButtonClick("Classic", primaryStage));
+        style2Button.setOnAction(event -> ButtonController.handleStyleButtonClick("Elden", primaryStage));
+        style3Button.setOnAction(event -> ButtonController.handleStyleButtonClick("PvZ", primaryStage));
+
+        style1Button.getStyleClass().add("classic-button");
+        style2Button.getStyleClass().add("elden-button");
+        style3Button.getStyleClass().add("PvZ-button");
+        root.getStyleClass().add("root_start");
+
+        // 将场景设置到主舞台
+        primaryStage.setScene(sceneInit);
+
+        // 显示主舞台
+        primaryStage.setTitle("地图风格选择");
+        primaryStage.show();
 
     }
 
-
-    public void handleStyleButtonClick(String styleName,Stage primaryStage) {
-        switch (styleName){
-            case "Classic":
-                gameStyle = GameStyle.classic;
-                break;
-            case "Elden":
-                gameStyle = GameStyle.elden;
-                break;
-            case "PvZ":
-                gameStyle = GameStyle.PvZ;
-                break;
-        }
-        new_start(primaryStage);
-    }
-
-    private void initializeBoard(int rows, int cols) {
+    private static void initializeBoard(int rows, int cols) {
         switch (gameStyle) {
             case classic -> root.getStyleClass().add("root-classic");
             case elden -> root.getStyleClass().add("root-elden");
@@ -136,7 +130,11 @@ public class MainGame extends Application {
             for (int col = 0; col < cols; col++) {
                 Button square = new Button();
                 square.setMaxSize(65, 65);
-                square.getStyleClass().add("chess");
+                switch (gameStyle) {
+                    case classic -> square.getStyleClass().add("classic-chess");
+                    case elden -> square.getStyleClass().add("elden-chess");
+                    case PvZ -> square.getStyleClass().add("PvZ-chess");
+                }
 
                 ImageView imageView = new ImageView();
                 imageView.setFitWidth(65); // 设置宽度
@@ -183,7 +181,7 @@ public class MainGame extends Application {
         root.setCenter(gameGrid);
     }
 
-    private VBox createControls() {
+    private static VBox createControls() {
         // 创建按钮
         Button switchModeButton = new Button("Switch Mode");
         switchModeButton.getStyleClass().add("switch-mode-button");

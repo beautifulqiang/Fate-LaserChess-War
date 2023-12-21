@@ -1,5 +1,9 @@
 /* styles.css */
 
+.root_start {
+    -fx-background-image: url(../images/root_start.png);
+}
+
 /* 设置背景 */
 .root-classic {
     -fx-background-image: url(../images/classic/background.png);
@@ -17,6 +21,32 @@
     -fx-background-image: url(../images/PvZ/background.png);
     -fx-background-size: cover;
     -fx-opacity: 0.85;
+}
+
+.label {
+    -fx-font-size: 50;
+    -fx-text-fill: #ffffff;
+}
+
+.classic-button {
+    -fx-background-color: #ff8080;
+    -fx-font-size: 40;
+    -fx-min-width: 70;
+    -fx-min-height: 70;
+}
+
+.elden-button {
+    -fx-background-color: #ffcc00;
+    -fx-font-size: 40;
+    -fx-min-width: 70;
+    -fx-min-height: 70;
+}
+
+.PvZ-button {
+    -fx-background-color: #71ffb4;
+    -fx-font-size: 40;
+    -fx-min-width: 70;
+    -fx-min-height: 70;
 }
 
 /* 设置旋转按钮的样式 */
@@ -59,7 +89,8 @@
 }
 
 /* 设置棋子的基础样式 */
-.chess {
+.elden-chess {
+    -fx-background-image: url("../images/elden/background/default.png");
     -fx-min-width: 65;
     -fx-min-height: 65;
     -fx-background-radius: 15; /* 背景圆角 */
