@@ -19,6 +19,7 @@ import static flcwGUI.ButtonController.turn;
 import static flcwGUI.MainGame.*;
 
 public class ImageRender {
+
     public static Image getChessImage(Chess chess) {
         // 提供四个风格的素材包
         String imagePath = switch (gameStyle) {
@@ -260,7 +261,7 @@ public class ImageRender {
         });
     }
 
-    private static Button getSquareButton(int row, int col) {
+    public static Button getSquareButton(int row, int col) {
         // 获取所有子节点
         ObservableList<Node> children = gameGrid.getChildren();
 

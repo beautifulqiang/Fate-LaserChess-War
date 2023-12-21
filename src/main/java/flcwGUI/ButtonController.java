@@ -3,8 +3,12 @@ package flcwGUI;
 import flcwGUI.LaserChessGamePlay.chess.Chess;
 import flcwGUI.LaserChessGamePlay.operate.Move;
 import flcwGUI.LaserChessGamePlay.operate.Operate;
+import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
+import javafx.util.*;
 
 import static flcwGUI.ImageRender.renderSquare;
 import static flcwGUI.LaserChessGamePlay.InputHandler.isChessColorMatching;
@@ -17,6 +21,8 @@ public class ButtonController {
     private static int selectedPieceRow = -1; // 用于存储选中的棋子的行
     private static int selectedPieceCol = -1; // 用于存储选中的棋子的列
 
+
+
     public static void rotateChessBoardLeft() {
         // 只有在有棋子被选中，而且可以旋转的情况下进行旋转
         if (pieceSelected && isChessColorMatching(board, selectedPieceRow, selectedPieceCol, turn)) {
@@ -26,14 +32,24 @@ public class ButtonController {
                 System.out.println(board.chessboard[selectedPieceRow][selectedPieceCol].show_type() + " can't be rotated");
             else {
                 board.chessboard[selectedPieceRow][selectedPieceCol].rotate('l');
-                renderSquare(selectedPieceRow, selectedPieceCol);
+
+//                rotateButton_90(ImageRender.getSquareButton(selectedPieceRow,selectedPieceCol));
+//                renderSquare(selectedPieceRow, selectedPieceCol);
                 System.out.println("棋子左旋");
-
-                // 激光发射
-                ImageRender.laser_out();
-
-                turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
-                pieceSelected = false;  // 执行完后重置
+                ImageView imageView = (ImageView) (ImageRender.getSquareButton(selectedPieceRow,selectedPieceCol)).getGraphic();
+                rotateImage_l(imageView);
+//                Platform.runLater(() -> {
+//                    try {
+//                        Thread.sleep(2000); // 等待2秒
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//                // 激光发射
+//                ImageRender.laser_out();
+//
+//                turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
+//                pieceSelected = false;  // 执行完后重置
             }
         } else if (!pieceSelected) {
             System.out.println("未选中棋子，不执行操作");
@@ -52,14 +68,24 @@ public class ButtonController {
                 System.out.println(board.chessboard[selectedPieceRow][selectedPieceCol].show_type() + " can't be rotated");
             else {
                 board.chessboard[selectedPieceRow][selectedPieceCol].rotate('r');
-                renderSquare(selectedPieceRow, selectedPieceCol);
+//                rotateButton90(ImageRender.getSquareButton(selectedPieceRow,selectedPieceCol));
+//                renderSquare(selectedPieceRow, selectedPieceCol);
+
+                ImageView imageView = (ImageView) (ImageRender.getSquareButton(selectedPieceRow,selectedPieceCol)).getGraphic();
+                rotateImage_r(imageView);
                 System.out.println("棋子右旋");
 
-                // 激光发射
-                ImageRender.laser_out();
-
-                turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
-                pieceSelected = false;  // 执行完后重置
+//                Platform.runLater(() -> {
+//                    try {
+//                        Thread.sleep(2000); // 等待2秒
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//                // 激光发射
+//                ImageRender.laser_out();
+//                turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
+//                pieceSelected = false;  // 执行完后重置
             }
         } else if (!pieceSelected) {
             System.out.println("未选中棋子，不执行操作");
@@ -120,7 +146,47 @@ public class ButtonController {
             System.out.println("Error occurred! Move fail!");
         }
     }
+//    public static void rotateButton90(Button button) {
+//        // 创建 RotateTransition，并设置持续时间和旋转角度
+//        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(2), button);
+//        rotateTransition.setByAngle(90);
+//
+//        // 播放动画
+//        rotateTransition.play();
+//    }
+//    public static void rotateButton_90(Button button) {
+//        // 创建 RotateTransition，并设置持续时间和旋转角度
+//        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(2), button);
+//        rotateTransition.setByAngle(-90);
+//
+//        // 播放动画
+//        rotateTransition.play();
+//    }
+      public static void rotateImage_l(ImageView imageView) {
+          // 创建 RotateTransition，并设置持续时间和旋转角度
+          RotateTransition rotateTransition = new RotateTransition(Duration.seconds(1), imageView);
+          rotateTransition.setByAngle(-90); // 旋转
+          // 播放动画
+          rotateTransition.play();
+          rotateTransition.setOnFinished(event -> {
+              ImageRender.laser_out();
+                turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
+                pieceSelected = false;  // 执行完后重置
+          });
+      }
+    public static void rotateImage_r(ImageView imageView) {
+        // 创建 RotateTransition，并设置持续时间和旋转角度
+        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(1), imageView);
+        rotateTransition.setByAngle(90); // 旋转
 
+        // 播放动画
+        rotateTransition.play();
+        rotateTransition.setOnFinished(event -> {
+            ImageRender.laser_out();
+                turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
+                pieceSelected = false;  // 执行完后重置
+        });
+    }
     static void exitGame() {
         Platform.exit(); // 关闭游戏
     }
