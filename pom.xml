@@ -106,7 +106,7 @@
       <dependency>
           <groupId>eu.hansolo.fx</groupId>
           <artifactId>countries</artifactId>
-          <version>21-ea+24</version>
+          <version>17.0.1</version>
       </dependency>
   </dependencies>
 
