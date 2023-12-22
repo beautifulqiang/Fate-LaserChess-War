@@ -9,7 +9,7 @@ module flcwGUI {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires com.almasb.fxgl.all;
-
+    requires javafx.media;
 
 
     opens flcwGUI to javafx.fxml;

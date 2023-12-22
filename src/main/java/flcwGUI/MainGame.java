@@ -13,7 +13,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
+import java.io.File;
+import java.net.URL;
 import java.util.Objects;
 
 import static flcwGUI.ImageRender.getChessImage;
@@ -87,11 +91,24 @@ public class MainGame extends Application {
     }
 
     private static void initializeBoard(int rows, int cols) {
+        String musicName = "";  // 配置音乐
+
         switch (gameStyle) {
-            case classic -> root.getStyleClass().add("root-classic");
-            case elden -> root.getStyleClass().add("root-elden");
-            case PvZ -> root.getStyleClass().add("root-PvZ");
+            case classic -> {
+                root.getStyleClass().add("root-classic");
+                musicName = "classic.flac";
+            }
+            case elden -> {
+                root.getStyleClass().add("root-elden");
+                musicName += "elden.mp3";
+            }
+            case PvZ -> {
+                root.getStyleClass().add("root-PvZ");
+                musicName += "PvZ.flac";
+            }
         }
+
+        URL musicUrl = MainGame.class.getResource("/bgm/" + musicName);
 
         // 设置棋盘的位置，使其居中
         gameGrid.getStyleClass().add("gameGrid");
@@ -179,6 +196,17 @@ public class MainGame extends Application {
 
         // 添加棋盘到 BorderPane 的中心
         root.setCenter(gameGrid);
+
+        // 开始播放音乐
+        MediaPlayer mediaPlayer;
+        if (musicUrl != null) {
+            Media sound = new Media(musicUrl.toExternalForm());
+            mediaPlayer = new MediaPlayer(sound);
+
+            mediaPlayer.play();
+        } else {
+            System.out.println("Resource not found: " + musicName);
+        }
     }
 
     private static VBox createControls() {
