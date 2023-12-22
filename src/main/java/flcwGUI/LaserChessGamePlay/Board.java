@@ -19,7 +19,24 @@ public class Board {
     private int[] blueLaserEmitterPos;
     private Direction blueLaserEmitterDirection;
 
-    public Board(int type) {
+    public Board(int type, boolean DiyOrNot) {
+        if(DiyOrNot){
+            //TODO 在这里可以加上让用户输入期望的棋盘大小的逻辑，读入x和y
+            int x = 8;
+            int y = 10;
+            chessboard = new Chess[x][y];
+            backgroundBoard = new Background[x][y];
+            redLaserEmitterPos = new int[2];
+            blueLaserEmitterPos = new int[2];
+            Direction[] tempD =new Direction[2];
+            DIYBoard.DIY(chessboard, backgroundBoard, redLaserEmitterPos, blueLaserEmitterPos, tempD);
+            redLaserEmitterDirection = tempD[0];
+            blueLaserEmitterDirection = tempD[1];
+            return;
+        }
+
+        //TODO 加入读取用户存储的棋盘并初始化的功能
+
         //初始化激光发射器部分
         redLaserEmitterPos = new int[2];
         blueLaserEmitterPos = new int[2];
@@ -229,7 +246,7 @@ public class Board {
 
     public static void main(String[] args) {
         //早期测试代码
-        Board board = new Board(1);
+        //Board board = new Board(1);
         //board.print();
     }
 }
