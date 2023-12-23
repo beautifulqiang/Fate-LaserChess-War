@@ -51,16 +51,16 @@
 
 /* 设置旋转按钮的样式 */
 .rotate-button {
-    -fx-background-color: #ffdd00;
-    -fx-min-width:  70;
-    -fx-min-height: 70;
-    -fx-text-fill: #ff3333;
+    -fx-background-color: #ffd573;
+    -fx-max-width:  70;
+    -fx-max-height: 70;
     -fx-font-size: 20;
+    -fx-border-radius: 15;
 }
 
 /* 设置旋转按钮容器的样式 */
 .rotate-button-container {
-    -fx-spacing: 60;
+    -fx-spacing: 30;
     -fx-alignment: center;
     -fx-padding: 0 0 60 0;
 }
@@ -97,13 +97,11 @@
     -fx-border-radius: 15; /* 边框圆角 */
 }
 
-/* 设置red_king样式 */
-.red-king {
-    -fx-background-image: url('../images/elden/kings/red_king.png');
-}
-
-/* 设置blue_king样式 */
-.blue-king {
-    -fx-background-image: url('../images/elden/kings/blue_king.png');
+.classic-chess {
+    -fx-background-color: burlywood;
+    -fx-min-width: 65;
+    -fx-min-height: 65;
+    -fx-background-radius: 15; /* 背景圆角 */
+    -fx-border-radius: 15; /* 边框圆角 */
 }
 

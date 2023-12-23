@@ -97,7 +97,7 @@ public class MainGame extends Application {
         switch (gameStyle) {
             case classic -> {
                 root.getStyleClass().add("root-classic");
-                musicName = "classic.flac";
+                musicName = "classic.mp3";
             }
             case elden -> {
                 root.getStyleClass().add("root-elden");
@@ -105,7 +105,7 @@ public class MainGame extends Application {
             }
             case PvZ -> {
                 root.getStyleClass().add("root-PvZ");
-                musicName += "PvZ.flac";
+                musicName += "PvZ.mp3";
             }
         }
 
@@ -116,12 +116,28 @@ public class MainGame extends Application {
         gameGrid.setPadding(new Insets(30, 0, 0, 145));
 
         // 添加左旋转按钮
-        Button rotateLeftButton = new Button("Rotate Left");
+        Button rotateLeftButton = new Button();
         rotateLeftButton.setOnAction(e -> ButtonController.rotateChessBoardLeft());
 
         // 添加右旋转按钮
-        Button rotateRightButton = new Button("Rotate Right");
+        Button rotateRightButton = new Button();
         rotateRightButton.setOnAction(e -> ButtonController.rotateChessBoardRight());
+
+        // 为按钮添加图片
+        Image leftRotateImage = new Image(Objects.requireNonNull(MainGame.class.getResourceAsStream("/images/left_rotate.jpg")));
+        Image rightRotateImage = new Image(Objects.requireNonNull(MainGame.class.getResourceAsStream("/images/right_rotate.jpg")));
+
+        ImageView leftRotateImageView = new ImageView(leftRotateImage);
+        ImageView rightRotateImageView = new ImageView(rightRotateImage);
+
+        leftRotateImageView.setFitHeight(70);
+        leftRotateImageView.setFitWidth(70);
+        rightRotateImageView.setFitHeight(70);
+        rightRotateImageView.setFitWidth(70);
+
+        rotateLeftButton.setGraphic(leftRotateImageView);
+        rotateRightButton.setGraphic(rightRotateImageView);
+
 
         // 将按钮添加到 HBox 中
         HBox rotate_button_container = new HBox(10); // 设置垂直间隔
@@ -179,8 +195,8 @@ public class MainGame extends Application {
 
                 // 创建一个带有圆角的 Rectangle 作为 clip
                 Rectangle clip = new Rectangle(65, 65);
-                clip.setArcWidth(20); // 设置圆角的宽度
-                clip.setArcHeight(20); // 设置圆角的高度
+                clip.setArcWidth(15); // 设置圆角的宽度
+                clip.setArcHeight(15); // 设置圆角的高度
                 imageView.setClip(clip);
 
                 // 设置按钮的图形内容为ImageView
@@ -204,6 +220,7 @@ public class MainGame extends Application {
             Media sound = new Media(musicUrl.toExternalForm());
             mediaPlayer = new MediaPlayer(sound);
 
+            mediaPlayer.setVolume(0.4);
             mediaPlayer.play();
         } else {
             System.out.println("Resource not found: " + musicName);

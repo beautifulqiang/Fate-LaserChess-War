@@ -17,6 +17,7 @@ import java.util.Objects;
 
 import static flcwGUI.ButtonController.turn;
 import static flcwGUI.MainGame.*;
+import static flcwGUI.MainGame.GameStyle.elden;
 
 public class ImageRender {
 
@@ -82,7 +83,13 @@ public class ImageRender {
     }
 
     private static Image getLaserImage() {
-        String imagePath = "/images/elden/bullets/";
+        String imagePath = "/images/";
+
+        switch (gameStyle) {
+            case classic -> imagePath += "classic/bullets/";
+            case elden -> imagePath += "elden/bullets/";
+            case PvZ -> imagePath += "PvZ/bullets/";
+        }
 
         switch (turn) {
             case RED -> imagePath += "red_bullet.png";
@@ -92,7 +99,7 @@ public class ImageRender {
         return new Image(Objects.requireNonNull(ImageRender.class.getResource(imagePath)).toExternalForm());
     }
 
-    private static void renderSquare(int row, int col, boolean laser) {
+    private static void renderSquare(int row, int col, ChessLaserEmitter.Direction d) {
         if (row < 0 || col < 0) return;
         // 获取与指定行列相对应的按钮
         Button square = getSquareButton(row, col);
@@ -112,23 +119,23 @@ public class ImageRender {
         imageView.setFitWidth(65); // 设置宽度
         imageView.setFitHeight(65); // 设置高度
         imageView.setPreserveRatio(true); // 保持宽高比
-
+        imageView.setRotate(-90 + d.ordinal() * 90);
         // 设置按钮的尺寸
         square.setMaxSize(65, 65);
 
         // 旋转到合适方向
-        if (chess != null) {
-            switch (chess.show_type()) {
-                case LaserEmitter, OneWayMirror, TwoWayMirror, Shield:
-                    imageView.setRotate(-90 + chess.getrotate() * 90);
-                    break;
-            }
-        }
+//        if (chess != null) {
+//            switch (chess.show_type()) {
+//                case LaserEmitter, OneWayMirror, TwoWayMirror, Shield:
+//                    imageView.setRotate(-90 + chess.getrotate() * 90);
+//                    break;
+//            }
+//        }
 
         // 创建一个带有圆角的 Rectangle 作为 clip
         Rectangle clip = new Rectangle(65, 65);
-        clip.setArcWidth(20); // 设置圆角的宽度
-        clip.setArcHeight(20); // 设置圆角的高度
+        clip.setArcWidth(15); // 设置圆角的宽度
+        clip.setArcHeight(15); // 设置圆角的高度
         imageView.setClip(clip);
 
         // 设置按钮的图形内容为ImageView
@@ -203,8 +210,8 @@ public class ImageRender {
 
         // 创建一个带有圆角的 Rectangle 作为 clip
         Rectangle clip = new Rectangle(65, 65);
-        clip.setArcWidth(20); // 设置圆角的宽度
-        clip.setArcHeight(20); // 设置圆角的高度
+        clip.setArcWidth(15); // 设置圆角的宽度
+        clip.setArcHeight(15); // 设置圆角的高度
         imageView.setClip(clip);
 
         // 设置按钮的图形内容为ImageView
@@ -222,12 +229,12 @@ public class ImageRender {
         //取得要杀死的棋子的坐标
         int[] posToKill = laser.disseminate(board.chessboard);
         boolean[][] path = laser.getPath();
-
+        ChessLaserEmitter.Direction[][] vec_path = laser.getVec_path();
         //渲染激光路径
         for (int i = 0; i < b_size[0]; i++) {
             for (int j = 0; j < b_size[1]; j++) {
                 if (path[i][j]) {
-                    renderSquare(i, j, true);
+                    renderSquare(i, j,vec_path[i][j]);
                 }
             }
         }
