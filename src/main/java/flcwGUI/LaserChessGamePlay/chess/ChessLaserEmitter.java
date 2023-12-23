@@ -1,7 +1,7 @@
 package flcwGUI.LaserChessGamePlay.chess;
 public class ChessLaserEmitter extends Chess {
     public enum Direction {
-        LEFT, TOP, RIGHT, BOTTOM
+        LEFT, TOP, RIGHT, BOTTOM, Cross
     }
     public Direction direction;
 

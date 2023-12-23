@@ -24,7 +24,7 @@ public class Laser {
         this.y = y;
         this.d = d;
         path = new boolean[size_x][size_y];
-        path[x][y] = true;
+        path[x][y] = false;
         vec_path = new Direction[size_x][size_y] ;
         vec_path[x][y] = d;
     }
@@ -51,7 +51,8 @@ public class Laser {
             path[x][y] = true;
             if(board[x][y] == null){
                 //传播到了一个空格子上，继续传播
-                vec_path[x][y] = d;
+                if(vec_path[x][y]==null) vec_path[x][y] = d;
+                else vec_path[x][y] = Direction.Cross;
                 continue;
             }
 
@@ -63,10 +64,13 @@ public class Laser {
                     ret[0] = x;
                     ret[1] = y;
                 }
-                vec_path[x][y] = d;
+                path[x][y] = false;
+                if(vec_path[x][y]==null) vec_path[x][y] = d;
+                else vec_path[x][y] = Direction.Cross;
                 break;
             }
-            vec_path[x][y] = d;
+            if(vec_path[x][y]==null) vec_path[x][y] = d;
+            else vec_path[x][y] = Direction.Cross;
         }
         return ret;
     }

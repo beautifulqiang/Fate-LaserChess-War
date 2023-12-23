@@ -4,6 +4,7 @@ import flcwGUI.LaserChessGamePlay.Laser;
 import flcwGUI.LaserChessGamePlay.background.Background;
 import flcwGUI.LaserChessGamePlay.chess.Chess;
 import flcwGUI.LaserChessGamePlay.chess.ChessLaserEmitter;
+import flcwGUI.LaserChessGamePlay.chess.ChessTwoWayMirror;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -82,7 +83,7 @@ public class ImageRender {
         return new Image(Objects.requireNonNull(ImageRender.class.getResource(imagePath)).toExternalForm());
     }
 
-    private static Image getLaserImage() {
+    private static Image getLaserImage(Chess chess, Background bg, Boolean cross) {
         String imagePath = "/images/";
 
         switch (gameStyle) {
@@ -90,10 +91,100 @@ public class ImageRender {
             case elden -> imagePath += "elden/bullets/";
             case PvZ -> imagePath += "PvZ/bullets/";
         }
-
+        //判断激光颜色
         switch (turn) {
-            case RED -> imagePath += "red_bullet.png";
-            case BLUE -> imagePath += "blue_bullet.png";
+            case RED :
+                if(chess == null){
+                    if (bg != null) {  // 此时说明背景有限制颜色
+                        switch (bg.color) {
+                            case RED:
+                                if(!cross) imagePath += "red_red.png";
+                                else imagePath+="red_red_cross.png";
+                                break;
+                            case BLUE:
+                                if(!cross) imagePath += "blue_red.png";
+                                else imagePath += "blue_red_cross.png";
+                                break;
+                        }
+                    } else {
+                        // 如果没有棋子，使用默认图片
+                        if(!cross) imagePath += "red_bullet.png";
+                        else imagePath += "red_bullet_cross.png";
+                    }
+                    break;
+                }
+                else {
+                    //判断棋子类型
+                    switch (chess.show_type()){
+                        case OneWayMirror:
+                            //判断棋子颜色
+                            if(chess.color == Chess.Color.RED)
+                            {
+                                imagePath += "red_one_red.png";
+                            }
+                            else{
+                                imagePath += "blue_one_red.png";
+                            }
+                            break;
+                        case TwoWayMirror:
+                            if(chess.color == Chess.Color.RED)
+                            {
+                                imagePath += "red_two_red.png";
+                            }
+                            else{
+                                imagePath += "blue_two_red.png";
+                            }
+                            break;
+                    }
+                    break;
+                }
+
+            case BLUE :
+                if(chess==null){
+                    if (bg != null) {  // 此时说明背景有限制颜色
+                        switch (bg.color) {
+                            case RED:
+                                if(!cross) imagePath += "red_blue.png";
+                                else imagePath += "red_blue_cross.png";
+                                break;
+                            case BLUE:
+                                if(!cross) imagePath += "blue_blue.png";
+                                else imagePath += "blue_blue_cross.png";
+                                break;
+                        }
+                    } else {
+                        // 如果没有棋子，使用默认图片
+                        if(!cross) imagePath += "blue_bullet.png";
+                        else imagePath += "blue_bullet_cross.png";
+                    }
+                    break;
+                }
+                else{
+                    switch (chess.show_type()){
+                        case OneWayMirror:
+                            //判断棋子颜色
+                            if(chess.color == Chess.Color.RED)
+                            {
+                                imagePath += "red_one_blue.png";
+                            }
+                            else{
+                                imagePath += "blue_one_blue.png";
+                            }
+                            break;
+                        case TwoWayMirror:
+                            if(chess.color == Chess.Color.RED)
+                            {
+                                imagePath += "red_two_blue.png";
+                            }
+                            else{
+                                imagePath += "blue_two_blue.png";
+                            }
+                            break;
+
+                    }
+                }
+                //判断棋子类型
+                break;
         }
 
         return new Image(Objects.requireNonNull(ImageRender.class.getResource(imagePath)).toExternalForm());
@@ -112,18 +203,37 @@ public class ImageRender {
         if (square != null) {
             square.setGraphic(null);
         }
-        Image get_image = getLaserImage();
+
+
+        Image get_image = getLaserImage(chess,board.backgroundBoard[row][col],(d == ChessLaserEmitter.Direction.Cross));
 
         // 创建ImageView并设置图片
         ImageView imageView = new ImageView(get_image);
         imageView.setFitWidth(65); // 设置宽度
         imageView.setFitHeight(65); // 设置高度
         imageView.setPreserveRatio(true); // 保持宽高比
-        imageView.setRotate(-90 + d.ordinal() * 90);
+
+        if(chess == null){
+            imageView.setRotate(-90 + d.ordinal() * 90);
+        }
+        else{
+            switch (chess.show_type()){
+                case OneWayMirror:
+                    imageView.setRotate(-90 + chess.getrotate() * 90);
+                    break;
+                case TwoWayMirror:
+                    if(chess.getrotate()==1 && (d.ordinal()==1 || d.ordinal() == 2)) imageView.setRotate(0);
+                    if(chess.getrotate()==1 && (d.ordinal()==0 || d.ordinal() == 3)) imageView.setRotate(180);
+                    if(chess.getrotate()==0 && (d.ordinal()==0 || d.ordinal() == 1)) imageView.setRotate(-90);
+                    if(chess.getrotate()==0 && (d.ordinal()==2 || d.ordinal() == 3)) imageView.setRotate(90);
+                    break;
+            }
+
+        }
         // 设置按钮的尺寸
         square.setMaxSize(65, 65);
 
-        // 旋转到合适方向
+//         旋转到合适方向
 //        if (chess != null) {
 //            switch (chess.show_type()) {
 //                case LaserEmitter, OneWayMirror, TwoWayMirror, Shield:
@@ -141,6 +251,8 @@ public class ImageRender {
         // 设置按钮的图形内容为ImageView
         square.setGraphic(imageView);
     }
+
+
 
     public static Image getBackgroundImage(Background bg) {
         String imagePath = switch (gameStyle) {
