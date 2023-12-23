@@ -4,14 +4,24 @@ import flcwGUI.LaserChessGamePlay.chess.*;
 import flcwGUI.LaserChessGamePlay.chess.Chess.Color;
 import flcwGUI.LaserChessGamePlay.chess.ChessLaserEmitter.Direction;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 import flcwGUI.LaserChessGamePlay.background.*;
 
 public class DIYBoard {
     public static void DIY(Chess[][] chessboard, Background[][] backgroundBoard, int[] redLaserEmitterPos, int[] blueLaserEmitterPos, Direction[] tempD){
-        //TODO 加入让用户选择是否保存本棋盘的功能
+        Scanner scanner = new Scanner(System.in);
+
         //TODO 在加入AI算法之后，还可以检测这个棋局有没有解，没有解不行
+
+        boolean saveBoard = false;
+        File file = new File("defaultDummyFile.txt");
+        
+
         boolean redKing = false;
         boolean blueKing = false;
         boolean redLaserEmitter = false;
@@ -19,9 +29,38 @@ public class DIYBoard {
 
         String type = "";
         Color color;
-
-        Scanner scanner = new Scanner(System.in);
         char char_color;
+
+        //判断是否要保存棋盘
+        System.out.println("Whether you want to save the current board configuration?(Y,N)");
+        String saveChoice = scanner.nextLine();
+        if (saveChoice.equals("Y")) {
+            saveBoard = true;
+            String currentDirectory = System.getProperty("user.dir");
+            // 提示用户输入文件名
+            System.out.println("Please enter a file name to save the board configuration:");
+            String fileName = scanner.nextLine();
+            // TODO: 这里需要检验格式
+            // 创建目录（如果不存在）
+            File saveBoardDirectory = new File("saveBoard");
+            if (!saveBoardDirectory.exists()) {
+                saveBoardDirectory.mkdirs();
+            }
+            // 创建文件
+            file = new File(saveBoardDirectory, fileName + ".txt");
+        }
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(file,true))) {
+            System.out.println("Board configuration saved successfully!");
+        } catch (IOException e) {
+            System.out.println("Error while saving the board configuration.");
+            e.printStackTrace();
+        }
+
+
+
+
+
 
         while(true){
             //读入颜色和类型
@@ -33,8 +72,30 @@ public class DIYBoard {
             else{
                 color = Color.RED;
             }
+
+            //在文件中写入颜色
+            if(saveBoard){
+                try (PrintWriter writer = new PrintWriter(new FileWriter(file,true))) {
+                    writer.println(char_color);
+                } catch (IOException e) {
+                    System.out.println("Error while saving the board configuration.");
+                    e.printStackTrace();
+                }
+            }
+
+
             System.out.println("Enter the pieces you want to place (enter END to consider the placement complete)");
             type = scanner.nextLine();
+            //在文件中写入棋子类型
+            if(saveBoard){
+                try (PrintWriter writer = new PrintWriter(new FileWriter(file,true))) {
+                    writer.println(type);
+                } catch (IOException e) {
+                    System.out.println("Error while saving the board configuration.");
+                    e.printStackTrace();
+                }
+            }
+
             if(type.equals("END")){
                 if(!redLaserEmitter||!blueLaserEmitter||!redKing||!blueKing){
                     System.out.println("The requisites for the game are not met, two kings of different colors and two le are required");
@@ -44,7 +105,7 @@ public class DIYBoard {
                 break;
             }
 
-            if(type.equals("board")){
+            if(type.equals("bg")){
                 //让用户输入正确的棋子位置
                 System.out.println("Please enter coordinate. (format: x,y):");
                 String coordinate = scanner.nextLine();
@@ -53,6 +114,15 @@ public class DIYBoard {
                     System.out.println("Locations that cannot be deployed, please re-enter");
                     coordinate = scanner.nextLine();
                     coordinates = parseCoordinates(coordinate);
+                }
+                //背景情况下，在文件中写入背景坐标
+                if(saveBoard){
+                    try (PrintWriter writer = new PrintWriter(new FileWriter(file,true))) {
+                        writer.println(coordinate);
+                    } catch (IOException e) {
+                        System.out.println("Error while saving the board configuration.");
+                        e.printStackTrace();
+                    }
                 }
 
                 if(color == Color.BLUE){
@@ -104,6 +174,15 @@ public class DIYBoard {
                 }
                 System.out.println("laserEmiter, Please enter a direction(format t,r,b,l)");
                 String dir = scanner.nextLine();
+                //读入方向
+                if(saveBoard){
+                    try (PrintWriter writer = new PrintWriter(new FileWriter(file,true))) {
+                        writer.println(dir);
+                    } catch (IOException e) {
+                        System.out.println("Error while saving the board configuration.");
+                        e.printStackTrace();
+                    }
+                }
                 if(dir.equals("t")){
                     chess = new ChessLaserEmitter(Direction.TOP, color);
                     if(color == Color.BLUE){
@@ -149,6 +228,17 @@ public class DIYBoard {
             else if(type.equals("one")){
                 System.out.println("oneWayMirror, Please enter a direction(format lt lb rt rb)");
                 String dir = scanner.nextLine();
+
+                //读入方向
+                if(saveBoard){
+                    try (PrintWriter writer = new PrintWriter(new FileWriter(file,true))) {
+                        writer.println(dir);
+                    } catch (IOException e) {
+                        System.out.println("Error while saving the board configuration.");
+                        e.printStackTrace();
+                    }
+                }
+
                 if(dir.equals("lt")){
                     chess = new ChessOneWayMirror(flcwGUI.LaserChessGamePlay.chess.ChessOneWayMirror.Direction.LEFT_TOP, color);
                 }
@@ -170,6 +260,17 @@ public class DIYBoard {
             else if(type.equals("two")){
                 System.out.println("twoWayMirror, Please enter a direction(format lt rt)");
                 String dir = scanner.nextLine();
+
+                //读入方向
+                if(saveBoard){
+                    try (PrintWriter writer = new PrintWriter(new FileWriter(file,true))) {
+                        writer.println(dir);
+                    } catch (IOException e) {
+                        System.out.println("Error while saving the board configuration.");
+                        e.printStackTrace();
+                    }
+                }
+
                 if(dir.equals("lt")){
                     chess = new ChessTwoWayMirror(flcwGUI.LaserChessGamePlay.chess.ChessTwoWayMirror.Direction.LEFT_TOP, color);
                 }
@@ -184,6 +285,17 @@ public class DIYBoard {
             else if(type.equals("shield")){
                 System.out.println("shield, Please enter a direction(format t,r,b,l)");
                 String dir = scanner.nextLine();
+
+                //读入方向
+                if(saveBoard){
+                    try (PrintWriter writer = new PrintWriter(new FileWriter(file,true))) {
+                        writer.println(dir);
+                    } catch (IOException e) {
+                        System.out.println("Error while saving the board configuration.");
+                        e.printStackTrace();
+                    }
+                }
+
                 if(dir.equals("t")){
                     chess = new ChessShield(flcwGUI.LaserChessGamePlay.chess.ChessShield.Direction.TOP, color);
                 }
@@ -215,6 +327,17 @@ public class DIYBoard {
                 coordinate = scanner.nextLine();
                 coordinates = parseCoordinates(coordinate);
             }
+
+            //读入方向
+            if(saveBoard){
+                try (PrintWriter writer = new PrintWriter(new FileWriter(file,true))) {
+                    writer.println(coordinate);
+                } catch (IOException e) {
+                    System.out.println("Error while saving the board configuration.");
+                    e.printStackTrace();
+                }
+            }
+
             if(toRecordEmiter){
                 if(color == Color.BLUE){
                     blueLaserEmitterPos[0] = coordinates[0];

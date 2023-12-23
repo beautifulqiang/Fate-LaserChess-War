@@ -12,17 +12,25 @@ public class Game {
 
         Board board;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Do you want to DIY?(Y,N)");
-        char DiyOrNot = scanner.nextLine().charAt(0);
-        if(DiyOrNot=='Y'){
+        System.out.println("Do you want to use a saved file?(Y,N)");
+        char UseSavedBoardOrNot = scanner.nextLine().charAt(0);
+        if(UseSavedBoardOrNot=='Y'){
             board = new Board(0, true);
         }
         else{
-            System.out.println("Please select the type of board (enter the number 1 or 2, etc.):");
-            //错误输入处理之后再说
-            int boardType = scanner.nextInt();
-            board = new Board(boardType, false);
+            System.out.println("Do you want to DIY?(Y,N)");
+            char DiyOrNot = scanner.nextLine().charAt(0);
+            if(DiyOrNot=='Y'){
+                board = new Board(0, true);
+            }
+            else{
+                System.out.println("Please select the type of board (enter the number 1 or 2, etc.):");
+                //错误输入处理之后再说
+                int boardType = scanner.nextInt();
+                board = new Board(boardType, false);
+            }            
         }
+
         
 
         //读取谁先手
