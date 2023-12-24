@@ -18,6 +18,7 @@ import static flcwGUI.MainGame.board;
 
 public class ButtonController {
     public static Chess.Color turn = Chess.Color.BLUE;  // 用于记录是谁的回合
+
     private static boolean pieceSelected = false; // 用于追踪是否已经选中了棋子
     private static int selectedPieceRow = -1; // 用于存储选中的棋子的行
     private static int selectedPieceCol = -1; // 用于存储选中的棋子的列
@@ -136,12 +137,12 @@ public class ButtonController {
 
     private static void moveUpdate(Operate op) {
         // 调试使用的测试信息
-        System.out.println("----------------------");
-        if (turn == Chess.Color.BLUE) {
-            System.out.println("Now is Blue's turn!!!");
-        } else {
-            System.out.println("Now is Red's turn!!!");
-        }
+//        System.out.println("----------------------");
+//        if (turn == Chess.Color.BLUE) {
+//            System.out.println("Now is Blue's turn!!!");
+//        } else {
+//            System.out.println("Now is Red's turn!!!");
+//        }
 
         if (op instanceof Move) {
             int startX = ((Move) op).startX;
@@ -152,11 +153,22 @@ public class ButtonController {
             // 更新 UI，这里可以根据棋子类型和颜色进行相应的渲染
             renderSquare(startX, startY);
             renderSquare(endX, endY);
-
-            // 激光发射
-            ImageRender.laser_out();
-
-            turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
+            Platform.runLater(() -> {
+                try {
+                    Thread.sleep(1000); // 等待1秒
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                // 激光发射
+                ImageRender.laser_out();
+                turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
+                System.out.println("----------------------");
+                if (turn == Chess.Color.BLUE) {
+                    System.out.println("Now is Blue's turn!!!");
+                } else {
+                    System.out.println("Now is Red's turn!!!");
+                }
+            });//为了避免移动的太慢，渲染和激光重叠，所以就让激光在移动后的一秒发射
 
         } else {
             // 这个函数只处理Move的指令，如果不是Move则出错了

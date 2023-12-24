@@ -129,6 +129,43 @@ public class Board {
         }
     }
 
+//    public Chess.Color killChess_result(int x, int y){
+//        if(x==-1 && y ==-1){
+//            //无需杀死
+//            return null;
+//        }
+//        else if(x!=-1 && y!=-1){
+//            //讨论国王
+//            if(chessboard[x][y] instanceof ChessKing){
+//
+//                if(chessboard[x][y].color == Color.BLUE){
+//                    //将要杀死国王
+//                    gameIsOver = true;
+//                    //蓝色国王将要死了
+//                    theWinner ='R';
+//                    chessboard[x][y] = null;
+//                    return Color.RED;
+//                }
+//                else{
+//                    //红色国王将要死了
+//                    //将要杀死国王
+//                    gameIsOver = true;
+//                    theWinner ='B';
+//                    chessboard[x][y] = null;
+//                    return Color.BLUE;
+//                }
+//            }
+//            //杀死
+//            chessboard[x][y] = null;
+//            return null;
+//            System.out.println("The pawns in the ("+x+','+y+") position have been killed");
+//        }
+//        else{
+//            System.out.println("Error: Unknown argument");
+//            return  null;
+//        }
+//    }
+
 
     //返回值代表操作是否成功，返回true则代表操作成功，传入的char_color代表当前正在操作的颜色
     public boolean operateChess(Operate opetation, char char_color) {

@@ -5,6 +5,7 @@ import flcwGUI.LaserChessGamePlay.background.Background;
 import flcwGUI.LaserChessGamePlay.chess.Chess;
 import flcwGUI.LaserChessGamePlay.chess.ChessLaserEmitter;
 import flcwGUI.LaserChessGamePlay.chess.ChessTwoWayMirror;
+import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -13,8 +14,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
+import javafx.util.*;
 
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 import static flcwGUI.ButtonController.turn;
 import static flcwGUI.MainGame.*;
@@ -129,10 +132,12 @@ public class ImageRender {
                         case TwoWayMirror:
                             if(chess.color == Chess.Color.RED)
                             {
-                                imagePath += "red_two_red.png";
+                                if(!cross) imagePath += "red_two_red.png";
+                                else imagePath+="red_two_red_red.png";
                             }
                             else{
-                                imagePath += "blue_two_red.png";
+                                if(!cross) imagePath += "blue_two_red.png";
+                                else imagePath += "blue_two_red_red.png";
                             }
                             break;
                     }
@@ -174,10 +179,12 @@ public class ImageRender {
                         case TwoWayMirror:
                             if(chess.color == Chess.Color.RED)
                             {
-                                imagePath += "red_two_blue.png";
+                                if(!cross) imagePath += "red_two_blue.png";
+                                else imagePath += "red_two_blue_blue.png";
                             }
                             else{
-                                imagePath += "blue_two_blue.png";
+                                if(!cross) imagePath += "blue_two_blue.png";
+                                else imagePath += "blue_two_blue_blue.png";
                             }
                             break;
 
@@ -226,6 +233,8 @@ public class ImageRender {
                     if(chess.getrotate()==1 && (d.ordinal()==0 || d.ordinal() == 3)) imageView.setRotate(180);
                     if(chess.getrotate()==0 && (d.ordinal()==0 || d.ordinal() == 1)) imageView.setRotate(-90);
                     if(chess.getrotate()==0 && (d.ordinal()==2 || d.ordinal() == 3)) imageView.setRotate(90);
+                    if(chess.getrotate()==0 && d.ordinal()==4) imageView.setRotate(-90);
+                    if(chess.getrotate()==1 && d.ordinal()==4) imageView.setRotate(0);
                     break;
             }
 
@@ -351,13 +360,24 @@ public class ImageRender {
             }
         }
 
-        //杀死棋子。杀死大海！杀死大海！
-        board.killChess(posToKill[0], posToKill[1]);
-        renderSquare(posToKill[0], posToKill[1]);
+        Platform.runLater(() -> {
+            try {
+                Thread.sleep(500); // 等待0.5秒
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            kill_chess_render(posToKill[0], posToKill[1]);
+            board.killChess(posToKill[0], posToKill[1]);
+            if(board.gameOver()){
+                System.out.println("The winner is" + board.getWinner());
+            }
+        });
+
 
         Platform.runLater(() -> {
             try {
-                Thread.sleep(1000); // 等待1秒
+                Thread.sleep(500); // 等待0.5秒
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -370,6 +390,9 @@ public class ImageRender {
                 }
             }
         });
+
+
+
         Platform.runLater(() -> {
             try {
                 Thread.sleep(1000); // 等待1秒
@@ -379,6 +402,29 @@ public class ImageRender {
 
         });
     }
+
+    public static void kill_chess_render(int row, int col){
+        if(row<0||col<0) return ;
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.3), getSquareButton(row,col).getGraphic());
+        scaleTransition.setToX(0.5);  // 缩放到宽度为0
+        scaleTransition.setToY(0.5);  // 缩放到高度为0
+//        scaleTransition.setOnFinished(event -> {
+//           //杀死棋子。杀死大海！杀死大海！
+//            board.killChess(row, col);
+//            renderSquare(row, col);
+//        });
+//        scaleTransition.play();
+
+        Platform.runLater(() -> {
+            scaleTransition.setOnFinished(event -> {
+                //杀死棋子。杀死大海！杀死大海！
+                board.killChess(row, col);
+                renderSquare(row, col);
+            });
+            scaleTransition.play();
+        });
+    }
+
 
     public static Button getSquareButton(int row, int col) {
         // 获取所有子节点
