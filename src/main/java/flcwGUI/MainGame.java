@@ -2,7 +2,6 @@ package flcwGUI;
 
 import flcwGUI.LaserChessGamePlay.Board;
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -10,13 +9,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 
-import java.io.File;
 import java.net.URL;
 import java.util.Objects;
 
@@ -25,11 +26,9 @@ import static flcwGUI.ImageRender.getChessImage;
 public class MainGame extends Application {
     //这里在12.21晚改了一下，多加了一个参数，因为我把棋盘类的构造函数给改了
     final static Board board = new Board(1, false);  // 棋盘作为全局变量
-    public static GameStyle gameStyle = GameStyle.elden;
-    @FXML
-    static GridPane gameGrid = new GridPane();  // 棋盘，把棋子作为按钮放在上面
     private static final BorderPane root = new BorderPane();
-    private boolean map_selected = false;
+    public static GameStyle gameStyle = GameStyle.elden;
+    static GridPane gameGrid = new GridPane();  // 棋盘，把棋子作为按钮放在上面
 
     public static void main(String[] args) {
         launch(args);
@@ -47,48 +46,6 @@ public class MainGame extends Application {
         initializeBoard(8, 10); // 初始化棋盘
         primaryStage.setScene(scene_game);
         primaryStage.show();
-    }
-
-    @Override
-    public void start(Stage primaryStage) {
-        // 创建 Label 和按钮
-        Label label = new Label("地图风格：");
-        Button style1Button = new Button("Classic");
-        Button style2Button = new Button("Elden");
-        Button style3Button = new Button("PvZ");
-
-        // 创建 HBox，并添加 Label 和按钮
-        HBox hbox = new HBox();
-        hbox.getChildren().addAll(label, style1Button, style2Button, style3Button);
-
-        hbox.setPadding(new Insets(310, 0, 0, 250));
-
-        // 创建 StackPane 放置 HBox
-        StackPane root = new StackPane();
-        root.getChildren().add(hbox);
-
-        // 创建 Scene
-        Scene sceneInit = new Scene(root, 1280, 720);
-
-        sceneInit.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/flcwGUI/style.css")).toExternalForm());
-
-        // 添加按钮点击事件处理
-        style1Button.setOnAction(event -> ButtonController.handleStyleButtonClick("Classic", primaryStage));
-        style2Button.setOnAction(event -> ButtonController.handleStyleButtonClick("Elden", primaryStage));
-        style3Button.setOnAction(event -> ButtonController.handleStyleButtonClick("PvZ", primaryStage));
-
-        style1Button.getStyleClass().add("classic-button");
-        style2Button.getStyleClass().add("elden-button");
-        style3Button.getStyleClass().add("PvZ-button");
-        root.getStyleClass().add("root_start");
-
-        // 将场景设置到主舞台
-        primaryStage.setScene(sceneInit);
-
-        // 显示主舞台
-        primaryStage.setTitle("地图风格选择");
-        primaryStage.show();
-
     }
 
     private static void initializeBoard(int rows, int cols) {
@@ -113,15 +70,20 @@ public class MainGame extends Application {
 
         // 设置棋盘的位置，使其居中
         gameGrid.getStyleClass().add("gameGrid");
-        gameGrid.setPadding(new Insets(30, 0, 0, 145));
+        gameGrid.setPadding(new Insets(30, 0, 0, 30));
 
         // 添加左旋转按钮
         Button rotateLeftButton = new Button();
-        rotateLeftButton.setOnAction(e -> ButtonController.rotateChessBoardLeft());
+        rotateLeftButton.setOnAction(event -> ButtonController.rotateChessBoardLeft());
 
         // 添加右旋转按钮
         Button rotateRightButton = new Button();
-        rotateRightButton.setOnAction(e -> ButtonController.rotateChessBoardRight());
+        rotateRightButton.setOnAction(event -> ButtonController.rotateChessBoardRight());
+
+        // 添加DIY按钮
+        Button diyButton = new Button("DIY棋盘吗？");
+        diyButton.setOnAction(event -> ButtonController.handleDIYButtonClick());
+
 
         // 为按钮添加图片
         Image leftRotateImage = new Image(Objects.requireNonNull(MainGame.class.getResourceAsStream("/images/left_rotate.jpg")));
@@ -143,22 +105,19 @@ public class MainGame extends Application {
         HBox rotate_button_container = new HBox(10); // 设置垂直间隔
         rotate_button_container.getChildren().addAll(rotateLeftButton, rotateRightButton);
 
+        VBox DIY_container = new VBox();
+        DIY_container.getChildren().add(diyButton);
+        DIY_container.setAlignment(Pos.CENTER_LEFT);
+
         rotateLeftButton.getStyleClass().add("rotate-button");
         rotateRightButton.getStyleClass().add("rotate-button");
         rotate_button_container.getStyleClass().add("rotate-button-container");
+        diyButton.getStyleClass().add("DIY-button");
 
         // 添加 HBox 到 BorderPane 的底部
         root.setBottom(rotate_button_container);
 
-        // 添加退出按钮
-        Button exitButton = new Button("Exit");
-        exitButton.getStyleClass().add("exit-button");
-        exitButton.setOnAction(event -> ButtonController.exitGame());
-
-        root.setRight(exitButton);
-
-        VBox controls = createControls();
-        root.setLeft(controls);
+        root.setLeft(DIY_container);
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
@@ -227,18 +186,50 @@ public class MainGame extends Application {
         }
     }
 
-    private static VBox createControls() {
-        // 创建按钮
-        Button switchModeButton = new Button("Switch Mode");
-        switchModeButton.getStyleClass().add("switch-mode-button");
-        switchModeButton.setOnAction(event -> ButtonController.switchGameMode());
+    @Override
+    public void start(Stage primaryStage) {
+        // 创建 Label 和按钮
+        Label label = new Label("地图风格：");
+        Button style1Button = new Button("Classic");
+        Button style2Button = new Button("Elden");
+        Button style3Button = new Button("PvZ");
+        Button diyButton = new Button("DIY棋盘？");
 
-        // 将按钮添加到垂直布局
-        VBox controls = new VBox(10); // 设置垂直间隔
-        controls.setAlignment(Pos.CENTER);
-        controls.getChildren().add(switchModeButton);
+        // 创建 HBox，并添加 Label 和按钮
+        HBox styleButton_container = new HBox();
+        styleButton_container.getChildren().addAll(label, style1Button, style2Button, style3Button);
+        styleButton_container.setPadding(new Insets(310, 0, 0, 250));
 
-        return controls;
+        // 创建 VBox 放置 DIY 按钮
+        VBox DIY_container = new VBox();
+        DIY_container.getChildren().add(diyButton);
+        DIY_container.setAlignment(Pos.BOTTOM_RIGHT); // 设置对齐方式
+
+        // 创建 BorderPane 放置 HBox
+        BorderPane root = new BorderPane();
+        root.setCenter(styleButton_container);
+        root.setRight(DIY_container);
+
+        // 设置场景
+        Scene sceneInit = new Scene(root, 1280, 720);
+        sceneInit.getStylesheets().add(Objects.requireNonNull(ButtonController.class.getResource("/flcwGUI/style.css")).toExternalForm());
+
+        // 添加按钮点击事件处理
+        style1Button.setOnAction(event -> ButtonController.handleStyleButtonClick("Classic", primaryStage));
+        style2Button.setOnAction(event -> ButtonController.handleStyleButtonClick("Elden", primaryStage));
+        style3Button.setOnAction(event -> ButtonController.handleStyleButtonClick("PvZ", primaryStage));
+        diyButton.setOnAction(event -> ButtonController.handleDIYButtonClick());
+
+        root.getStyleClass().add("root-start");
+        style1Button.getStyleClass().add("classic-button");
+        style2Button.getStyleClass().add("elden-button");
+        style3Button.getStyleClass().add("PvZ-button");
+        diyButton.getStyleClass().add("DIY-button");
+
+        // 设置场景到主舞台
+        primaryStage.setScene(sceneInit);
+        primaryStage.setTitle("地图风格选择");
+        primaryStage.show();
     }
 
     enum GameStyle {

@@ -1,6 +1,6 @@
 /* styles.css */
 
-.root_start {
+.root-start {
     -fx-background-image: url(../images/root_start.png);
 }
 
@@ -44,6 +44,14 @@
 
 .PvZ-button {
     -fx-background-color: #71ffb4;
+    -fx-font-size: 40;
+    -fx-min-width: 70;
+    -fx-min-height: 70;
+}
+
+/* 设置diy按钮格式 */
+.DIY-button {
+    -fx-background-color: #fffd71;
     -fx-font-size: 40;
     -fx-min-width: 70;
     -fx-min-height: 70;
