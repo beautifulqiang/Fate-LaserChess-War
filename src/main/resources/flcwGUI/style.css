@@ -106,7 +106,7 @@
 }
 
 .classic-chess {
-    -fx-background-color: burlywood;
+    -fx-background-color: #fae6cf;
     -fx-min-width: 65;
     -fx-min-height: 65;
     -fx-background-radius: 15; /* 背景圆角 */

@@ -15,19 +15,19 @@ public class Game {
         System.out.println("Do you want to use a saved file?(Y,N)");
         char UseSavedBoardOrNot = scanner.nextLine().charAt(0);
         if(UseSavedBoardOrNot=='Y'){
-            board = new Board(0, true);
+            board = new Board(0, true, true);
         }
         else{
             System.out.println("Do you want to DIY?(Y,N)");
             char DiyOrNot = scanner.nextLine().charAt(0);
             if(DiyOrNot=='Y'){
-                board = new Board(0, true);
+                board = new Board(0, true, false);
             }
             else{
-                System.out.println("Please select the type of board (enter the number 1 or 2, etc.):");
+                System.out.println("Please select the type of board (enter the number 1 , 2 or 3):");
                 //错误输入处理之后再说
                 int boardType = scanner.nextInt();
-                board = new Board(boardType, false);
+                board = new Board(boardType, false, false);
             }            
         }
 
@@ -49,6 +49,7 @@ public class Game {
         
 
         while(!board.gameOver()){
+            SaveBoard.saveBoard(board.chessboard, board.backgroundBoard);//只是为了测试，你们GUI在做的时候可以在需要保存的时候再调用这个函数
             System.out.println("Now the chess game");
             //print有重载，不带参数的是不考虑激光，带参数的考虑激光
             board.print();

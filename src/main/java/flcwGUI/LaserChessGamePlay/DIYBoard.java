@@ -4,9 +4,12 @@ import flcwGUI.LaserChessGamePlay.chess.*;
 import flcwGUI.LaserChessGamePlay.chess.Chess.Color;
 import flcwGUI.LaserChessGamePlay.chess.ChessLaserEmitter.Direction;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
@@ -56,9 +59,6 @@ public class DIYBoard {
             System.out.println("Error while saving the board configuration.");
             e.printStackTrace();
         }
-
-
-
 
 
 
@@ -356,6 +356,252 @@ public class DIYBoard {
 
         }
     }
+
+
+
+    public static void LoadSavedBoard(Chess[][] chessboard, Background[][] backgroundBoard, int[] redLaserEmitterPos, int[] blueLaserEmitterPos, Direction[] tempD){
+        Scanner scanner = new Scanner(System.in);
+
+        boolean redKing = false;
+        boolean blueKing = false;
+        boolean redLaserEmitter = false;
+        boolean blueLaserEmitter = false;
+
+        String type = "";
+        Color color;
+        char char_color;
+
+        try {
+            // 提示用户输入文件名
+            System.out.println("Please enter a file name to load:");
+            String fileName = scanner.nextLine();
+            // TODO: 这里需要检验格式
+            // 创建目录（如果不存在）
+            File saveBoardDirectory = new File("saveBoard");
+            if (!saveBoardDirectory.exists()) {
+                saveBoardDirectory.mkdirs();
+            }
+            // 创建文件
+            File file = new File(saveBoardDirectory, fileName + ".txt");
+
+            // 创建FileInputStream对象
+            FileInputStream fis = new FileInputStream(file);
+            // 创建BufferedReader对象，用于读取文件内容
+            BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+
+
+            //读入文件的过程中不需要这么多输出，注释掉
+            while(true){
+                //读入颜色和类型
+                char_color = reader.readLine().charAt(0);
+                if(char_color=='B'){
+                    color = Color.BLUE;
+                }
+                else{
+                    color = Color.RED;
+                }
+
+                type = reader.readLine();
+
+                if(type.equals("END")){
+                    if(!redLaserEmitter||!blueLaserEmitter||!redKing||!blueKing){
+                        continue;
+                    }
+                    //确实满足了棋局结束的条件
+                    break;
+                }
+
+
+                if(type.equals("bg")){
+                    //让用户输入正确的棋子位置
+                    String coordinate = reader.readLine();
+                    int[] coordinates = parseCoordinates(coordinate);
+
+                    if(color == Color.BLUE){
+                        backgroundBoard[coordinates[0]][coordinates[1]] = new Background(flcwGUI.LaserChessGamePlay.background.Background.Color.BLUE);
+                    }
+                    else{
+                        backgroundBoard[coordinates[0]][coordinates[1]] = new Background(flcwGUI.LaserChessGamePlay.background.Background.Color.RED);
+                    }
+                    System.out.println("Placed " + "background" + " at position (" + coordinates[0] + "," + coordinates[1] + ").");
+                    continue;
+                }
+                
+                Chess chess;
+                boolean toRecordEmiter = false;
+                //后面的最终else错误情况的棋子是瞎生成的
+                if(type.equals("king")){
+                    if (color == Color.RED) {
+                        if (!redKing) {
+                            redKing = true;
+                        } else {
+                            System.out.println("Error: Red king already exists. Please choose a different piece.");
+                            continue; // 继续循环，让用户重新输入
+                        }
+                    } else {
+                        if (!blueKing) {
+                            blueKing = true;
+                        } else {
+                            System.out.println("Error: Blue king already exists. Please choose a different piece.");
+                            continue; // 继续循环，让用户重新输入
+                        }
+                    }
+                    chess = new ChessKing(color);
+                }
+                else if (type.equals("le")||type.equals("laseremiter")){
+                    if (color == Color.RED) {
+                        if (!redLaserEmitter) {
+                            redLaserEmitter = true;
+                        } else {
+                            System.out.println("Error: Red laser emitter already exists. Please choose a different piece.");
+                            continue; // 继续循环，让用户重新输入
+                        }
+                    } else {
+                        if (!blueLaserEmitter) {
+                            blueLaserEmitter = true;
+                        } else {
+                            System.out.println("Error: Blue laser emitter already exists. Please choose a different piece.");
+                            continue; // 继续循环，让用户重新输入
+                        }
+                    }
+                    String dir = reader.readLine();
+
+                    if(dir.equals("t")){
+                        chess = new ChessLaserEmitter(Direction.TOP, color);
+                        if(color == Color.BLUE){
+                            tempD[1] = Direction.TOP;
+                        }
+                        else{
+                            tempD[0] = Direction.TOP;
+                        }
+                    }
+                    else if(dir.equals("r")){
+                        chess = new ChessLaserEmitter(Direction.RIGHT, color);
+                        if(color == Color.BLUE){
+                            tempD[1] = Direction.RIGHT;
+                        }
+                        else{
+                            tempD[0] = Direction.RIGHT;
+                        }
+                    }
+                    else if(dir.equals("b")){
+                        chess = new ChessLaserEmitter(Direction.BOTTOM, color);
+                        if(color == Color.BLUE){
+                            tempD[1] = Direction.BOTTOM;
+                        }
+                        else{
+                            tempD[0] = Direction.BOTTOM;
+                        }
+                    }
+                    else if(dir.equals("l")){
+                        chess = new ChessLaserEmitter(Direction.LEFT, color);
+                        if(color == Color.BLUE){
+                            tempD[1] = Direction.LEFT;
+                        }
+                        else{
+                            tempD[0] = Direction.LEFT;
+                        }
+                    }
+                    else{
+                        System.out.println("Error, unknown direction of laseremiter.");
+                        chess = new ChessLaserEmitter(Direction.TOP, color);
+                    }
+                    toRecordEmiter = true;
+                }
+                else if(type.equals("one")){
+                    String dir = reader.readLine();
+                    //读入方向
+                    if(dir.equals("lt")){
+                        chess = new ChessOneWayMirror(flcwGUI.LaserChessGamePlay.chess.ChessOneWayMirror.Direction.LEFT_TOP, color);
+                    }
+                    else if(dir.equals("lb")){
+                        chess = new ChessOneWayMirror(flcwGUI.LaserChessGamePlay.chess.ChessOneWayMirror.Direction.LEFT_BOTTOM, color);
+                    }
+                    else if(dir.equals("rt")){
+                        chess = new ChessOneWayMirror(flcwGUI.LaserChessGamePlay.chess.ChessOneWayMirror.Direction.RIGHT_TOP, color);
+                    }
+                    else if(dir.equals("rb")){
+                        chess = new ChessOneWayMirror(flcwGUI.LaserChessGamePlay.chess.ChessOneWayMirror.Direction.RIGHT_BOTTOM, color);
+                    }
+                    else{
+                        System.out.println("Error, unknown direction of OneWayMirror.");
+                        chess = new ChessLaserEmitter(Direction.TOP, color);
+                    }
+
+                }
+                else if(type.equals("two")){
+                    String dir = reader.readLine();
+                    //读入方向
+                    if(dir.equals("lt")){
+                        chess = new ChessTwoWayMirror(flcwGUI.LaserChessGamePlay.chess.ChessTwoWayMirror.Direction.LEFT_TOP, color);
+                    }
+                    else if(dir.equals("rt")){
+                        chess = new ChessTwoWayMirror(flcwGUI.LaserChessGamePlay.chess.ChessTwoWayMirror.Direction.RIGHT_TOP, color);
+                    }
+                    else{
+                        System.out.println("Error, unknown direction of TwoWayMirror.");
+                        chess = new ChessLaserEmitter(Direction.TOP, color);
+                    }
+                }
+                else if(type.equals("shield")){
+                    String dir = reader.readLine();
+                    //读入方向
+                    if(dir.equals("t")){
+                        chess = new ChessShield(flcwGUI.LaserChessGamePlay.chess.ChessShield.Direction.TOP, color);
+                    }
+                    else if(dir.equals("r")){
+                        chess = new ChessShield(flcwGUI.LaserChessGamePlay.chess.ChessShield.Direction.RIGHT, color);
+                    }
+                    else if(dir.equals("b")){
+                        chess = new ChessShield(flcwGUI.LaserChessGamePlay.chess.ChessShield.Direction.BOTTOM, color);
+                    }
+                    else if(dir.equals("l")){
+                        chess = new ChessShield(flcwGUI.LaserChessGamePlay.chess.ChessShield.Direction.LEFT, color);
+                    }
+                    else{
+                        System.out.println("Error, unknown direction of Shield.");
+                        chess = new ChessLaserEmitter(Direction.TOP, color);
+                    }
+                }
+                else{
+                    System.out.println("Error, unknown pieces.");
+                    chess = new ChessLaserEmitter(Direction.TOP, color);
+                }
+
+                //让用户输入正确的棋子位置
+                String coordinate = reader.readLine();
+                int[] coordinates = parseCoordinates(coordinate);
+
+                //读入方向
+
+                if(toRecordEmiter){
+                    if(color == Color.BLUE){
+                        blueLaserEmitterPos[0] = coordinates[0];
+                        blueLaserEmitterPos[1] = coordinates[1];
+                    }
+                    else{
+                        redLaserEmitterPos[0] = coordinates[0];
+                        redLaserEmitterPos[1] = coordinates[1];
+                    }
+                }
+
+                chessboard[coordinates[0]][coordinates[1]] = chess;
+                System.out.println("Placed " + type + " at position (" + coordinates[0] + "," + coordinates[1] + ").");
+                //GUI或许在此就可以渲染棋盘？我不懂
+            }
+
+
+            // 关闭资源
+            reader.close();
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
 
     private static int[] parseCoordinates(String input) {
         String[] parts = input.split(",");

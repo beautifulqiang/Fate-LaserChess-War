@@ -6,6 +6,7 @@ import flcwGUI.LaserChessGamePlay.operate.Operate;
 import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -13,7 +14,7 @@ import javafx.util.Duration;
 import static flcwGUI.ImageRender.renderSquare;
 import static flcwGUI.LaserChessGamePlay.InputHandler.isChessColorMatching;
 import static flcwGUI.LaserChessGamePlay.InputHandler.isLaserEmitter;
-import static flcwGUI.MainGame.board;
+import static flcwGUI.MainGame.*;
 
 public class ButtonController {
     public static Chess.Color turn = Chess.Color.BLUE;  // 用于记录是谁的回合
@@ -77,7 +78,7 @@ public class ButtonController {
                 break;
         }
 
-        MainGame.game_start(primaryStage);
+        level_select(primaryStage);
     }
 
     static void handleChessPieceClick(int row, int col) {
@@ -163,8 +164,17 @@ public class ButtonController {
         });
     }
 
-    public static void handleDIYButtonClick() {
+    public static void handleDIYButtonClick(Stage primaryStage) {
         System.out.println("Click diyButton!");
-        // 这里填写DIY相关逻辑
+
+        // 游戏风格直接设计为classic
+        gameStyle = MainGame.GameStyle.classic;
+
+        // 实现对于DIY的DIY操作
+        // 设置棋盘的位置，使其居中
+        gameGrid.getStyleClass().add("gameGrid");
+        gameGrid.setPadding(new Insets(30, 0, 0, 30));
+
+
     }
 }
