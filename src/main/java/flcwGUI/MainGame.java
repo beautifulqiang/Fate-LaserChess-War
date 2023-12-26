@@ -22,7 +22,7 @@ import static flcwGUI.ButtonController.loadReservedMap;
 import static flcwGUI.ImageRender.getChessImage;
 
 public class MainGame extends Application {
-    private static final BorderPane root = new BorderPane();
+    static final BorderPane rootPanel = new BorderPane();
     public static GameStyle gameStyle = GameStyle.classic;
     public static boolean reserved_map = false;
     public static String load_map;  // 如果是使用输入棋盘的方式，则需要提供地图文件名
@@ -38,7 +38,7 @@ public class MainGame extends Application {
     public static void game_start(int level) {
         rootStage.setTitle("FLCW-游戏开始");
 
-        Scene scene_game = new Scene(root, 1280, 720);
+        Scene scene_game = new Scene(rootPanel, 1280, 720);
 
         // 添加样式表到场景
         scene_game.getStylesheets().add(Objects.requireNonNull(MainGame.class.getResource("/flcwGUI/style.css")).toExternalForm());
@@ -129,15 +129,15 @@ public class MainGame extends Application {
 
         switch (gameStyle) {
             case classic -> {
-                root.getStyleClass().add("root-classic");
+                rootPanel.getStyleClass().add("root-classic");
                 musicName = "classic.mp3";
             }
             case elden -> {
-                root.getStyleClass().add("root-elden");
+                rootPanel.getStyleClass().add("root-elden");
                 musicName += "elden.mp3";
             }
             case PvZ -> {
-                root.getStyleClass().add("root-PvZ");
+                rootPanel.getStyleClass().add("root-PvZ");
                 musicName += "PvZ.mp3";
             }
         }
@@ -189,8 +189,8 @@ public class MainGame extends Application {
         save_quit_button.getStyleClass().add("exit-button");
 
         // 添加 HBox 到 BorderPane 的底部
-        root.setBottom(rotate_button_container);
-        root.setRight(save_quit_button);
+        rootPanel.setBottom(rotate_button_container);
+        rootPanel.setRight(save_quit_button);
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
@@ -236,7 +236,7 @@ public class MainGame extends Application {
 
                 int finalRow = row;
                 int finalCol = col;
-                square.setOnAction(e -> ButtonController.handleChessPieceClick(finalRow, finalCol));
+                square.setOnAction(event -> ButtonController.handleChessPieceClick(finalRow, finalCol));
 
                 // 将按钮添加到 GridPane 中
                 gameGrid.add(square, col, row);
@@ -244,7 +244,7 @@ public class MainGame extends Application {
         }
 
         // 添加棋盘到 BorderPane 的中心
-        root.setCenter(gameGrid);
+        rootPanel.setCenter(gameGrid);
 
         // 开始播放音乐
         MediaPlayer mediaPlayer;

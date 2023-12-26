@@ -8,6 +8,7 @@ import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -15,9 +16,13 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import java.net.URL;
 import java.util.Objects;
 
 import static flcwGUI.ButtonController.pieceSelected;
@@ -268,7 +273,7 @@ public class ImageRender {
             imagePath += "default.png";
         }
 
-        return new Image(ImageRender.class.getResource(imagePath).toExternalForm());
+        return new Image(Objects.requireNonNull(ImageRender.class.getResource(imagePath)).toExternalForm());
     }
 
     static void renderSquare(int row, int col) {
@@ -302,7 +307,9 @@ public class ImageRender {
         imageView.setPreserveRatio(true); // 保持宽高比
 
         // 设置按钮的尺寸
-        square.setMaxSize(65, 65);
+        if (square != null) {
+            square.setMaxSize(65, 65);
+        }
 
         // 旋转到合适方向
         if (chess != null) {
@@ -320,7 +327,9 @@ public class ImageRender {
         imageView.setClip(clip);
 
         // 设置按钮的图形内容为ImageView
-        square.setGraphic(imageView);
+        if (square != null) {
+            square.setGraphic(imageView);
+        }
     }
 
     static void laser_out() {
@@ -400,7 +409,7 @@ public class ImageRender {
 
     public static void kill_chess_render(int row, int col) {
         if (row < 0 || col < 0) return;
-        ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.3), getSquareButton(row, col).getGraphic());
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.3), Objects.requireNonNull(getSquareButton(row, col)).getGraphic());
         scaleTransition.setToX(0.5);  // 缩放到宽度为0
         scaleTransition.setToY(0.5);  // 缩放到高度为0
 //        scaleTransition.setOnFinished(event -> {
@@ -419,7 +428,6 @@ public class ImageRender {
             scaleTransition.play();
         });
     }
-
 
     public static Button getSquareButton(int row, int col) {
         // 获取所有子节点
@@ -469,5 +477,75 @@ public class ImageRender {
             turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
             pieceSelected = false;  // 执行完后重置
         });
+    }
+
+    public static void DIYBoardInitialize() {
+        String musicName = "classic.mp3";
+        rootPanel.getStyleClass().add("root-classic");
+
+        URL musicUrl = MainGame.class.getResource("/bgm/" + musicName);
+
+        GridPane DIYGrid = new GridPane();  // 用于DIY的棋盘
+
+        // 设置棋盘的位置，使其居中
+        DIYGrid.getStyleClass().add("gameGrid");
+        DIYGrid.setPadding(new Insets(30, 0, 0, 300));
+
+        // 添加保存并退出按钮
+        Button save_quit_button = new Button("保存并退出");
+        save_quit_button.setOnAction(event -> ButtonController.saveQuitClick());
+        save_quit_button.getStyleClass().add("exit-button");
+
+        VBox exit_button_container = new VBox();
+        exit_button_container.getChildren().add(save_quit_button);
+
+        rootPanel.setRight(save_quit_button);
+
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 10; col++) {
+                Button square = new Button();
+                square.setMaxSize(65, 65);
+                square.getStyleClass().add("classic-chess");
+
+                ImageView imageView = new ImageView();
+                imageView.setFitWidth(65); // 设置宽度
+                imageView.setFitHeight(65); // 设置高度
+
+                // 全部的按钮一开始都初始化为背景图
+                Image background_image = ImageRender.getBackgroundImage(board.backgroundBoard[row][col]);
+                imageView.setImage(background_image);
+
+                // 创建一个带有圆角的 Rectangle 作为 clip
+                Rectangle clip = new Rectangle(65, 65);
+                clip.setArcWidth(15); // 设置圆角的宽度
+                clip.setArcHeight(15); // 设置圆角的高度
+                imageView.setClip(clip);
+
+                // 设置按钮的图形内容为ImageView
+                square.setGraphic(imageView);
+
+                int finalRow = row;
+                int finalCol = col;
+                square.setOnAction(event -> ButtonController.handleChessPieceClick(finalRow, finalCol));
+
+                // 将按钮添加到 GridPane 中
+                DIYGrid.add(square, col, row);
+            }
+        }
+
+        // 添加棋盘到 BorderPane 的中心
+        rootPanel.setCenter(DIYGrid);
+
+        // 开始播放音乐
+        MediaPlayer mediaPlayer;
+        if (musicUrl != null) {
+            Media sound = new Media(musicUrl.toExternalForm());
+            mediaPlayer = new MediaPlayer(sound);
+
+            mediaPlayer.setVolume(0.4);
+            mediaPlayer.play();
+        } else {
+            System.out.println("Resource not found: " + musicName);
+        }
     }
 }

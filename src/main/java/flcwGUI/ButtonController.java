@@ -7,6 +7,7 @@ import flcwGUI.LaserChessGamePlay.operate.Move;
 import flcwGUI.LaserChessGamePlay.operate.Operate;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.ImageView;
 
@@ -14,6 +15,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Optional;
 
 import static flcwGUI.ImageRender.*;
@@ -149,14 +151,21 @@ public class ButtonController {
     }
 
     public static void handleDIYButtonClick() {
-        System.out.println("Click diyButton!");
+    //        System.out.println("Click diyButton!");
+            rootStage.setTitle("FLCW-DIY棋局");
 
-        // 游戏风格直接设计为classic
-        gameStyle = MainGame.GameStyle.classic;
+            Scene DIY_scene = new Scene(rootPanel, 1280, 720);
 
-        // 实现对于DIY的DIY操作
+            DIY_scene.getStylesheets().add(Objects.requireNonNull(MainGame.class.getResource("/flcwGUI/style.css")).toExternalForm());
 
+            board = new Board();
 
+            // 游戏风格直接设计为classic
+            gameStyle = MainGame.GameStyle.classic;
+
+            rootStage.setScene(DIY_scene);
+            DIYBoardInitialize();
+            rootStage.show();
     }
 
     public static void loadReservedMap() {

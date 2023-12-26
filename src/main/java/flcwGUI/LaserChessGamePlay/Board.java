@@ -22,6 +22,14 @@ public class Board {
     private int[] blueLaserEmitterPos;
     private Direction blueLaserEmitterDirection;
 
+    public Board() {
+        int x = 8, y = 10;
+        chessboard = new Chess[x][y];
+        backgroundBoard = new Background[x][y];
+        redLaserEmitterPos = new int[2];
+        blueLaserEmitterPos = new int[2];
+    }
+
     public Board(int type, boolean DiyOrNot, boolean UseSavedBoardOrNot) {
         if (UseSavedBoardOrNot) {
             int x = 8;
