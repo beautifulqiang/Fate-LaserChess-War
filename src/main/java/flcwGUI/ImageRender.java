@@ -25,7 +25,7 @@ import javafx.util.Duration;
 import java.net.URL;
 import java.util.Objects;
 
-import static flcwGUI.ButtonController.pieceSelected;
+import static flcwGUI.ButtonController.piece_selected;
 import static flcwGUI.ButtonController.turn;
 import static flcwGUI.MainGame.*;
 
@@ -33,7 +33,7 @@ public class ImageRender {
 
     public static Image getChessImage(Chess chess) {
         // 提供四个风格的素材包
-        String imagePath = switch (gameStyle) {
+        String image_path = switch (game_style) {
             case classic -> "/images/classic/";
             case elden -> "/images/elden/";
             case PvZ -> "/images/PvZ/";
@@ -42,60 +42,60 @@ public class ImageRender {
         if (chess != null) {
             switch (chess.show_type()) {
                 case King:
-                    imagePath += "kings/";
+                    image_path += "kings/";
                     if (chess.color == Chess.Color.BLUE) {
-                        imagePath += "blue_king.png";
+                        image_path += "blue_king.png";
                     } else {
-                        imagePath += "red_king.png";
+                        image_path += "red_king.png";
                     }
                     break;
                 case LaserEmitter:
-                    imagePath += "emitters/";
+                    image_path += "emitters/";
                     if (chess.color == Chess.Color.BLUE) {
-                        imagePath += "blue_emitter.png";
+                        image_path += "blue_emitter.png";
                     } else {
-                        imagePath += "red_emitter.png";
+                        image_path += "red_emitter.png";
                     }
                     break;
                 case OneWayMirror:
-                    imagePath += "one_way_mirrors/";
+                    image_path += "one_way_mirrors/";
                     if (chess.color == Chess.Color.BLUE) {
-                        imagePath += "blue_one.png";
+                        image_path += "blue_one.png";
                     } else {
-                        imagePath += "red_one.png";
+                        image_path += "red_one.png";
                     }
                     break;
                 case TwoWayMirror:
-                    imagePath += "two_way_mirrors/";
+                    image_path += "two_way_mirrors/";
                     if (chess.color == Chess.Color.BLUE) {
-                        imagePath += "blue_two.png";
+                        image_path += "blue_two.png";
                     } else {
-                        imagePath += "red_two.png";
+                        image_path += "red_two.png";
                     }
                     break;
                 case Shield:
-                    imagePath += "shields/";
+                    image_path += "shields/";
                     if (chess.color == Chess.Color.BLUE) {
-                        imagePath += "blue_shield.png";
+                        image_path += "blue_shield.png";
                     } else {
-                        imagePath += "red_shield.png";
+                        image_path += "red_shield.png";
                     }
                     break;
                 default:
-                    imagePath += "default.png";
+                    image_path += "default.png";
             }
         } else {
-            imagePath += "default.png";
+            image_path += "default.png";
         }
 
 
-        return new Image(Objects.requireNonNull(ImageRender.class.getResource(imagePath)).toExternalForm());
+        return new Image(Objects.requireNonNull(ImageRender.class.getResource(image_path)).toExternalForm());
     }
 
     private static Image getLaserImage(Chess chess, Background bg, Boolean cross) {
         String imagePath = "/images/";
 
-        switch (gameStyle) {
+        switch (game_style) {
             case classic -> imagePath += "classic/bullets/";
             case elden -> imagePath += "elden/bullets/";
             case PvZ -> imagePath += "PvZ/bullets/";
@@ -253,7 +253,7 @@ public class ImageRender {
 
 
     public static Image getBackgroundImage(Background bg) {
-        String imagePath = switch (gameStyle) {
+        String imagePath = switch (game_style) {
             case classic -> "/images/classic/background/";
             case elden -> "/images/elden/background/";
             case PvZ -> "/images/PvZ/background/";
@@ -332,7 +332,7 @@ public class ImageRender {
         }
     }
 
-    static void laser_out() {
+    static void laserOut() {
         int[] pos = new int[2];
         ChessLaserEmitter.Direction[] d = new ChessLaserEmitter.Direction[1];
         int[] b_size = board.getBoardSize();
@@ -360,7 +360,7 @@ public class ImageRender {
                 e.printStackTrace();
             }
 
-            kill_chess_render(posToKill[0], posToKill[1]);
+            killChessRender(posToKill[0], posToKill[1]);
             board.killChess(posToKill[0], posToKill[1]);
             if (board.gameOver()) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -373,7 +373,7 @@ public class ImageRender {
                 alert.showAndWait().ifPresent(response -> {
                     // 用户点击确认按钮后的操作
                     if (response == ButtonType.OK) {
-                        game_mode_select();
+                        gameModeSelect();
                     }
                 });
             }
@@ -407,7 +407,7 @@ public class ImageRender {
         });
     }
 
-    public static void kill_chess_render(int row, int col) {
+    public static void killChessRender(int row, int col) {
         if (row < 0 || col < 0) return;
         ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.3), Objects.requireNonNull(getSquareButton(row, col)).getGraphic());
         scaleTransition.setToX(0.5);  // 缩放到宽度为0
@@ -431,7 +431,7 @@ public class ImageRender {
 
     public static Button getSquareButton(int row, int col) {
         // 获取所有子节点
-        ObservableList<Node> children = gameGrid.getChildren();
+        ObservableList<Node> children = game_grid.getChildren();
 
         // 遍历子节点列表
         for (Node node : children) {
@@ -459,9 +459,9 @@ public class ImageRender {
         // 播放动画
         rotateTransition.play();
         rotateTransition.setOnFinished(event -> {
-            ImageRender.laser_out();
+            ImageRender.laserOut();
             turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
-            pieceSelected = false;  // 执行完后重置
+            piece_selected = false;  // 执行完后重置
         });
     }
 
@@ -473,23 +473,23 @@ public class ImageRender {
         // 播放动画
         rotateTransition.play();
         rotateTransition.setOnFinished(event -> {
-            ImageRender.laser_out();
+            ImageRender.laserOut();
             turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
-            pieceSelected = false;  // 执行完后重置
+            piece_selected = false;  // 执行完后重置
         });
     }
 
     public static void DIYBoardInitialize() {
-        String musicName = "classic.mp3";
-        rootPanel.getStyleClass().add("root-classic");
+        String music_name = "classic.mp3";
+        root_panel.getStyleClass().add("root-classic");
 
-        URL musicUrl = MainGame.class.getResource("/bgm/" + musicName);
+        URL music_url = MainGame.class.getResource("/bgm/" + music_name);
 
-        GridPane DIYGrid = new GridPane();  // 用于DIY的棋盘
+        GridPane DIY_grid = new GridPane();  // 用于DIY的棋盘
 
         // 设置棋盘的位置，使其居中
-        DIYGrid.getStyleClass().add("gameGrid");
-        DIYGrid.setPadding(new Insets(30, 0, 0, 300));
+        DIY_grid.getStyleClass().add("gameGrid");
+        DIY_grid.setPadding(new Insets(30, 0, 0, 300));
 
         // 添加保存并退出按钮
         Button save_quit_button = new Button("保存并退出");
@@ -499,7 +499,7 @@ public class ImageRender {
         VBox exit_button_container = new VBox();
         exit_button_container.getChildren().add(save_quit_button);
 
-        rootPanel.setRight(save_quit_button);
+        root_panel.setRight(save_quit_button);
 
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 10; col++) {
@@ -507,45 +507,45 @@ public class ImageRender {
                 square.setMaxSize(65, 65);
                 square.getStyleClass().add("classic-chess");
 
-                ImageView imageView = new ImageView();
-                imageView.setFitWidth(65); // 设置宽度
-                imageView.setFitHeight(65); // 设置高度
+                ImageView image_view = new ImageView();
+                image_view.setFitWidth(65); // 设置宽度
+                image_view.setFitHeight(65); // 设置高度
 
                 // 全部的按钮一开始都初始化为背景图
                 Image background_image = ImageRender.getBackgroundImage(board.backgroundBoard[row][col]);
-                imageView.setImage(background_image);
+                image_view.setImage(background_image);
 
                 // 创建一个带有圆角的 Rectangle 作为 clip
                 Rectangle clip = new Rectangle(65, 65);
                 clip.setArcWidth(15); // 设置圆角的宽度
                 clip.setArcHeight(15); // 设置圆角的高度
-                imageView.setClip(clip);
+                image_view.setClip(clip);
 
                 // 设置按钮的图形内容为ImageView
-                square.setGraphic(imageView);
+                square.setGraphic(image_view);
 
-                int finalRow = row;
-                int finalCol = col;
-                square.setOnAction(event -> ButtonController.handleChessPieceClick(finalRow, finalCol));
+                int final_row = row;
+                int final_col = col;
+                square.setOnAction(event -> ButtonController.handleChessPieceClick(final_row, final_col));
 
                 // 将按钮添加到 GridPane 中
-                DIYGrid.add(square, col, row);
+                DIY_grid.add(square, col, row);
             }
         }
 
         // 添加棋盘到 BorderPane 的中心
-        rootPanel.setCenter(DIYGrid);
+        root_panel.setCenter(DIY_grid);
 
         // 开始播放音乐
-        MediaPlayer mediaPlayer;
-        if (musicUrl != null) {
-            Media sound = new Media(musicUrl.toExternalForm());
-            mediaPlayer = new MediaPlayer(sound);
+        MediaPlayer media_player;
+        if (music_url != null) {
+            Media sound = new Media(music_url.toExternalForm());
+            media_player = new MediaPlayer(sound);
 
-            mediaPlayer.setVolume(0.4);
-            mediaPlayer.play();
+            media_player.setVolume(0.4);
+            media_player.play();
         } else {
-            System.out.println("Resource not found: " + musicName);
+            System.out.println("Resource not found: " + music_name);
         }
     }
 }
