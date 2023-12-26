@@ -79,8 +79,18 @@
     -fx-min-width:  70;
     -fx-min-height: 70;
     -fx-text-fill: #c2fff3;
+    -fx-font-size: 30;
+}
+
+/* 设置返回按钮的样式 */
+.return-button {
+    -fx-background-color: #9cff80; /* Red */
+    -fx-min-width:  70;
+    -fx-min-height: 70;
+    -fx-text-fill: #000000;
     -fx-font-size: 14;
 }
+
 .switch-mode-button {
     -fx-background-color: #ffdd00;
     -fx-min-width:  70;

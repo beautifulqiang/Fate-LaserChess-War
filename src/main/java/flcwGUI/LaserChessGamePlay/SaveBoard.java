@@ -1,41 +1,40 @@
 package flcwGUI.LaserChessGamePlay;
 
+import flcwGUI.LaserChessGamePlay.background.Background;
+import flcwGUI.LaserChessGamePlay.chess.*;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Objects;
 
-import flcwGUI.LaserChessGamePlay.background.Background;
-import flcwGUI.LaserChessGamePlay.chess.Chess;
-import flcwGUI.LaserChessGamePlay.chess.ChessKing;
-import flcwGUI.LaserChessGamePlay.chess.ChessLaserEmitter;
-import flcwGUI.LaserChessGamePlay.chess.ChessOneWayMirror;
-import flcwGUI.LaserChessGamePlay.chess.ChessShield;
-import flcwGUI.LaserChessGamePlay.chess.ChessTwoWayMirror;
+import static flcwGUI.ButtonController.map_path;
+import static flcwGUI.MainGame.load_map;
 
 public class SaveBoard {
-    public static void saveBoard(Chess[][] chessboard, Background[][] backgroundBoard){
-        File saveBoardDirectory = new File("saveBoard");
-        if (!saveBoardDirectory.exists()) {
-            saveBoardDirectory.mkdirs();
-        }
-        // 创建文件
-        File file = new File(saveBoardDirectory, "InterruptSave.txt");
+    public static void saveBoard(Chess[][] chessboard, Background[][] backgroundBoard) {
+        // 获取资源文件夹的路径
+        ClassLoader classLoader = SaveBoard.class.getClassLoader();
+        String folderPath = Objects.requireNonNull(classLoader.getResource("saveBoard/")).getPath();
+
+        // 构建文件路径
+        String filePath = folderPath + "InterruptSave.txt";
+        File file = new File(filePath);
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
             int x = chessboard.length;
             int y = chessboard[0].length;
-            for(int i=0;i<x;i++){
-                for(int j=0;j<y;j++){
+            for (int i = 0; i < x; i++) {
+                for (int j = 0; j < y; j++) {
 
                     //有棋子
-                    if(chessboard[i][j]!=null){
+                    if (chessboard[i][j] != null) {
                         Chess chess = chessboard[i][j];
                         //写入该棋子颜色
-                        if(chess.color==Chess.Color.BLUE){
+                        if (chess.color == Chess.Color.BLUE) {
                             writer.println("B");
-                        }
-                        else{
+                        } else {
                             writer.println("R");
                         }
 
@@ -44,76 +43,65 @@ public class SaveBoard {
                             writer.println("king");
                         } else if (chess instanceof ChessLaserEmitter) {
                             writer.println("le");
-                            if(((ChessLaserEmitter)chess).direction==ChessLaserEmitter.Direction.BOTTOM){
+                            if (((ChessLaserEmitter) chess).direction == ChessLaserEmitter.Direction.BOTTOM) {
                                 writer.println("b");
-                            }
-                            else if(((ChessLaserEmitter)chess).direction==ChessLaserEmitter.Direction.TOP){
+                            } else if (((ChessLaserEmitter) chess).direction == ChessLaserEmitter.Direction.TOP) {
                                 writer.println("t");
-                            }
-                            else if(((ChessLaserEmitter)chess).direction==ChessLaserEmitter.Direction.LEFT){
+                            } else if (((ChessLaserEmitter) chess).direction == ChessLaserEmitter.Direction.LEFT) {
                                 writer.println("l");
-                            }
-                            else if(((ChessLaserEmitter)chess).direction==ChessLaserEmitter.Direction.RIGHT){
+                            } else if (((ChessLaserEmitter) chess).direction == ChessLaserEmitter.Direction.RIGHT) {
                                 writer.println("r");
                             }
                         } else if (chess instanceof ChessOneWayMirror) {
                             writer.println("one");
-                            if(((ChessOneWayMirror)chess).direction==ChessOneWayMirror.Direction.LEFT_BOTTOM){
+                            if (((ChessOneWayMirror) chess).direction == ChessOneWayMirror.Direction.LEFT_BOTTOM) {
                                 writer.println("lb");
-                            }
-                            else if(((ChessOneWayMirror)chess).direction==ChessOneWayMirror.Direction.LEFT_TOP){
+                            } else if (((ChessOneWayMirror) chess).direction == ChessOneWayMirror.Direction.LEFT_TOP) {
                                 writer.println("lt");
-                            }
-                            else if(((ChessOneWayMirror)chess).direction==ChessOneWayMirror.Direction.RIGHT_BOTTOM){
+                            } else if (((ChessOneWayMirror) chess).direction == ChessOneWayMirror.Direction.RIGHT_BOTTOM) {
                                 writer.println("rb");
-                            }
-                            else if(((ChessOneWayMirror)chess).direction==ChessOneWayMirror.Direction.RIGHT_TOP){
+                            } else if (((ChessOneWayMirror) chess).direction == ChessOneWayMirror.Direction.RIGHT_TOP) {
                                 writer.println("rt");
                             }
 
                         } else if (chess instanceof ChessTwoWayMirror) {
                             writer.println("two");
-                            if(((ChessTwoWayMirror)chess).direction==ChessTwoWayMirror.Direction.LEFT_TOP){
+                            if (((ChessTwoWayMirror) chess).direction == ChessTwoWayMirror.Direction.LEFT_TOP) {
                                 writer.println("lt");
-                            }
-                            else if(((ChessTwoWayMirror)chess).direction==ChessTwoWayMirror.Direction.RIGHT_TOP){
+                            } else if (((ChessTwoWayMirror) chess).direction == ChessTwoWayMirror.Direction.RIGHT_TOP) {
                                 writer.println("rt");
                             }
                         } else if (chess instanceof ChessShield) {
                             writer.println("shield");
-                            if(((ChessShield)chess).direction==ChessShield.Direction.LEFT){
+                            if (((ChessShield) chess).direction == ChessShield.Direction.LEFT) {
                                 writer.println("l");
-                            }
-                            else if(((ChessShield)chess).direction==ChessShield.Direction.RIGHT){
+                            } else if (((ChessShield) chess).direction == ChessShield.Direction.RIGHT) {
                                 writer.println("r");
-                            }
-                            else if(((ChessShield)chess).direction==ChessShield.Direction.TOP){
+                            } else if (((ChessShield) chess).direction == ChessShield.Direction.TOP) {
                                 writer.println("t");
-                            }
-                            else if(((ChessShield)chess).direction==ChessShield.Direction.BOTTOM){
+                            } else if (((ChessShield) chess).direction == ChessShield.Direction.BOTTOM) {
                                 writer.println("b");
                             }
                         }
 
                         //写入该棋子坐标
-                        writer.println(i+","+j);
+                        writer.println(i + "," + j);
                     }
 
                     //有背景
-                    if(backgroundBoard[i][j]!=null){
+                    if (backgroundBoard[i][j] != null) {
                         Background bg = backgroundBoard[i][j];
                         //写入该棋子颜色
-                        if(bg.color==Background.Color.BLUE){
+                        if (bg.color == Background.Color.BLUE) {
                             writer.println("B");
-                        }
-                        else{
+                        } else {
                             writer.println("R");
                         }
 
                         //写入类型
                         writer.println("bg");
                         //写入坐标
-                        writer.println(i+","+j);
+                        writer.println(i + "," + j);
                     }
                 }
             }

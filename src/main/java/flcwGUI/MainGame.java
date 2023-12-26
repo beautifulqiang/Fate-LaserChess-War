@@ -6,12 +6,10 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.skin.ButtonSkin;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.shape.Rectangle;
@@ -21,11 +19,14 @@ import java.net.URL;
 import java.util.Objects;
 
 import static flcwGUI.ButtonController.handleDIYButtonClick;
+import static flcwGUI.ButtonController.loadReservedMap;
 import static flcwGUI.ImageRender.getChessImage;
 
 public class MainGame extends Application {
     private static final BorderPane root = new BorderPane();
-    public static GameStyle gameStyle = GameStyle.elden;
+    public static GameStyle gameStyle = GameStyle.classic;
+    public static boolean reserved_map = false;
+    public static String load_map;  // 如果是使用输入棋盘的方式，则需要提供地图文件名
     //这里在12.21晚改了一下，多加了一个参数，因为我把棋盘类的构造函数给改了
     static Board board;  // 棋盘作为全局变量
     static GridPane gameGrid = new GridPane();  // 棋盘，把棋子作为按钮放在上面
@@ -35,15 +36,20 @@ public class MainGame extends Application {
     }
 
     public static void game_start(Stage primaryStage, int level) {
-        primaryStage.setTitle("Chess Game");
+        primaryStage.setTitle("FLCW-游戏开始");
 
         Scene scene_game = new Scene(root, 1280, 720);
 
         // 添加样式表到场景
         scene_game.getStylesheets().add(Objects.requireNonNull(MainGame.class.getResource("/flcwGUI/style.css")).toExternalForm());
 
-        // 不需要进行DIY，将bool设置为false，创建后端的棋盘对象
-        board = new Board(level, false, false);
+        switch (level) {
+            case -1:
+                break; //此时视为动态加载棋盘，不需要对棋盘再进行处理
+            default:
+                // 不需要进行DIY，将bool设置为false，根据level创建后端的棋盘对象
+                board = new Board(level, false, false);
+        }
 
         initializeBoard(8, 10); // 初始化棋盘
         primaryStage.setScene(scene_game);
@@ -56,15 +62,20 @@ public class MainGame extends Application {
         Button style1Button = new Button("Classic");
         Button style2Button = new Button("Elden");
         Button style3Button = new Button("PvZ");
+        Button returnButton = new Button("返回");
 
         // 创建 HBox，并添加 Label 和按钮
         HBox styleButton_container = new HBox();
+        HBox returnButton_container = new HBox();
         styleButton_container.getChildren().addAll(label, style1Button, style2Button, style3Button);
         styleButton_container.setPadding(new Insets(310, 0, 0, 270));
+        returnButton_container.getChildren().add(returnButton);
+        returnButton_container.setPadding(new Insets(0, 0, 160, 620));
 
         // 创建 BorderPane 放置 HBox
         BorderPane style_panel = new BorderPane();
         style_panel.setCenter(styleButton_container);
+        style_panel.setBottom(returnButton_container);
 
         // 设置场景
         Scene style_select_scene = new Scene(style_panel, 1280, 720);
@@ -74,11 +85,13 @@ public class MainGame extends Application {
         style1Button.setOnAction(event -> ButtonController.handleStyleButtonClick("Classic", primaryStage));
         style2Button.setOnAction(event -> ButtonController.handleStyleButtonClick("Elden", primaryStage));
         style3Button.setOnAction(event -> ButtonController.handleStyleButtonClick("PvZ", primaryStage));
+        returnButton.setOnAction(event -> game_mode_select(primaryStage));
 
         style_panel.getStyleClass().add("root-start");
         style1Button.getStyleClass().add("classic-button");
         style2Button.getStyleClass().add("elden-button");
         style3Button.getStyleClass().add("PvZ-button");
+        returnButton.getStyleClass().add("return-button");
 
         // 设置场景到主舞台
         primaryStage.setScene(style_select_scene);
@@ -93,6 +106,7 @@ public class MainGame extends Application {
 
         default_mode.setOnAction(event -> style_select_scene(primaryStage));
         DIY_mode.setOnAction(event -> handleDIYButtonClick(primaryStage));
+        reserved_mode.setOnAction(event -> loadReservedMap(primaryStage));
 
         HBox mode_button_container = new HBox();
         mode_button_container.getChildren().addAll(default_mode, DIY_mode, reserved_mode);
@@ -146,6 +160,10 @@ public class MainGame extends Application {
         Button rotateRightButton = new Button();
         rotateRightButton.setOnAction(event -> ButtonController.rotateChessBoardRight());
 
+        // 添加保存并退出按钮
+        Button save_quit_button = new Button("保存并退出");
+        save_quit_button.setOnAction(event -> ButtonController.saveQuitClick());
+
         // 为按钮添加图片
         Image leftRotateImage = new Image(Objects.requireNonNull(MainGame.class.getResourceAsStream("/images/left_rotate.jpg")));
         Image rightRotateImage = new Image(Objects.requireNonNull(MainGame.class.getResourceAsStream("/images/right_rotate.jpg")));
@@ -166,13 +184,17 @@ public class MainGame extends Application {
         HBox rotate_button_container = new HBox(10); // 设置垂直间隔
         rotate_button_container.getChildren().addAll(rotateLeftButton, rotateRightButton);
 
+        VBox exit_button_container = new VBox();
+        exit_button_container.getChildren().add(save_quit_button);
 
         rotateLeftButton.getStyleClass().add("rotate-button");
         rotateRightButton.getStyleClass().add("rotate-button");
         rotate_button_container.getStyleClass().add("rotate-button-container");
+        save_quit_button.getStyleClass().add("exit-button");
 
         // 添加 HBox 到 BorderPane 的底部
         root.setBottom(rotate_button_container);
+        root.setRight(save_quit_button);
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
@@ -247,8 +269,17 @@ public class MainGame extends Application {
         level_select_container.setPadding(new Insets(310, 0, 0, 230));
         level_select_container.getChildren().add(level_select_prompt);
 
-        StackPane level_pane = new StackPane();
-        level_pane.getChildren().add(level_select_container);
+        Button returnButton = new Button("返回");
+        HBox returnButton_container = new HBox();
+        returnButton_container.getChildren().add(returnButton);
+        returnButton_container.setPadding(new Insets(0, 0, 160, 620));
+
+        // 添加按钮点击事件处理
+        returnButton.setOnAction(event -> game_mode_select(primaryStage));
+
+        BorderPane level_pane = new BorderPane();
+        level_pane.setCenter(level_select_container);
+        level_pane.setBottom(returnButton_container);
 
         Scene level_select_scene = new Scene(level_pane, 1280, 720);
         level_select_scene.getStylesheets().add(Objects.requireNonNull(ButtonController.class.getResource("/flcwGUI/style.css")).toExternalForm());
@@ -264,6 +295,7 @@ public class MainGame extends Application {
 
         level_pane.getStyleClass().add("root-start");
         level_select_container.getStyleClass().add("rotate-button-container");
+        returnButton.getStyleClass().add("return-button");
 
         primaryStage.setScene(level_select_scene);
         primaryStage.setTitle("FLCW-选择游戏模式");

@@ -4,6 +4,7 @@ import flcwGUI.LaserChessGamePlay.Laser;
 import flcwGUI.LaserChessGamePlay.background.Background;
 import flcwGUI.LaserChessGamePlay.chess.Chess;
 import flcwGUI.LaserChessGamePlay.chess.ChessLaserEmitter;
+import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -17,6 +18,7 @@ import javafx.util.Duration;
 
 import java.util.Objects;
 
+import static flcwGUI.ButtonController.pieceSelected;
 import static flcwGUI.ButtonController.turn;
 import static flcwGUI.MainGame.*;
 
@@ -226,16 +228,9 @@ public class ImageRender {
 
         }
         // 设置按钮的尺寸
-        square.setMaxSize(65, 65);
-
-//         旋转到合适方向
-//        if (chess != null) {
-//            switch (chess.show_type()) {
-//                case LaserEmitter, OneWayMirror, TwoWayMirror, Shield:
-//                    imageView.setRotate(-90 + chess.getrotate() * 90);
-//                    break;
-//            }
-//        }
+        if (square != null) {
+            square.setMaxSize(65, 65);
+        }
 
         // 创建一个带有圆角的 Rectangle 作为 clip
         Rectangle clip = new Rectangle(65, 65);
@@ -244,7 +239,9 @@ public class ImageRender {
         imageView.setClip(clip);
 
         // 设置按钮的图形内容为ImageView
-        square.setGraphic(imageView);
+        if (square != null) {
+            square.setGraphic(imageView);
+        }
     }
 
 
@@ -431,5 +428,32 @@ public class ImageRender {
 
         // 如果没有找到匹配的按钮，则返回 null
         return null;
+    }
+
+    public static void rotateImage_l(ImageView imageView) {
+        // 创建 RotateTransition，并设置持续时间和旋转角度
+        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.2), imageView);
+        rotateTransition.setByAngle(-90); // 旋转
+        // 播放动画
+        rotateTransition.play();
+        rotateTransition.setOnFinished(event -> {
+            ImageRender.laser_out();
+            turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
+            pieceSelected = false;  // 执行完后重置
+        });
+    }
+
+    public static void rotateImage_r(ImageView imageView) {
+        // 创建 RotateTransition，并设置持续时间和旋转角度
+        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.2), imageView);
+        rotateTransition.setByAngle(90); // 旋转
+
+        // 播放动画
+        rotateTransition.play();
+        rotateTransition.setOnFinished(event -> {
+            ImageRender.laser_out();
+            turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
+            pieceSelected = false;  // 执行完后重置
+        });
     }
 }

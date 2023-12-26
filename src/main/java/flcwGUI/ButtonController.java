@@ -1,17 +1,24 @@
 package flcwGUI;
 
+import flcwGUI.LaserChessGamePlay.Board;
+import flcwGUI.LaserChessGamePlay.SaveBoard;
 import flcwGUI.LaserChessGamePlay.chess.Chess;
 import flcwGUI.LaserChessGamePlay.operate.Move;
 import flcwGUI.LaserChessGamePlay.operate.Operate;
-import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
-import static flcwGUI.ImageRender.renderSquare;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
+
+import static flcwGUI.ImageRender.*;
 import static flcwGUI.LaserChessGamePlay.InputHandler.isChessColorMatching;
 import static flcwGUI.LaserChessGamePlay.InputHandler.isLaserEmitter;
 import static flcwGUI.MainGame.*;
@@ -19,7 +26,8 @@ import static flcwGUI.MainGame.*;
 public class ButtonController {
     public static Chess.Color turn = Chess.Color.BLUE;  // 用于记录是谁的回合
 
-    private static boolean pieceSelected = false; // 用于追踪是否已经选中了棋子
+    public static String map_path = "";
+    public static boolean pieceSelected = false; // 用于追踪是否已经选中了棋子
     private static int selectedPieceRow = -1; // 用于存储选中的棋子的行
     private static int selectedPieceCol = -1; // 用于存储选中的棋子的列
 
@@ -78,7 +86,11 @@ public class ButtonController {
                 break;
         }
 
-        level_select(primaryStage);
+        if (reserved_map) {
+            game_start(primaryStage, -1);
+        } else {
+            level_select(primaryStage);
+        }
     }
 
     static void handleChessPieceClick(int row, int col) {
@@ -114,6 +126,7 @@ public class ButtonController {
             // 更新 UI，这里可以根据棋子类型和颜色进行相应的渲染
             renderSquare(startX, startY);
             renderSquare(endX, endY);
+
             Platform.runLater(() -> {
                 try {
                     Thread.sleep(1000); // 等待1秒
@@ -137,33 +150,6 @@ public class ButtonController {
         }
     }
 
-    public static void rotateImage_l(ImageView imageView) {
-        // 创建 RotateTransition，并设置持续时间和旋转角度
-        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.2), imageView);
-        rotateTransition.setByAngle(-90); // 旋转
-        // 播放动画
-        rotateTransition.play();
-        rotateTransition.setOnFinished(event -> {
-            ImageRender.laser_out();
-            turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
-            pieceSelected = false;  // 执行完后重置
-        });
-    }
-
-    public static void rotateImage_r(ImageView imageView) {
-        // 创建 RotateTransition，并设置持续时间和旋转角度
-        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.2), imageView);
-        rotateTransition.setByAngle(90); // 旋转
-
-        // 播放动画
-        rotateTransition.play();
-        rotateTransition.setOnFinished(event -> {
-            ImageRender.laser_out();
-            turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
-            pieceSelected = false;  // 执行完后重置
-        });
-    }
-
     public static void handleDIYButtonClick(Stage primaryStage) {
         System.out.println("Click diyButton!");
 
@@ -171,10 +157,63 @@ public class ButtonController {
         gameStyle = MainGame.GameStyle.classic;
 
         // 实现对于DIY的DIY操作
-        // 设置棋盘的位置，使其居中
-        gameGrid.getStyleClass().add("gameGrid");
-        gameGrid.setPadding(new Insets(30, 0, 0, 30));
+        
 
 
+    }
+
+    public static void loadReservedMap(Stage primaryStage) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("地图文件名");
+        dialog.setHeaderText(null);
+        dialog.setContentText("请输入地图文件名:");
+
+        // 获取用户输入的文件名
+        Optional<String> result = dialog.showAndWait();
+
+        // 检查用户是否输入了文件名
+        if (result.isPresent()) {
+            // 获取用户输入的文件名并设置到全局变量
+            load_map = result.get();
+
+            // 检查文件是否存在
+            if (isFileExists(load_map)) {
+                // 文件存在，根据用户输入的文件名创建Board对象
+                board = new Board(-1, false, true);
+                // 根据用户输入的文件名创建Board对象
+                System.out.println("棋盘读入成功！");
+                reserved_map = true;
+                style_select_scene(primaryStage);
+            } else {
+                // 文件不存在，可以在这里进行相应的处理
+                System.out.println("文件不存在: " + load_map);
+            }
+        } else {
+            game_mode_select(primaryStage);
+        }
+    }
+
+    private static boolean isFileExists(String fileName) {
+        // 获取资源文件的URL
+        URL resource = MainGame.class.getResource("/saveBoard/" + fileName);
+
+        // 如果资源文件存在，创建Path对象并检查文件是否存在
+        if (resource != null) {
+            try {
+                Path path = Paths.get(resource.toURI());
+                map_path = path.toString();
+                return Files.exists(path) && Files.isRegularFile(path);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    public static void saveQuitClick() {
+        SaveBoard.saveBoard(board.chessboard, board.backgroundBoard);
+        Platform.exit();
     }
 }

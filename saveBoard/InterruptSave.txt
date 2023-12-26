@@ -41,7 +41,7 @@ lt
 2,3
 R
 one
-rt
+lt
 2,6
 B
 bg
@@ -59,7 +59,7 @@ lb
 3,1
 B
 one
-rb
+lb
 3,4
 R
 two
@@ -97,7 +97,7 @@ lt
 4,5
 R
 one
-rt
+lt
 4,8
 B
 one
@@ -111,7 +111,7 @@ bg
 5,0
 B
 one
-lb
+lt
 5,3
 R
 one
