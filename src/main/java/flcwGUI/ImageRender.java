@@ -9,7 +9,9 @@ import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -352,7 +354,19 @@ public class ImageRender {
             kill_chess_render(posToKill[0], posToKill[1]);
             board.killChess(posToKill[0], posToKill[1]);
             if (board.gameOver()) {
-                System.out.println("The winner is" + board.getWinner());
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Game Over");
+                alert.setHeaderText(null);
+
+                String winner = board.getWinner();
+                alert.setContentText("The winner is " + winner);
+
+                alert.showAndWait().ifPresent(response -> {
+                    // 用户点击确认按钮后的操作
+                    if (response == ButtonType.OK) {
+                        game_mode_select();
+                    }
+                });
             }
         });
 

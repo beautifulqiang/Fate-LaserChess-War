@@ -7,10 +7,8 @@ import flcwGUI.LaserChessGamePlay.operate.Move;
 import flcwGUI.LaserChessGamePlay.operate.Operate;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
 
 import java.net.URL;
 import java.nio.file.Files;
@@ -73,7 +71,7 @@ public class ButtonController {
         }
     }
 
-    public static void handleStyleButtonClick(String styleName, Stage primaryStage) {
+    public static void handleStyleButtonClick(String styleName) {
         switch (styleName) {
             case "Classic":
                 MainGame.gameStyle = MainGame.GameStyle.classic;
@@ -87,9 +85,9 @@ public class ButtonController {
         }
 
         if (reserved_map) {
-            game_start(primaryStage, -1);
+            game_start(-1);
         } else {
-            level_select(primaryStage);
+            level_select();
         }
     }
 
@@ -150,7 +148,7 @@ public class ButtonController {
         }
     }
 
-    public static void handleDIYButtonClick(Stage primaryStage) {
+    public static void handleDIYButtonClick() {
         System.out.println("Click diyButton!");
 
         // 游戏风格直接设计为classic
@@ -159,10 +157,9 @@ public class ButtonController {
         // 实现对于DIY的DIY操作
 
 
-
     }
 
-    public static void loadReservedMap(Stage primaryStage) {
+    public static void loadReservedMap() {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("地图文件名");
         dialog.setHeaderText(null);
@@ -183,13 +180,13 @@ public class ButtonController {
                 // 根据用户输入的文件名创建Board对象
                 System.out.println("棋盘读入成功！");
                 reserved_map = true;
-                style_select_scene(primaryStage);
+                style_select_scene();
             } else {
                 // 文件不存在，可以在这里进行相应的处理
                 System.out.println("文件不存在: " + load_map);
             }
         } else {
-            game_mode_select(primaryStage);
+            game_mode_select();
         }
     }
 

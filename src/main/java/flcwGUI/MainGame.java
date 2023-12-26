@@ -26,6 +26,7 @@ public class MainGame extends Application {
     public static GameStyle gameStyle = GameStyle.classic;
     public static boolean reserved_map = false;
     public static String load_map;  // 如果是使用输入棋盘的方式，则需要提供地图文件名
+    static Stage rootStage;
     //这里在12.21晚改了一下，多加了一个参数，因为我把棋盘类的构造函数给改了
     static Board board;  // 棋盘作为全局变量
     static GridPane gameGrid = new GridPane();  // 棋盘，把棋子作为按钮放在上面
@@ -34,28 +35,24 @@ public class MainGame extends Application {
         launch(args);
     }
 
-    public static void game_start(Stage primaryStage, int level) {
-        primaryStage.setTitle("FLCW-游戏开始");
+    public static void game_start(int level) {
+        rootStage.setTitle("FLCW-游戏开始");
 
         Scene scene_game = new Scene(root, 1280, 720);
 
         // 添加样式表到场景
         scene_game.getStylesheets().add(Objects.requireNonNull(MainGame.class.getResource("/flcwGUI/style.css")).toExternalForm());
 
-        switch (level) {
-            case -1:
-                break; //此时视为动态加载棋盘，不需要对棋盘再进行处理
-            default:
-                // 不需要进行DIY，将bool设置为false，根据level创建后端的棋盘对象
-                board = new Board(level, false, false);
+        if (level != -1) {//此时视为动态加载棋盘，不需要对棋盘再进行处理
+            board = new Board(level, false, false);
         }
 
+        rootStage.setScene(scene_game);
         initializeBoard(8, 10); // 初始化棋盘
-        primaryStage.setScene(scene_game);
-        primaryStage.show();
+        rootStage.show();
     }
 
-    public static void style_select_scene(Stage primaryStage) {
+    public static void style_select_scene() {
         // 创建 Label 和按钮
         Label label = new Label("地图风格：");
         Button style1Button = new Button("Classic");
@@ -81,10 +78,10 @@ public class MainGame extends Application {
         style_select_scene.getStylesheets().add(Objects.requireNonNull(ButtonController.class.getResource("/flcwGUI/style.css")).toExternalForm());
 
         // 添加按钮点击事件处理
-        style1Button.setOnAction(event -> ButtonController.handleStyleButtonClick("Classic", primaryStage));
-        style2Button.setOnAction(event -> ButtonController.handleStyleButtonClick("Elden", primaryStage));
-        style3Button.setOnAction(event -> ButtonController.handleStyleButtonClick("PvZ", primaryStage));
-        returnButton.setOnAction(event -> game_mode_select(primaryStage));
+        style1Button.setOnAction(event -> ButtonController.handleStyleButtonClick("Classic"));
+        style2Button.setOnAction(event -> ButtonController.handleStyleButtonClick("Elden"));
+        style3Button.setOnAction(event -> ButtonController.handleStyleButtonClick("PvZ"));
+        returnButton.setOnAction(event -> game_mode_select());
 
         style_panel.getStyleClass().add("root-start");
         style1Button.getStyleClass().add("classic-button");
@@ -93,19 +90,19 @@ public class MainGame extends Application {
         returnButton.getStyleClass().add("return-button");
 
         // 设置场景到主舞台
-        primaryStage.setScene(style_select_scene);
-        primaryStage.setTitle("FLCW-地图风格选择");
-        primaryStage.show();
+        rootStage.setScene(style_select_scene);
+        rootStage.setTitle("FLCW-地图风格选择");
+        rootStage.show();
     }
 
-    public static void game_mode_select(Stage primaryStage) {
+    public static void game_mode_select() {
         Button default_mode = new Button("默认地图");
         Button DIY_mode = new Button("想要DIY吗");
         Button reserved_mode = new Button("已保存地图");
 
-        default_mode.setOnAction(event -> style_select_scene(primaryStage));
-        DIY_mode.setOnAction(event -> handleDIYButtonClick(primaryStage));
-        reserved_mode.setOnAction(event -> loadReservedMap(primaryStage));
+        default_mode.setOnAction(event -> style_select_scene());
+        DIY_mode.setOnAction(event -> handleDIYButtonClick());
+        reserved_mode.setOnAction(event -> loadReservedMap());
 
         HBox mode_button_container = new HBox();
         mode_button_container.getChildren().addAll(default_mode, DIY_mode, reserved_mode);
@@ -122,9 +119,9 @@ public class MainGame extends Application {
         DIY_mode.getStyleClass().add("elden-button");
         reserved_mode.getStyleClass().add("PvZ-button");
 
-        primaryStage.setScene(mode_select_scene);
-        primaryStage.setTitle("FLCW-选择游戏模式");
-        primaryStage.show();
+        rootStage.setScene(mode_select_scene);
+        rootStage.setTitle("FLCW-选择游戏模式");
+        rootStage.show();
     }
 
     private static void initializeBoard(int rows, int cols) {
@@ -262,7 +259,7 @@ public class MainGame extends Application {
         }
     }
 
-    public static void level_select(Stage primaryStage) {
+    public static void level_select() {
         Label level_select_prompt = new Label("选择关卡：");
         HBox level_select_container = new HBox(10);
         level_select_container.setPadding(new Insets(310, 0, 0, 230));
@@ -274,7 +271,7 @@ public class MainGame extends Application {
         returnButton_container.setPadding(new Insets(0, 0, 160, 620));
 
         // 添加按钮点击事件处理
-        returnButton.setOnAction(event -> game_mode_select(primaryStage));
+        returnButton.setOnAction(event -> game_mode_select());
 
         BorderPane level_pane = new BorderPane();
         level_pane.setCenter(level_select_container);
@@ -287,7 +284,7 @@ public class MainGame extends Application {
         for (int i = 1; i <= 3; i++) {
             Button level_button = new Button(String.valueOf(i));
             int finalI = i;
-            level_button.setOnAction(event -> game_start(primaryStage, finalI));
+            level_button.setOnAction(event -> game_start(finalI));
             level_button.getStyleClass().add("classic-button");
             level_select_container.getChildren().add(level_button);
         }
@@ -296,14 +293,15 @@ public class MainGame extends Application {
         level_select_container.getStyleClass().add("rotate-button-container");
         returnButton.getStyleClass().add("return-button");
 
-        primaryStage.setScene(level_select_scene);
-        primaryStage.setTitle("FLCW-选择游戏模式");
-        primaryStage.show();
+        rootStage.setScene(level_select_scene);
+        rootStage.setTitle("FLCW-选择游戏模式");
+        rootStage.show();
     }
 
     @Override
     public void start(Stage primaryStage) {
-        game_mode_select(primaryStage);
+        rootStage = primaryStage;
+        game_mode_select();
     }
 
     enum GameStyle {
