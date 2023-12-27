@@ -1,6 +1,9 @@
 package flcwGUI.LaserChessGamePlay.chess;
-
 public class ChessShield extends Chess {
+    public enum Direction {
+        LEFT, TOP, RIGHT, BOTTOM
+    }
+
     public Direction direction;
 
     public ChessShield(Direction direction, Color color) {
@@ -15,7 +18,7 @@ public class ChessShield extends Chess {
     }
 
     //要求d的取值是r或者l
-    public void rotate(char d) {
+    public void rotate(char d){
         // 将枚举转换为数组
         Direction[] values = Direction.values();
         int index = -1;
@@ -36,9 +39,5 @@ public class ChessShield extends Chess {
             // 更新方向
             direction = values[index];
         }
-    }
-
-    public enum Direction {
-        LEFT, TOP, RIGHT, BOTTOM
     }
 }

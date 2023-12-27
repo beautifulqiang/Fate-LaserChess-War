@@ -1,5 +1,6 @@
 package flcwGUI;
 
+import flcwGUI.LaserChessGamePlay.Board;
 import flcwGUI.LaserChessGamePlay.Laser;
 import flcwGUI.LaserChessGamePlay.background.Background;
 import flcwGUI.LaserChessGamePlay.chess.Chess;
@@ -13,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -25,9 +27,8 @@ import javafx.util.Duration;
 import java.net.URL;
 import java.util.Objects;
 
-import static flcwGUI.ButtonController.piece_selected;
-import static flcwGUI.ButtonController.turn;
-import static flcwGUI.MainGame.*;
+import static flcwGUI.ButtonController.*;
+import static flcwGUI.MainGame.root_panel;
 
 public class Render {
 
@@ -411,12 +412,6 @@ public class Render {
         ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.3), Objects.requireNonNull(getSquareButton(row, col)).getGraphic());
         scaleTransition.setToX(0.5);  // 缩放到宽度为0
         scaleTransition.setToY(0.5);  // 缩放到高度为0
-//        scaleTransition.setOnFinished(event -> {
-//           //杀死棋子。杀死大海！杀死大海！
-//            board.killChess(row, col);
-//            renderSquare(row, col);
-//        });
-//        scaleTransition.play();
 
         Platform.runLater(() -> {
             scaleTransition.setOnFinished(event -> {
@@ -479,26 +474,56 @@ public class Render {
     }
 
     public static void DIYBoardInitialize() {
+        DIYboard = new Board();
         String music_name = "classic.mp3";
         root_panel.getStyleClass().add("root-classic");
 
         URL music_url = MainGame.class.getResource("/bgm/" + music_name);
 
-        GridPane DIY_grid = new GridPane();  // 用于DIY的棋盘
+//        GridPane DIY_grid = new GridPane();  // 用于DIY的棋盘
 
         // 设置棋盘的位置，使其居中
         DIY_grid.getStyleClass().add("gameGrid");
-        DIY_grid.setPadding(new Insets(30, 0, 0, 300));
+        DIY_grid.setPadding(new Insets(30, 0, 0, 70));
 
         // 添加保存并退出按钮
         Button save_quit_button = new Button("保存并退出");
-        save_quit_button.setOnAction(event -> ButtonController.saveQuitClick());
+        save_quit_button.setOnAction(event -> ButtonController.saveDIYBoard());
         save_quit_button.getStyleClass().add("exit-button");
 
-        VBox exit_button_container = new VBox();
-        exit_button_container.getChildren().add(save_quit_button);
+        // 添加颜色选择的下拉框
+        ComboBox<String> colorComboBox = new ComboBox<>();
+        colorComboBox.getItems().addAll("RED", "BLUE");
+        colorComboBox.setPromptText("选择颜色");
 
-        root_panel.setRight(save_quit_button);
+        // 添加类型选择的下拉框
+        ComboBox<String> typeComboBox = new ComboBox<>();
+        typeComboBox.getItems().addAll("King", "Shield", "Laser_emitter", "One_way_mirror",
+                "Two_way_mirror","Background","Null_chess","Null_background");
+        typeComboBox.setPromptText("选择类型");
+
+        // 添加方向选择的下拉框
+        ComboBox<String> directionComboBox = new ComboBox<>();
+        directionComboBox.setPromptText("选择方向");
+
+        colorComboBox.getStyleClass().add("combo-box");
+        typeComboBox.getStyleClass().add("combo-box");
+        directionComboBox.getStyleClass().add("combo-box");
+
+        // 处理类型选择变化以更新方向选项
+        typeComboBox.setOnAction(event -> {
+            String selectedType = typeComboBox.getValue();
+            updateDirectionComboBox(directionComboBox, selectedType);
+        });
+
+        // 将组件添加到 exit_button_container VBox 中
+        VBox exit_button_container = new VBox(save_quit_button);
+        root_panel.setRight(exit_button_container);
+
+        VBox chess_select_container = new VBox(200, colorComboBox, typeComboBox, directionComboBox);
+        chess_select_container.setPadding(new Insets(50, 0, 0, 0));
+        root_panel.setLeft(chess_select_container);
+
 
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 10; col++) {
@@ -525,12 +550,21 @@ public class Render {
 
                 int final_row = row;
                 int final_col = col;
-                square.setOnAction(event -> ButtonController.handleChessPieceClick(final_row, final_col));
+
+                // 将按钮的事件处理器中获取下拉框的值的部分移到这里
+                square.setOnAction(event -> {
+                    String selectedColor = colorComboBox.getValue();
+                    String selectedType = typeComboBox.getValue();
+                    String selectedDirection = directionComboBox.getValue();
+                    ButtonController.handleDIYChessPieceClick(final_row, final_col, selectedColor, selectedType, selectedDirection);
+                });
 
                 // 将按钮添加到 GridPane 中
                 DIY_grid.add(square, col, row);
             }
         }
+
+
 
         // 添加棋盘到 BorderPane 的中心
         root_panel.setCenter(DIY_grid);
@@ -545,6 +579,102 @@ public class Render {
             media_player.play();
         } else {
             System.out.println("Resource not found: " + music_name);
+        }
+    }
+    private static void updateDirectionComboBox(ComboBox<String> directionComboBox, String selectedType) {
+        directionComboBox.getItems().clear(); // 清除现有选项
+
+        switch (selectedType) {
+            case "Shield":
+            case "Laser_emitter":
+                directionComboBox.getItems().addAll("LEFT", "TOP", "RIGHT", "BOTTOM");
+                break;
+            case "One_way_mirror":
+                directionComboBox.getItems().addAll("LEFT_TOP", "RIGHT_TOP", "RIGHT_BOTTOM", "LEFT_BOTTOM");
+                break;
+            case "Two_way_mirror":
+                directionComboBox.getItems().addAll("LEFT_TOP", "RIGHT_TOP");
+                break;
+            // 根据需要添加其他类型的情况
+        }
+    }
+
+    public static Button getSquareButtonDIY(int row, int col) {
+        // 获取所有子节点
+        ObservableList<Node> children = DIY_grid.getChildren();
+
+        // 遍历子节点列表
+        for (Node node : children) {
+            // 检查节点是否为按钮类型
+            if (node instanceof Button) {
+                // 获取当前按钮所在的行和列
+                int currentRow = GridPane.getRowIndex(node);
+                int currentCol = GridPane.getColumnIndex(node);
+
+                // 如果当前按钮的行列与目标行列匹配，则返回该按钮
+                if (currentRow == row && currentCol == col) {
+                    return (Button) node;
+                }
+            }
+        }
+
+        // 如果没有找到匹配的按钮，则返回 null
+        return null;
+    }
+
+    static void renderSquareDIY(int row, int col) {
+        if (row < 0 || col < 0) return;
+        // 获取与指定行列相对应的按钮
+        Button square = getSquareButtonDIY(row, col);
+        Chess chess = DIYboard.chessboard[row][col];
+
+        // 清空按钮的样式和图形内容
+        if (square != null) {
+            square.setStyle(null);
+        }
+        if (square != null) {
+            square.setGraphic(null);
+        }
+
+        Image get_image;
+        if (chess != null) {
+            // 如果有棋子，加载相应的图片
+            get_image = getChessImage(chess);
+        } else {
+            // 如果没有棋子，根据背景更新按钮的样式
+            Background background = DIYboard.backgroundBoard[row][col];
+            get_image = Render.getBackgroundImage(background);
+        }
+
+        // 创建ImageView并设置图片
+        ImageView imageView = new ImageView(get_image);
+        imageView.setFitWidth(65); // 设置宽度
+        imageView.setFitHeight(65); // 设置高度
+        imageView.setPreserveRatio(true); // 保持宽高比
+
+        // 设置按钮的尺寸
+        if (square != null) {
+            square.setMaxSize(65, 65);
+        }
+
+        // 旋转到合适方向
+        if (chess != null) {
+            switch (chess.show_type()) {
+                case LaserEmitter, OneWayMirror, TwoWayMirror, Shield:
+                    imageView.setRotate(-90 + chess.getrotate() * 90);
+                    break;
+            }
+        }
+
+        // 创建一个带有圆角的 Rectangle 作为 clip
+        Rectangle clip = new Rectangle(65, 65);
+        clip.setArcWidth(15); // 设置圆角的宽度
+        clip.setArcHeight(15); // 设置圆角的高度
+        imageView.setClip(clip);
+
+        // 设置按钮的图形内容为ImageView
+        if (square != null) {
+            square.setGraphic(imageView);
         }
     }
 }

@@ -4,6 +4,7 @@ import flcwGUI.LaserChessGamePlay.background.Background;
 import flcwGUI.LaserChessGamePlay.chess.*;
 import flcwGUI.LaserChessGamePlay.chess.Chess.Color;
 import flcwGUI.LaserChessGamePlay.chess.ChessLaserEmitter.Direction;
+import javafx.scene.control.Alert;
 
 import java.io.*;
 import java.util.Scanner;
@@ -343,7 +344,6 @@ public class DIYBoard {
             // 创建BufferedReader对象，用于读取文件内容
             BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
 
-
             //读入文件的过程中不需要这么多输出，注释掉
             while (true) {
                 //读入颜色和类型
@@ -358,7 +358,11 @@ public class DIYBoard {
 
                 if (type.equals("END")) {
                     if (!redLaserEmitter || !blueLaserEmitter || !redKing || !blueKing) {
-                        continue;
+                        // 此时的棋局是无解的
+                        Alert alert = new Alert(Alert.AlertType.WARNING);
+                        alert.setHeaderText("棋局加载警告");
+                        alert.setContentText("该棋局无解！");
+                        alert.showAndWait();
                     }
                     //确实满足了棋局结束的条件
                     break;
@@ -515,7 +519,6 @@ public class DIYBoard {
 
                 chessboard[coordinates[0]][coordinates[1]] = chess;
                 System.out.println("Placed " + type + " at position (" + coordinates[0] + "," + coordinates[1] + ").");
-                //GUI或许在此就可以渲染棋盘？我不懂
             }
 
 

@@ -10,14 +10,32 @@ import java.io.PrintWriter;
 import java.util.Objects;
 
 public class SaveBoard {
-    public static void saveBoard(Chess[][] chessboard, Background[][] backgroundBoard) {
+    public static void saveBoard(Chess[][] chessboard, Background[][] backgroundBoard, User user, boolean DIY, String board_name) {
         // 获取资源文件夹的路径
         ClassLoader classLoader = SaveBoard.class.getClassLoader();
         String folderPath = Objects.requireNonNull(classLoader.getResource("saveBoard/")).getPath();
 
         // 构建文件路径
-        String filePath = folderPath + "InterruptSave.txt";
+        String filePath = folderPath + user.getName() + "/";
+
+        // 如果是DIY模式，会传入一个棋盘名字
+        if (DIY) {
+            filePath += board_name + ".txt";
+        } else {
+            filePath += "InterruptSave.txt";
+        }
+
         File file = new File(filePath);
+
+        //如果不存在自动保存文件，则生成
+        try{
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
             int x = chessboard.length;

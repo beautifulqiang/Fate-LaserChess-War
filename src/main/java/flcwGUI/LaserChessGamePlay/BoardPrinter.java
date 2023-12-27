@@ -2,6 +2,7 @@ package flcwGUI.LaserChessGamePlay;
 
 import flcwGUI.LaserChessGamePlay.background.Background;
 import flcwGUI.LaserChessGamePlay.chess.*;
+import org.controlsfx.control.tableview2.filter.filtereditor.SouthFilter;
 
 
 public class BoardPrinter {
@@ -14,20 +15,22 @@ public class BoardPrinter {
                 String cellContent = getCellContent(chess);
 
                 // 当没有棋子的时候，判断有没有背景
-                if (cellContent == "") {
-                    if (backgroundBoard[i][j] == null) {
-                    } else {
+                if(cellContent == ""){
+                    if(backgroundBoard[i][j] == null){
+                    }
+                    else{
                         //不知道可以不可以直接.color
                         cellContent = String.format("Block-%s", backgroundBoard[i][j].color);
                     }
                 }
 
                 // 输出格式化的格子
-                System.out.printf("%-22s", cellContent);
+                System.out.print(String.format("%-22s", cellContent));
                 //讨论激光
-                if (path[i][j]) {
+                if(path[i][j]==true){
                     System.out.print('*');
-                } else {
+                }
+                else {
                     System.out.print(' ');
                 }
 
@@ -38,7 +41,7 @@ public class BoardPrinter {
         System.out.print("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     }
 
-    public static void printBoard(Chess[][] chessboard, Background[][] backgroundBoard, boolean[][] path, ChessLaserEmitter.Direction[][] vec_path) {
+    public static void printBoard(Chess[][] chessboard, Background[][] backgroundBoard, boolean[][] path, ChessLaserEmitter.Direction [][] vec_path) {
         for (int i = 0; i < chessboard.length; i++) {
             System.out.print("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n|");
             for (int j = 0; j < chessboard[i].length; j++) {
@@ -46,18 +49,19 @@ public class BoardPrinter {
                 String cellContent = getCellContent(chess);
 
                 // 当没有棋子的时候，判断有没有背景
-                if (cellContent == "") {
-                    if (backgroundBoard[i][j] == null) {
-                    } else {
+                if(cellContent == ""){
+                    if(backgroundBoard[i][j] == null){
+                    }
+                    else{
                         //不知道可以不可以直接.color
                         cellContent = String.format("Block-%s", backgroundBoard[i][j].color);
                     }
                 }
 
                 // 输出格式化的格子
-                System.out.printf("%-22s", cellContent);
+                System.out.print(String.format("%-22s", cellContent));
                 //讨论激光
-                if (path[i][j]) {
+                if(path[i][j]==true){
 //                    System.out.print('*');
                     switch (vec_path[i][j]) {
                         case TOP -> System.out.println('↑');
@@ -65,7 +69,8 @@ public class BoardPrinter {
                         case RIGHT -> System.out.println('→');
                         case BOTTOM -> System.out.println('↓');
                     }
-                } else {
+                }
+                else {
                     System.out.print(' ');
                 }
 
@@ -166,7 +171,7 @@ public class BoardPrinter {
     public static void main(String[] args) {
         // 示例棋盘，早期测试代码，没啥用
         Chess[][] chessboard = new Chess[8][10];
-        Background[][] backgroundBoard = new Background[8][10];
+        Background[][] backgroundBoard =new Background[8][10];
         chessboard[1][0] = new ChessKing(ChessKing.Color.BLUE);
         chessboard[2][2] = new ChessLaserEmitter(ChessLaserEmitter.Direction.RIGHT, ChessLaserEmitter.Color.RED);
         chessboard[3][3] = new ChessOneWayMirror(ChessOneWayMirror.Direction.LEFT_TOP, ChessOneWayMirror.Color.BLUE);

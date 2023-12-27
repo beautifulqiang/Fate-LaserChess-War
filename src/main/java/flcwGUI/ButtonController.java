@@ -2,7 +2,8 @@ package flcwGUI;
 
 import flcwGUI.LaserChessGamePlay.Board;
 import flcwGUI.LaserChessGamePlay.SaveBoard;
-import flcwGUI.LaserChessGamePlay.chess.Chess;
+import flcwGUI.LaserChessGamePlay.User;
+import flcwGUI.LaserChessGamePlay.chess.*;
 import flcwGUI.LaserChessGamePlay.operate.Move;
 import flcwGUI.LaserChessGamePlay.operate.Operate;
 import javafx.application.Platform;
@@ -15,9 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.shape.Rectangle;
@@ -29,16 +28,34 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Optional;
 
-import static flcwGUI.Render.*;
 import static flcwGUI.LaserChessGamePlay.InputHandler.isChessColorMatching;
 import static flcwGUI.LaserChessGamePlay.InputHandler.isLaserEmitter;
+import flcwGUI.LaserChessGamePlay.background.Background;
 import static flcwGUI.MainGame.*;
+import static flcwGUI.Render.*;
 
 public class ButtonController {
     public static Chess.Color turn = Chess.Color.BLUE;  // 用于记录是谁的回合
-
     public static String map_path = "";
     public static boolean piece_selected = false; // 用于追踪是否已经选中了棋子
+    public static GameStyle game_style = GameStyle.classic;
+    public static boolean reserved_map = false;
+    public static String load_map;  // 如果是使用输入棋盘的方式，则需要提供地图文件名
+    static Board board;  // 棋盘作为全局变量
+    static Board DIYboard;
+
+    static boolean[] DIY_legal = new boolean[4];// 0 for blue KING, 1 for red KING,2 for blue Laser emitter,3 for red Laser emitter
+    static int[] red_laser_emitter_pos = new int[2];
+
+    static  int[] red_king_pos = new int[2];
+    static  int[] blue_king_pos = new int[2];
+    static ChessLaserEmitter.Direction red_laser_emitter_dir;
+    static int[] blue_laser_emitter_pos = new int[2];
+
+    static ChessLaserEmitter.Direction blue_laser_emitter_dir;
+    static GridPane DIY_grid = new GridPane();
+    static GridPane game_grid = new GridPane();  // 棋盘，把棋子作为按钮放在上面
+    static User game_user;
     private static int selected_piece_row = -1; // 用于存储选中的棋子的行
     private static int selected_piece_col = -1; // 用于存储选中的棋子的列
 
@@ -87,13 +104,13 @@ public class ButtonController {
     public static void handleStyleButtonClick(String styleName, int level) {
         switch (styleName) {
             case "Classic":
-                MainGame.game_style = MainGame.GameStyle.classic;
+                game_style = MainGame.GameStyle.classic;
                 break;
             case "Elden":
-                MainGame.game_style = MainGame.GameStyle.elden;
+                game_style = MainGame.GameStyle.elden;
                 break;
             case "PvZ":
-                MainGame.game_style = MainGame.GameStyle.PvZ;
+                game_style = MainGame.GameStyle.PvZ;
                 break;
         }
 
@@ -162,7 +179,6 @@ public class ButtonController {
     }
 
     public static void handleDIYButtonClick() {
-        //        System.out.println("Click diyButton!");
         root_stage.setTitle("FLCW-DIY棋局");
 
         Scene DIY_scene = new Scene(root_panel, 1280, 720);
@@ -177,6 +193,250 @@ public class ButtonController {
         root_stage.setScene(DIY_scene);
         DIYBoardInitialize();
         root_stage.show();
+    }
+
+    static void handleDIYChessPieceClick(int row, int col,String color,String type,String direction) {
+        // 处理棋子点击事件
+        System.out.println("Clicked on square: " + row + ", " + col);
+        if(color==null) return;
+        if(type==null) return;
+        if(direction == null) direction = "LEFT";
+
+        if(row == blue_king_pos[0] && col == blue_king_pos[1]) DIY_legal[0] = false;
+        if(row == red_king_pos[0] && col == red_king_pos[1]) DIY_legal[1] = false;
+        if(row == blue_laser_emitter_pos[0] && col == blue_laser_emitter_pos[1]) DIY_legal[2] = false;
+        if(row == red_laser_emitter_pos[0] && col == red_laser_emitter_pos[1]) DIY_legal[3] = false;
+
+        boolean is_chess = false;
+        Chess tmp_chess = null;
+        Background tmp_bac = null;
+        // 从下拉框中获取选定的值
+        switch (type) {
+            case "King":
+                if(Objects.equals(color, "RED")){
+                    if(DIY_legal[1]) System.out.println("WARNNING:There should be 1 red KING!");
+                    else{
+                        tmp_chess = new ChessKing(Chess.Color.RED);
+                        DIY_legal[1] = true;
+                        red_king_pos[0] = row;
+                        red_king_pos[1] = col;
+                    }
+                }
+                else{
+                    if(DIY_legal[0]) System.out.println("WARNNING:There should be 1 blue KING!");
+                    else{
+                        tmp_chess = new ChessKing(Chess.Color.BLUE);
+                        DIY_legal[0] = true;
+                        blue_king_pos[0] = row;
+                        blue_king_pos[1] = col;
+                    }
+                }
+                is_chess = true;
+                break;
+            case "Shield":
+                ChessShield.Direction tmp_d;
+                switch (direction){
+                    case "LEFT":
+                        tmp_d = ChessShield.Direction.LEFT;
+                        break;
+                    case "TOP":
+                        tmp_d = ChessShield.Direction.TOP;
+                        break;
+                    case "RIGHT":
+                        tmp_d = ChessShield.Direction.RIGHT;
+                        break;
+                    case "BOTTOM":
+                        tmp_d = ChessShield.Direction.BOTTOM;
+                        break;
+                    default:
+                        tmp_d = ChessShield.Direction.LEFT;
+                        break;
+                }
+                if(Objects.equals(color, "RED")){
+
+                    tmp_chess = new ChessShield(tmp_d,Chess.Color.RED);
+                }
+                else tmp_chess = new ChessShield(tmp_d,Chess.Color.BLUE);
+                is_chess = true;
+                break;
+            case "Laser_emitter":
+                ChessLaserEmitter.Direction tmp_d1;
+                switch (direction){
+                    case "LEFT":
+                        tmp_d1 = ChessLaserEmitter.Direction.LEFT;
+                        break;
+                    case "TOP":
+                        tmp_d1 = ChessLaserEmitter.Direction.TOP;
+                        break;
+                    case "RIGHT":
+                        tmp_d1 = ChessLaserEmitter.Direction.RIGHT;
+                        break;
+                    case "BOTTOM":
+                        tmp_d1 = ChessLaserEmitter.Direction.BOTTOM;
+                        break;
+                    default:
+                        tmp_d1 = ChessLaserEmitter.Direction.LEFT;
+                        break;
+                }
+                if(Objects.equals(color, "RED")){
+                    if(DIY_legal[3]) System.out.println("WARNNING:There should be 1 red Laser_emitter!");
+                    else{
+                        if((row==0&&tmp_d1== ChessLaserEmitter.Direction.TOP)||(row==7&&tmp_d1== ChessLaserEmitter.Direction.BOTTOM)
+                                ||(col==0&&tmp_d1== ChessLaserEmitter.Direction.LEFT)||(col==9&&tmp_d1== ChessLaserEmitter.Direction.RIGHT)) {
+                            System.out.println("WARNING:The position of red Laser_emitter is illegal!");
+                            return;
+                        }
+                        if(DIY_legal[2]){
+                            int dx=0,dy=0;
+                            switch (blue_laser_emitter_dir){
+                                case TOP:
+                                    dx = -1;
+                                    break;
+                                case LEFT:
+                                    dy = -1;
+                                    break;
+                                case RIGHT:
+                                    dy = 1;
+                                    break;
+                                case BOTTOM:
+                                    dx = 1;
+                                    break;
+                            }
+                            if((blue_laser_emitter_pos[0]+dx == row)&&(blue_laser_emitter_pos[1]+dy)==col){
+                                System.out.println("WARNING:The position of red Laser_emitter is illegal!");
+                                return;
+                            }
+                        }
+                        DIY_legal[3] = true;
+                        red_laser_emitter_dir = tmp_d1;
+                        red_laser_emitter_pos[0] = row;
+                        red_laser_emitter_pos[1] = col;
+                        tmp_chess = new ChessLaserEmitter(tmp_d1,Chess.Color.RED);
+                    }
+                }
+                else{
+                    if(DIY_legal[2]) System.out.println("WARNNING:There should be 1 blue Laser_emitter!");
+                    else{
+                        if((row==0&&tmp_d1== ChessLaserEmitter.Direction.TOP)||(row==7&&tmp_d1== ChessLaserEmitter.Direction.BOTTOM)
+                                ||(col==0&&tmp_d1== ChessLaserEmitter.Direction.LEFT)||(col==9&&tmp_d1== ChessLaserEmitter.Direction.RIGHT)) {
+                            System.out.println("WARNING:The position of blue Laser_emitter is illegal!");
+                            return;
+                        }
+                        if(DIY_legal[3]){
+                            int dx=0,dy=0;
+                            switch (red_laser_emitter_dir){
+                                case TOP:
+                                    dx = -1;
+                                    break;
+                                case LEFT:
+                                    dy = -1;
+                                    break;
+                                case RIGHT:
+                                    dy = 1;
+                                    break;
+                                case BOTTOM:
+                                    dx = 1;
+                                    break;
+                            }
+                            if((red_laser_emitter_pos[0]+dx == row)&&(red_laser_emitter_pos[1]+dy)==col){
+                                System.out.println("WARNING:The position of blue Laser_emitter is illegal!");
+                                return;
+                            }
+                        }
+                        DIY_legal[2] = true;
+                        blue_laser_emitter_dir = tmp_d1;
+                        blue_laser_emitter_pos[0] = row;
+                        blue_laser_emitter_pos[1] = col;
+                        tmp_chess = new ChessLaserEmitter(tmp_d1,Chess.Color.BLUE);
+                    }
+                }
+                is_chess = true;
+                break;
+            case "One_way_mirror":
+                ChessOneWayMirror.Direction tmp_d2;
+                switch (direction){
+                    case "LEFT_TOP":
+                        tmp_d2 = ChessOneWayMirror.Direction.LEFT_TOP;
+                        break;
+                    case "RIGHT_TOP":
+                        tmp_d2 = ChessOneWayMirror.Direction.RIGHT_TOP;
+                        break;
+                    case "RIGHT_BOTTOM":
+                        tmp_d2 = ChessOneWayMirror.Direction.RIGHT_BOTTOM;
+                        break;
+                    case "LEFT_BOTTOM":
+                        tmp_d2 = ChessOneWayMirror.Direction.LEFT_BOTTOM;
+                        break;
+                    default:
+                        tmp_d2 = ChessOneWayMirror.Direction.LEFT_TOP;
+                        break;
+                }
+                if(Objects.equals(color, "RED")){
+
+                    tmp_chess = new ChessOneWayMirror(tmp_d2,Chess.Color.RED);
+                }
+                else tmp_chess = new ChessOneWayMirror(tmp_d2,Chess.Color.BLUE);
+                is_chess = true;
+                break;
+            case "Two_way_mirror":
+                ChessTwoWayMirror.Direction tmp_d3;
+                switch (direction){
+                    case "LEFT_TOP":
+                        tmp_d3 = ChessTwoWayMirror.Direction.LEFT_TOP;
+                        break;
+                    case "RIGHT_TOP":
+                        tmp_d3 = ChessTwoWayMirror.Direction.RIGHT_TOP;
+                        break;
+                    default:
+                        tmp_d3 = ChessTwoWayMirror.Direction.LEFT_TOP;
+                        break;
+                }
+                if(Objects.equals(color, "RED")){
+                    tmp_chess = new ChessTwoWayMirror(tmp_d3,Chess.Color.RED);
+                }
+                else tmp_chess = new ChessTwoWayMirror(tmp_d3,Chess.Color.BLUE);
+                is_chess = true;
+                break;
+
+            case "Background":
+                if(Objects.equals(color, "RED")){
+                    tmp_bac = new Background(Background.Color.RED);
+                }
+                else{
+                    tmp_bac = new Background(Background.Color.BLUE);
+                }
+                is_chess = false;
+                break;
+            case "Null_background":
+                tmp_bac = null;
+                is_chess = false;
+                break;
+            case "Null_chess":
+                tmp_chess = null;
+                is_chess = true;
+                break;
+        }
+        if(is_chess){
+            if(DIYboard.backgroundBoard[row][col]!=null&&tmp_chess!=null){
+                if((DIYboard.backgroundBoard[row][col].color== Background.Color.RED&&tmp_chess.color== Chess.Color.BLUE)||
+                        (DIYboard.backgroundBoard[row][col].color== Background.Color.BLUE&&tmp_chess.color== Chess.Color.RED)){
+                    System.out.println("WARNING:The background color does not match the chess color!");
+                    return;
+                }
+            }
+            DIYboard.chessboard[row][col] = tmp_chess;
+        }
+        else {
+            if(DIYboard.chessboard[row][col]!=null&&tmp_bac!=null){
+                if((DIYboard.chessboard[row][col].color== Chess.Color.RED&&tmp_bac.color== Background.Color.BLUE)||
+                        (DIYboard.chessboard[row][col].color== Chess.Color.BLUE&&tmp_bac.color== Background.Color.RED)){
+                    System.out.println("WARNING:The background color does not match the chess color!");
+                    return;
+                }
+            }
+            DIYboard.backgroundBoard[row][col] = tmp_bac;
+        }
+        renderSquareDIY(row,col);
     }
 
     public static void loadReservedMap() {
@@ -202,8 +462,6 @@ public class ButtonController {
                 reserved_map = true;
                 styleSelect(-1);
             } else {
-//                System.out.println("文件不存在: " + load_map);
-
                 // 文件不存在，显示提示框
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("FLCW-地图提取错误");
@@ -218,7 +476,7 @@ public class ButtonController {
 
     private static boolean isFileExists(String fileName) {
         // 获取资源文件的URL
-        URL resource = MainGame.class.getResource("/saveBoard/" + fileName);
+        URL resource = MainGame.class.getResource("/saveBoard/" + game_user.toString() + "/" + fileName + ".txt");
 
         // 如果资源文件存在，创建Path对象并检查文件是否存在
         if (resource != null) {
@@ -236,7 +494,7 @@ public class ButtonController {
     }
 
     public static void saveQuitClick() {
-        SaveBoard.saveBoard(board.chessboard, board.backgroundBoard);
+        SaveBoard.saveBoard(board.chessboard, board.backgroundBoard, game_user, false, "none");
         Platform.exit();
     }
 
@@ -510,5 +768,144 @@ public class ButtonController {
         root_stage.setScene(level_select_scene);
         root_stage.setTitle("FLCW-选择游戏模式");
         root_stage.show();
+    }
+
+    public static void userLogin() {
+        // 创建用于输入用户名的对话框
+        TextInputDialog username_dialog = new TextInputDialog();
+        username_dialog.setTitle("用户登录");
+        username_dialog.setHeaderText(null);
+        username_dialog.setContentText("请输入用户名:");
+
+        // 获取用户名输入的结果
+        username_dialog.showAndWait().ifPresent(username -> {
+            // 创建用于输入密码的对话框
+            TextInputDialog passwordDialog = new TextInputDialog();
+            passwordDialog.setTitle("用户登录");
+            passwordDialog.setContentText("请输入密码:");
+
+            if (User.userExists(username)) {
+                // 获取密码输入的结果
+                passwordDialog.showAndWait().ifPresent(password -> {
+                    if (User.isValidNameOrPasswd(username) && User.isValidNameOrPasswd(password)
+                            && User.login(username, password)) {
+                        // 如果用户登录成功，则创建本次游戏的user对象
+                        game_user = new User(username);
+
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("FLCW-登录成功");
+                        alert.setContentText("转接到模式选择");
+                        alert.showAndWait();
+
+                        // 进入游戏模式选择
+                        gameModeSelect();
+                    } else {
+                        // 否则发出警报
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("FLCW-登录失败");
+                        alert.setContentText("请检查账号与密码是否匹配！");
+                        alert.showAndWait();
+                    }
+                });
+            } else {
+                // 此时用户不存在
+                // 否则发出警报
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("FLCW-登录失败");
+                alert.setContentText("账户不存在！");
+                alert.showAndWait();
+            }
+        });
+    }
+
+    public static void userRegister() {
+        // 创建用于输入用户名的对话框
+        TextInputDialog username_dialog = new TextInputDialog();
+        username_dialog.setTitle("用户注册");
+        username_dialog.setContentText("请输入用户名:");
+
+        // 获取用户名输入的结果
+        username_dialog.showAndWait().ifPresent(username -> {
+            // 创建用于输入密码的对话框
+            TextInputDialog passwordDialog = new TextInputDialog();
+            passwordDialog.setTitle("用户注册");
+            passwordDialog.setContentText("请输入密码:");
+
+            if (User.isValidNameOrPasswd(username)) {
+                passwordDialog.showAndWait().ifPresent(password -> {
+                    if (User.isValidNameOrPasswd(password)) {
+                        // 注册成功，后端创建用户，并直接登录
+                        User.register(username, password);
+                        game_user = new User(username);
+
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("FLCW-注册成功");
+                        alert.setContentText("直接为您登录");
+                        alert.showAndWait();
+
+                        // 进入游戏模式选择
+                        gameModeSelect();
+                    } else {
+                        // 否则发出警报
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("FLCW-注册失败");
+                        alert.setContentText("请检查密码是否合法！");
+                        alert.showAndWait();
+                    }
+                });
+            } else {
+                // 用户名不合法
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("FLCW-注册失败");
+                alert.setContentText("请检查账户名是否合法！");
+                alert.showAndWait();
+            }
+        });
+    }
+
+    public static void gameModeSelect() {
+        Label mode_select = new Label("选择模式：");
+        Button adventure_mode = new Button("剧情模式");
+        Button free_mode = new Button("自由对战");
+
+        adventure_mode.setOnAction(event -> ButtonController.adventrueMode());
+        free_mode.setOnAction(event -> freeMode());
+
+        HBox mode_button_container = new HBox(mode_select, adventure_mode, free_mode);
+        mode_button_container.setPadding(new Insets(310, 0, 0, 270));
+
+        StackPane mode_panel = new StackPane(mode_button_container);
+
+        Scene mode_select_scene = new Scene(mode_panel, 1280, 720);
+        mode_select_scene.getStylesheets().add(Objects.requireNonNull(ButtonController.class.getResource("/flcwGUI/style.css")).toExternalForm());
+
+        mode_panel.getStyleClass().add("root-start");
+        adventure_mode.getStyleClass().add("classic-button");
+        free_mode.getStyleClass().add("elden-button");
+
+        root_stage.setScene(mode_select_scene);
+        root_stage.setTitle("FLCW-选择游戏模式");
+        root_stage.show();
+    }
+
+    public static void saveDIYBoard() {
+        // 获取要保存的棋盘名称
+        TextInputDialog board_name_dialog = new TextInputDialog();
+        board_name_dialog.setTitle("保存棋盘");
+        board_name_dialog.setContentText("要保存的棋盘名字：");
+
+        // 获取棋盘名输入的结果
+        board_name_dialog.showAndWait().ifPresent(board_name -> {
+            if (User.isValidNameOrPasswd(board_name)) {
+                // 合法则保存棋盘并退出
+                SaveBoard.saveBoard(DIYboard.chessboard, DIYboard.backgroundBoard, game_user, true, board_name);
+                freeMode();
+            } else {
+                Alert invalid_name = new Alert(Alert.AlertType.ERROR);
+                invalid_name.setHeaderText("非法名称！");
+                invalid_name.setContentText("请输入正确名称");
+                invalid_name.showAndWait();
+            }
+        });
     }
 }

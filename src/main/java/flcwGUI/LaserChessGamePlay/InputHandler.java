@@ -1,10 +1,8 @@
 package flcwGUI.LaserChessGamePlay;
 
+import flcwGUI.LaserChessGamePlay.operate.*;
 import flcwGUI.LaserChessGamePlay.chess.Chess;
 import flcwGUI.LaserChessGamePlay.chess.ChessLaserEmitter;
-import flcwGUI.LaserChessGamePlay.operate.Move;
-import flcwGUI.LaserChessGamePlay.operate.Operate;
-import flcwGUI.LaserChessGamePlay.operate.Rotate;
 import flcwGUI.LaserChessGamePlay.operate.Rotate.RotateDirection;
 
 import java.util.Scanner;
@@ -23,12 +21,12 @@ public class InputHandler {
             //scanner.close();
             return getOperationFromInput(board, color); // Restart
         }
-        if (!isChessColorMatching(board, firstCoordinates[0], firstCoordinates[1], color)) {
+        if(!isChessColorMatching(board, firstCoordinates[0], firstCoordinates[1], color)){
             System.out.println("This place is not your pawn. Please enter again.");
             //scanner.close();
             return getOperationFromInput(board, color); // Restart
         }
-        if (isLaserEmitter(board, firstCoordinates[0], firstCoordinates[1])) {
+        if(isLaserEmitter(board, firstCoordinates[0], firstCoordinates[1])){
             System.out.println("This place is a laser emitter");
             //scanner.close();
             return getOperationFromInput(board, color); // Restart
@@ -39,6 +37,7 @@ public class InputHandler {
         System.out.println("Enter the second coordinate or rotation direction: ");
         String secondInput = scanner.nextLine();
         //scanner.close();
+
 
 
         // Check if the second input is a coordinate or a rotation direction

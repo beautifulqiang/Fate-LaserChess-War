@@ -75,10 +75,10 @@
 
 /* 设置退出按钮的样式 */
 .exit-button {
-    -fx-background-color: #fd3232; /* Red */
+    -fx-background-color: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #ee2610ff 0.0%, #f7ad1dff 100.0%); /* Red */
     -fx-min-width:  70;
     -fx-min-height: 70;
-    -fx-text-fill: #c2fff3;
+    -fx-text-fill: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #accafdff 0.0%, #febeebff 100.0%);
     -fx-font-size: 30;
 }
 
@@ -122,4 +122,15 @@
     -fx-background-radius: 15; /* 背景圆角 */
     -fx-border-radius: 15; /* 边框圆角 */
 }
+
+.combo-box {
+    -fx-background-color: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #23d0f3ff 0.0%, #d791f9ff 50.0%, #fe7b84ff 100.0%);
+    -fx-font-size: 20px;
+    -fx-width: 100px;
+    -fx-height: 30px;
+    -fx-border-radius: 5px;
+
+}
+
+
 

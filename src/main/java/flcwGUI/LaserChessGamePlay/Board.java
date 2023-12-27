@@ -17,9 +17,9 @@ public class Board {
     public Background[][] backgroundBoard;
     private boolean gameIsOver = false;
     private char theWinner;
-    private final int[] redLaserEmitterPos;
+    private int[] redLaserEmitterPos;
     private Direction redLaserEmitterDirection;
-    private final int[] blueLaserEmitterPos;
+    private int[] blueLaserEmitterPos;
     private Direction blueLaserEmitterDirection;
 
     public Board() {
@@ -134,6 +134,7 @@ public class Board {
     public void killChess(int x, int y) {
         if (x == -1 && y == -1) {
             //无需杀死
+            return;
         } else if (x != -1 && y != -1) {
             //讨论国王
             if (chessboard[x][y] instanceof ChessKing) {
