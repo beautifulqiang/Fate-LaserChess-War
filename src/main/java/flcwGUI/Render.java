@@ -29,7 +29,7 @@ import static flcwGUI.ButtonController.piece_selected;
 import static flcwGUI.ButtonController.turn;
 import static flcwGUI.MainGame.*;
 
-public class ImageRender {
+public class Render {
 
     public static Image getChessImage(Chess chess) {
         // 提供四个风格的素材包
@@ -89,7 +89,7 @@ public class ImageRender {
         }
 
 
-        return new Image(Objects.requireNonNull(ImageRender.class.getResource(image_path)).toExternalForm());
+        return new Image(Objects.requireNonNull(Render.class.getResource(image_path)).toExternalForm());
     }
 
     private static Image getLaserImage(Chess chess, Background bg, Boolean cross) {
@@ -190,7 +190,7 @@ public class ImageRender {
                 break;
         }
 
-        return new Image(Objects.requireNonNull(ImageRender.class.getResource(imagePath)).toExternalForm());
+        return new Image(Objects.requireNonNull(Render.class.getResource(imagePath)).toExternalForm());
     }
 
     private static void renderSquare(int row, int col, ChessLaserEmitter.Direction d) {
@@ -251,7 +251,6 @@ public class ImageRender {
         }
     }
 
-
     public static Image getBackgroundImage(Background bg) {
         String imagePath = switch (game_style) {
             case classic -> "/images/classic/background/";
@@ -273,7 +272,7 @@ public class ImageRender {
             imagePath += "default.png";
         }
 
-        return new Image(Objects.requireNonNull(ImageRender.class.getResource(imagePath)).toExternalForm());
+        return new Image(Objects.requireNonNull(Render.class.getResource(imagePath)).toExternalForm());
     }
 
     static void renderSquare(int row, int col) {
@@ -297,7 +296,7 @@ public class ImageRender {
         } else {
             // 如果没有棋子，根据背景更新按钮的样式
             Background background = board.backgroundBoard[row][col];
-            get_image = ImageRender.getBackgroundImage(background);
+            get_image = Render.getBackgroundImage(background);
         }
 
         // 创建ImageView并设置图片
@@ -459,7 +458,7 @@ public class ImageRender {
         // 播放动画
         rotateTransition.play();
         rotateTransition.setOnFinished(event -> {
-            ImageRender.laserOut();
+            Render.laserOut();
             turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
             piece_selected = false;  // 执行完后重置
         });
@@ -473,7 +472,7 @@ public class ImageRender {
         // 播放动画
         rotateTransition.play();
         rotateTransition.setOnFinished(event -> {
-            ImageRender.laserOut();
+            Render.laserOut();
             turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
             piece_selected = false;  // 执行完后重置
         });
@@ -512,7 +511,7 @@ public class ImageRender {
                 image_view.setFitHeight(65); // 设置高度
 
                 // 全部的按钮一开始都初始化为背景图
-                Image background_image = ImageRender.getBackgroundImage(board.backgroundBoard[row][col]);
+                Image background_image = Render.getBackgroundImage(board.backgroundBoard[row][col]);
                 image_view.setImage(background_image);
 
                 // 创建一个带有圆角的 Rectangle 作为 clip

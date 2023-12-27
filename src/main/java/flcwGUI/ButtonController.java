@@ -9,6 +9,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
@@ -28,7 +29,7 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Optional;
 
-import static flcwGUI.ImageRender.*;
+import static flcwGUI.Render.*;
 import static flcwGUI.LaserChessGamePlay.InputHandler.isChessColorMatching;
 import static flcwGUI.LaserChessGamePlay.InputHandler.isLaserEmitter;
 import static flcwGUI.MainGame.*;
@@ -51,7 +52,7 @@ public class ButtonController {
             else {
                 board.chessboard[selected_piece_row][selected_piece_col].rotate('l');
                 System.out.println("棋子左旋");
-                ImageView imageView = (ImageView) (ImageRender.getSquareButton(selected_piece_row, selected_piece_col)).getGraphic();
+                ImageView imageView = (ImageView) (Render.getSquareButton(selected_piece_row, selected_piece_col)).getGraphic();
                 rotateImage_l(imageView);
             }
         } else if (!piece_selected) {
@@ -72,7 +73,7 @@ public class ButtonController {
             else {
                 board.chessboard[selected_piece_row][selected_piece_col].rotate('r');
 
-                ImageView imageView = (ImageView) (ImageRender.getSquareButton(selected_piece_row, selected_piece_col)).getGraphic();
+                ImageView imageView = (ImageView) (Render.getSquareButton(selected_piece_row, selected_piece_col)).getGraphic();
                 rotateImage_r(imageView);
                 System.out.println("棋子右旋");
             }
@@ -144,7 +145,7 @@ public class ButtonController {
                     e.printStackTrace();
                 }
                 // 激光发射
-                ImageRender.laserOut();
+                Render.laserOut();
                 turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
                 System.out.println("----------------------");
                 if (turn == Chess.Color.BLUE) {
@@ -201,8 +202,14 @@ public class ButtonController {
                 reserved_map = true;
                 styleSelect(-1);
             } else {
-                // 文件不存在，可以在这里进行相应的处理
-                System.out.println("文件不存在: " + load_map);
+//                System.out.println("文件不存在: " + load_map);
+
+                // 文件不存在，显示提示框
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("FLCW-地图提取错误");
+                alert.setHeaderText(null);
+                alert.setContentText("文件不存在: " + load_map);
+                alert.showAndWait();
             }
         } else {
             freeMode();
@@ -234,6 +241,7 @@ public class ButtonController {
     }
 
     public static void adventrueMode() {
+
     }
 
     public static void freeMode() {
@@ -385,7 +393,7 @@ public class ButtonController {
                             break;
                     }
                 } else {
-                    Image background_image = ImageRender.getBackgroundImage(board.backgroundBoard[row][col]);
+                    Image background_image = Render.getBackgroundImage(board.backgroundBoard[row][col]);
                     imageView.setImage(background_image);
                 }
 
