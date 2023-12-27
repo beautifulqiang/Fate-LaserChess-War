@@ -9,7 +9,6 @@ import java.io.*;
 import java.util.Scanner;
 
 import static flcwGUI.ButtonController.map_path;
-import static flcwGUI.MainGame.load_map;
 
 public class DIYBoard {
     public static void DIY(Chess[][] chessboard, Background[][] backgroundBoard, int[] redLaserEmitterPos, int[] blueLaserEmitterPos, Direction[] tempD) {

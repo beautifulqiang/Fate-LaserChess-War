@@ -5,24 +5,22 @@ import flcwGUI.LaserChessGamePlay.chess.*;
 
 public class BoardInitializer {
     //这里redP和blueP代表两个发射器坐标，d[0]是红发射器的方向，d[1]是蓝发射器的方向
-    public static void initializeLaserEmitter(int type, int[] redP, int[] blueP, ChessLaserEmitter.Direction[] d){
-        if(type==1){
+    public static void initializeLaserEmitter(int type, int[] redP, int[] blueP, ChessLaserEmitter.Direction[] d) {
+        if (type == 1) {
             redP[0] = 0;
             redP[1] = 0;
             d[0] = ChessLaserEmitter.Direction.BOTTOM;
             blueP[0] = 7;
             blueP[1] = 9;
             d[1] = ChessLaserEmitter.Direction.TOP;
-        }
-        else if(type==2){
+        } else if (type == 2) {
             redP[0] = 0;
             redP[1] = 0;
             d[0] = ChessLaserEmitter.Direction.BOTTOM;
             blueP[0] = 7;
             blueP[1] = 9;
             d[1] = ChessLaserEmitter.Direction.TOP;
-        }
-        else if(type==3){
+        } else if (type == 3) {
             redP[0] = 0;
             redP[1] = 0;
             d[0] = ChessLaserEmitter.Direction.BOTTOM;
@@ -48,8 +46,8 @@ public class BoardInitializer {
         // }
     }
 
-    public static Chess[][] initializeChess(int type){
-        if(type==1){
+    public static Chess[][] initializeChess(int type) {
+        if (type == 1) {
             Chess[][] chessboard = new Chess[8][10];
             // 第零列
             chessboard[0][0] = new ChessLaserEmitter(ChessLaserEmitter.Direction.BOTTOM, ChessLaserEmitter.Color.RED);
@@ -98,8 +96,7 @@ public class BoardInitializer {
             chessboard[7][9] = new ChessLaserEmitter(ChessLaserEmitter.Direction.TOP, ChessLaserEmitter.Color.BLUE);
 
             return chessboard;
-        }
-        else if(type==2){
+        } else if (type == 2) {
             Chess[][] chessboard = new Chess[8][10];
             // 第零列
             chessboard[0][0] = new ChessLaserEmitter(ChessLaserEmitter.Direction.BOTTOM, ChessLaserEmitter.Color.RED);
@@ -150,8 +147,7 @@ public class BoardInitializer {
             chessboard[7][9] = new ChessLaserEmitter(ChessLaserEmitter.Direction.TOP, ChessLaserEmitter.Color.BLUE);
 
             return chessboard;
-        }
-        else if(type==3){
+        } else if (type == 3) {
             Chess[][] chessboard = new Chess[8][10];
             // 第零列
             chessboard[0][0] = new ChessLaserEmitter(ChessLaserEmitter.Direction.BOTTOM, ChessLaserEmitter.Color.RED);
@@ -205,8 +201,8 @@ public class BoardInitializer {
         return null;
     }
 
-    public static Background[][] initializeBackground(int type){
-        if(type==1){
+    public static Background[][] initializeBackground(int type) {
+        if (type == 1) {
             Background[][] backgroundBoard = new Background[8][10];
             // 第零列
             backgroundBoard[1][0] = new Background(Background.Color.RED);
@@ -233,10 +229,9 @@ public class BoardInitializer {
             backgroundBoard[4][9] = new Background(Background.Color.BLUE);
             backgroundBoard[5][9] = new Background(Background.Color.BLUE);
             backgroundBoard[6][9] = new Background(Background.Color.BLUE);
-            
+
             return backgroundBoard;
-        }
-        else if(type==2){
+        } else if (type == 2) {
             Background[][] backgroundBoard = new Background[8][10];
             // 第零列
             backgroundBoard[1][0] = new Background(Background.Color.RED);
@@ -263,10 +258,9 @@ public class BoardInitializer {
             backgroundBoard[4][9] = new Background(Background.Color.BLUE);
             backgroundBoard[5][9] = new Background(Background.Color.BLUE);
             backgroundBoard[6][9] = new Background(Background.Color.BLUE);
-            
+
             return backgroundBoard;
-        }
-        else if(type==3){
+        } else if (type == 3) {
             Background[][] backgroundBoard = new Background[8][10];
             // 第零列
             backgroundBoard[1][0] = new Background(Background.Color.RED);
@@ -293,7 +287,7 @@ public class BoardInitializer {
             backgroundBoard[4][9] = new Background(Background.Color.BLUE);
             backgroundBoard[5][9] = new Background(Background.Color.BLUE);
             backgroundBoard[6][9] = new Background(Background.Color.BLUE);
-            
+
             return backgroundBoard;
         }
         // else if(type==4){
@@ -323,7 +317,7 @@ public class BoardInitializer {
         //     backgroundBoard[4][9] = new Background(Background.Color.BLUE);
         //     backgroundBoard[5][9] = new Background(Background.Color.BLUE);
         //     backgroundBoard[6][9] = new Background(Background.Color.BLUE);
-            
+
         //     return backgroundBoard;
         // }
         // else if(type==5){
@@ -353,7 +347,7 @@ public class BoardInitializer {
         //     backgroundBoard[4][9] = new Background(Background.Color.BLUE);
         //     backgroundBoard[5][9] = new Background(Background.Color.BLUE);
         //     backgroundBoard[6][9] = new Background(Background.Color.BLUE);
-            
+
         //     return backgroundBoard;
         // }
         return null;

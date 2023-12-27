@@ -1,9 +1,6 @@
 package flcwGUI.LaserChessGamePlay.chess;
-public class ChessOneWayMirror extends Chess {
-    public enum Direction {
-        LEFT_TOP, RIGHT_TOP, RIGHT_BOTTOM, LEFT_BOTTOM
-    }
 
+public class ChessOneWayMirror extends Chess {
     public Direction direction;
 
     public ChessOneWayMirror(Direction direction, Color color) {
@@ -18,7 +15,7 @@ public class ChessOneWayMirror extends Chess {
     }
 
     //要求d的取值是r或者l
-    public void rotate(char d){
+    public void rotate(char d) {
         // 将枚举转换为数组
         Direction[] values = Direction.values();
         int index = -1;
@@ -39,5 +36,9 @@ public class ChessOneWayMirror extends Chess {
             // 更新方向
             direction = values[index];
         }
+    }
+
+    public enum Direction {
+        LEFT_TOP, RIGHT_TOP, RIGHT_BOTTOM, LEFT_BOTTOM
     }
 }

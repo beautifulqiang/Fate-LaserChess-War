@@ -1,9 +1,6 @@
 package flcwGUI.LaserChessGamePlay.chess;
-public class ChessTwoWayMirror extends Chess {
-    public enum Direction {
-        LEFT_TOP, RIGHT_TOP
-    }
 
+public class ChessTwoWayMirror extends Chess {
     public Direction direction;
 
     public ChessTwoWayMirror(Direction direction, Color color) {
@@ -17,12 +14,15 @@ public class ChessTwoWayMirror extends Chess {
         return direction.ordinal();
     }
 
-    public void rotate(char d){
-        if(direction==Direction.LEFT_TOP){
+    public void rotate(char d) {
+        if (direction == Direction.LEFT_TOP) {
             direction = Direction.RIGHT_TOP;
-        }
-        else{
+        } else {
             direction = Direction.LEFT_TOP;
         }
+    }
+
+    public enum Direction {
+        LEFT_TOP, RIGHT_TOP
     }
 }

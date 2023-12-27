@@ -9,9 +9,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Objects;
 
-import static flcwGUI.ButtonController.map_path;
-import static flcwGUI.MainGame.load_map;
-
 public class SaveBoard {
     public static void saveBoard(Chess[][] chessboard, Background[][] backgroundBoard) {
         // 获取资源文件夹的路径
