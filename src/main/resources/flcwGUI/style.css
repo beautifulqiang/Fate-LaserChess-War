@@ -25,25 +25,25 @@
 
 .label {
     -fx-font-size: 50;
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #fcdfe8ff 0.0%, #b6fefcff 100.0%);
 }
 
 .classic-button {
-    -fx-background-color: #ff8080;
+    -fx-background-color:  linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #71defaff 0.0%, #fcd296ff 100.0%);
     -fx-font-size: 40;
     -fx-min-width: 70;
     -fx-min-height: 70;
 }
 
 .elden-button {
-    -fx-background-color: #ffcc00;
+    -fx-background-color: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #fcdf57ff 0.0%, #fea350ff 100.0%);
     -fx-font-size: 40;
     -fx-min-width: 70;
     -fx-min-height: 70;
 }
 
 .PvZ-button {
-    -fx-background-color: #71ffb4;
+    -fx-background-color: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #00c6fdff 0.0%, #fdfc1dff 100.0%);
     -fx-font-size: 40;
     -fx-min-width: 70;
     -fx-min-height: 70;
@@ -51,7 +51,7 @@
 
 /* 设置diy按钮格式 */
 .DIY-button {
-    -fx-background-color: #fffd71;
+    -fx-background-color: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #4159d1ff 0.0%, #c750c0ff 50.0%, #fec871ff 100.0%);
     -fx-font-size: 40;
     -fx-min-width: 70;
     -fx-min-height: 70;
@@ -59,7 +59,7 @@
 
 /* 设置旋转按钮的样式 */
 .rotate-button {
-    -fx-background-color: #ffd573;
+    -fx-background-color: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #9698efff 0.0%, #fac6d2ff 100.0%);
     -fx-max-width:  70;
     -fx-max-height: 70;
     -fx-font-size: 20;
@@ -84,11 +84,11 @@
 
 /* 设置返回按钮的样式 */
 .return-button {
-    -fx-background-color: #9cff80; /* Red */
+    -fx-background-color: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #76a0d2ff 0.0%, #7acbc9ff 50.0%, #e884b0ff 100.0%); /* Red */
     -fx-min-width:  70;
     -fx-min-height: 70;
-    -fx-text-fill: #000000;
-    -fx-font-size: 14;
+    -fx-text-fill: #990033;
+    -fx-font-size: 20;
 }
 
 .switch-mode-button {

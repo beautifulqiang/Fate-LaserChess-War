@@ -591,8 +591,8 @@ public class ButtonController {
         save_quit_button.setOnAction(event -> ButtonController.saveQuitClick());
 
         // 为按钮添加图片
-        Image leftRotateImage = new Image(Objects.requireNonNull(MainGame.class.getResourceAsStream("/images/left_rotate.jpg")));
-        Image rightRotateImage = new Image(Objects.requireNonNull(MainGame.class.getResourceAsStream("/images/right_rotate.jpg")));
+        Image leftRotateImage = new Image(Objects.requireNonNull(MainGame.class.getResourceAsStream("/images/left_rotate.png")));
+        Image rightRotateImage = new Image(Objects.requireNonNull(MainGame.class.getResourceAsStream("/images/right_rotate.png")));
 
         ImageView leftRotateImageView = new ImageView(leftRotateImage);
         ImageView rightRotateImageView = new ImageView(rightRotateImage);
