@@ -365,7 +365,6 @@ public class Render {
             if (board.gameOver()) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Game Over");
-                alert.setHeaderText(null);
 
                 String winner = board.getWinner();
                 alert.setContentText("The winner is " + winner);
@@ -373,7 +372,19 @@ public class Render {
                 alert.showAndWait().ifPresent(response -> {
                     // 用户点击确认按钮后的操作
                     if (response == ButtonType.OK) {
-                        gameModeSelect();
+                        if (is_adv) {
+                            Alert next_level = new Alert(Alert.AlertType.INFORMATION);
+                            next_level.setTitle("恭喜！");
+                            next_level.setHeaderText("恭喜胜利");
+                            next_level.setContentText("点击进入下一关");
+                            next_level.showAndWait();
+                            // 冒险模式下，我们会进入下一关
+                            game_level++;
+                            gameStart();
+                        } else {
+                            // 不是冒险模式，则回到模式选择界面
+                            gameModeSelect();
+                        }
                     }
                 });
             }
@@ -452,10 +463,16 @@ public class Render {
         rotateTransition.setByAngle(-90); // 旋转
         // 播放动画
         rotateTransition.play();
+
         rotateTransition.setOnFinished(event -> {
             Render.laserOut();
+
             turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
             piece_selected = false;  // 执行完后重置
+
+            if (is_adv && turn == Chess.Color.RED) {
+                handleAI();
+            }
         });
     }
 
@@ -470,7 +487,12 @@ public class Render {
             Render.laserOut();
             turn = (turn == Chess.Color.BLUE ? Chess.Color.RED : Chess.Color.BLUE); //更新回合
             piece_selected = false;  // 执行完后重置
+
+            if (is_adv && turn == Chess.Color.RED) {
+                handleAI();
+            }
         });
+
     }
 
     public static void DIYBoardInitialize() {
@@ -499,7 +521,7 @@ public class Render {
         // 添加类型选择的下拉框
         ComboBox<String> typeComboBox = new ComboBox<>();
         typeComboBox.getItems().addAll("King", "Shield", "Laser_emitter", "One_way_mirror",
-                "Two_way_mirror","Background","Null_chess","Null_background");
+                "Two_way_mirror", "Background", "Null_chess", "Null_background");
         typeComboBox.setPromptText("选择类型");
 
         // 添加方向选择的下拉框
@@ -565,7 +587,6 @@ public class Render {
         }
 
 
-
         // 添加棋盘到 BorderPane 的中心
         root_panel.setCenter(DIY_grid);
 
@@ -581,6 +602,7 @@ public class Render {
             System.out.println("Resource not found: " + music_name);
         }
     }
+
     private static void updateDirectionComboBox(ComboBox<String> directionComboBox, String selectedType) {
         directionComboBox.getItems().clear(); // 清除现有选项
 
