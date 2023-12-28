@@ -42,7 +42,8 @@ public class ButtonController {
     public static boolean piece_selected = false; // 用于追踪是否已经选中了棋子
     public static GameStyle game_style = GameStyle.classic;
     public static String load_map;  // 如果是使用输入棋盘的方式，则需要提供地图文件名
-    public static int game_level = -1;
+    public static int AI_level = -1;  // AI难度
+    public static int map_kind = -1;  // 哪张地图
     static Board board;  // 棋盘作为全局变量
     static Board DIYboard;
     static boolean[] DIY_legal = new boolean[4];// 0 for blue KING, 1 for red KING,2 for blue Laser emitter,3 for red Laser emitter
@@ -450,7 +451,8 @@ public class ButtonController {
 
     public static void adventrueMode() {
         is_adv = true;  // 确定为冒险模式
-        game_level = 1; // 进行游戏关卡为第一关
+        map_kind = 1; // 进行游戏关卡为第一关
+        AI_level = 1;
         styleSelect();
     }
 
@@ -501,8 +503,8 @@ public class ButtonController {
         // 添加样式表到场景
         scene_game.getStylesheets().add(Objects.requireNonNull(MainGame.class.getResource("/flcwGUI/style.css")).toExternalForm());
 
-        if (game_level != -1) {//此时视为动态加载棋盘，不需要对棋盘再进行处理
-            board = new Board(game_level, false, false);
+        if (map_kind != -1) {//此时视为动态加载棋盘，不需要对棋盘再进行处理
+            board = new Board(map_kind, false, false);
         }
 
         root_stage.setScene(scene_game);
@@ -711,8 +713,11 @@ public class ButtonController {
         // 默认棋盘只有三个
         for (int i = 1; i <= 3; i++) {
             Button level_button = new Button(String.valueOf(i));
-            game_level = i;
-            level_button.setOnAction(event -> AIorPvP());
+            int finalI = i;
+            level_button.setOnAction(event -> {
+                map_kind = finalI;
+                AIorPvP();
+            });
             level_button.getStyleClass().add("classic-button");
             level_select_container.getChildren().add(level_button);
         }
@@ -762,15 +767,15 @@ public class ButtonController {
         Button hard_mode = new Button("hard");
 
         easy_mode.setOnAction(event -> {
-            game_level = 1;
+            AI_level = 1;
             ButtonController.styleSelect();
         });
         medium_mode.setOnAction(event -> {
-            game_level = 2;
+            AI_level = 2;
             ButtonController.styleSelect();
         });
         hard_mode.setOnAction(event -> {
-            game_level = 3;
+            AI_level = 3;
             ButtonController.styleSelect();
         });
 
@@ -933,7 +938,7 @@ public class ButtonController {
 
     static void handleAI() {
         Operate AI_op = null;
-        switch (game_level) {
+        switch (AI_level) {
             case 1 -> AI_op = AI.worst(board, Chess.Color.RED);
             case 2 -> AI_op = AI.random(board, Chess.Color.RED);
             case 3 -> AI_op = AI.best(board, Chess.Color.RED);

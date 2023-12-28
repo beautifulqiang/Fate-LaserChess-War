@@ -379,7 +379,8 @@ public class Render {
                             next_level.setContentText("点击进入下一关");
                             next_level.showAndWait();
                             // 冒险模式下，我们会进入下一关
-                            game_level++;
+                            map_kind++;
+                            AI_level++;
                             gameStart();
                         } else {
                             // 不是冒险模式，则回到模式选择界面
