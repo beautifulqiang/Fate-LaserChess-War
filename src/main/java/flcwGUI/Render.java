@@ -18,6 +18,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -31,7 +32,7 @@ import static flcwGUI.ButtonController.*;
 import static flcwGUI.MainGame.root_panel;
 
 public class Render {
-
+    // 获得棋子的Image，根据Style和类型获取棋子路径
     public static Image getChessImage(Chess chess) {
         // 提供四个风格的素材包
         String image_path = switch (game_style) {
@@ -93,6 +94,7 @@ public class Render {
         return new Image(Objects.requireNonNull(Render.class.getResource(image_path)).toExternalForm());
     }
 
+    // 获取激光的图片渲染，这里需要注意很多逻辑判断，来渲染正确的激光
     private static Image getLaserImage(Chess chess, Background bg, Boolean cross) {
         String imagePath = "/images/";
 
@@ -121,7 +123,6 @@ public class Render {
                         if (!cross) imagePath += "red_bullet.png";
                         else imagePath += "red_bullet_cross.png";
                     }
-                    break;
                 } else {
                     //判断棋子类型
                     switch (chess.show_type()) {
@@ -143,8 +144,8 @@ public class Render {
                             }
                             break;
                     }
-                    break;
                 }
+                break;
 
             case BLUE:
                 if (chess == null) {
@@ -194,11 +195,12 @@ public class Render {
         return new Image(Objects.requireNonNull(Render.class.getResource(imagePath)).toExternalForm());
     }
 
+    //
     private static void renderSquare(int row, int col, ChessLaserEmitter.Direction d) {
         if (row < 0 || col < 0) return;
         // 获取与指定行列相对应的按钮
         Button square = getSquareButton(row, col);
-        Chess chess = board.chessboard[row][col];
+        Chess chess = game_board.chessboard[row][col];
 
         // 清空按钮的样式和图形内容
         if (square != null) {
@@ -208,8 +210,7 @@ public class Render {
             square.setGraphic(null);
         }
 
-
-        Image get_image = getLaserImage(chess, board.backgroundBoard[row][col], (d == ChessLaserEmitter.Direction.Cross));
+        Image get_image = getLaserImage(chess, game_board.backgroundBoard[row][col], (d == ChessLaserEmitter.Direction.Cross));
 
         // 创建ImageView并设置图片
         ImageView imageView = new ImageView(get_image);
@@ -233,7 +234,6 @@ public class Render {
                     if (chess.getrotate() == 1 && d.ordinal() == 4) imageView.setRotate(0);
                     break;
             }
-
         }
         // 设置按钮的尺寸
         if (square != null) {
@@ -276,11 +276,12 @@ public class Render {
         return new Image(Objects.requireNonNull(Render.class.getResource(imagePath)).toExternalForm());
     }
 
+    // 每一次需要重新渲染棋子时，调用的函数
     static void renderSquare(int row, int col) {
         if (row < 0 || col < 0) return;
         // 获取与指定行列相对应的按钮
         Button square = getSquareButton(row, col);
-        Chess chess = board.chessboard[row][col];
+        Chess chess = game_board.chessboard[row][col];
 
         // 清空按钮的样式和图形内容
         if (square != null) {
@@ -296,7 +297,7 @@ public class Render {
             get_image = getChessImage(chess);
         } else {
             // 如果没有棋子，根据背景更新按钮的样式
-            Background background = board.backgroundBoard[row][col];
+            Background background = game_board.backgroundBoard[row][col];
             get_image = Render.getBackgroundImage(background);
         }
 
@@ -332,16 +333,17 @@ public class Render {
         }
     }
 
+    // 机关发射的模拟
     static void laserOut() {
         int[] pos = new int[2];
         ChessLaserEmitter.Direction[] d = new ChessLaserEmitter.Direction[1];
-        int[] b_size = board.getBoardSize();
+        int[] b_size = game_board.getBoardSize();
         if (turn == Chess.Color.RED)
-            board.getLaserEmitter(pos, d, 'R');
-        else board.getLaserEmitter(pos, d, 'B');
+            game_board.getLaserEmitter(pos, d, 'R');
+        else game_board.getLaserEmitter(pos, d, 'B');
         Laser laser = new Laser(pos[0], pos[1], d[0], b_size[0], b_size[1]);
         //取得要杀死的棋子的坐标
-        int[] posToKill = laser.disseminate(board.chessboard);
+        int[] posToKill = laser.disseminate(game_board.chessboard);
         boolean[][] path = laser.getPath();
         ChessLaserEmitter.Direction[][] vec_path = laser.getVec_path();
         //渲染激光路径
@@ -361,12 +363,12 @@ public class Render {
             }
 
             killChessRender(posToKill[0], posToKill[1]);
-            board.killChess(posToKill[0], posToKill[1]);
-            if (board.gameOver()) {
+            game_board.killChess(posToKill[0], posToKill[1]);
+            if (game_board.gameOver()) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Game Over");
 
-                String winner = board.getWinner();
+                String winner = game_board.getWinner();
                 alert.setContentText("The winner is " + winner);
 
                 alert.showAndWait().ifPresent(response -> {
@@ -419,6 +421,7 @@ public class Render {
         });
     }
 
+    // 用于渲染消灭棋子的函数
     public static void killChessRender(int row, int col) {
         if (row < 0 || col < 0) return;
         ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.3), Objects.requireNonNull(getSquareButton(row, col)).getGraphic());
@@ -427,14 +430,14 @@ public class Render {
 
         Platform.runLater(() -> {
             scaleTransition.setOnFinished(event -> {
-                //杀死棋子。杀死大海！杀死大海！
-                board.killChess(row, col);
+                game_board.killChess(row, col);
                 renderSquare(row, col);
             });
             scaleTransition.play();
         });
     }
 
+    // 获取某个位置的棋子信息
     public static Button getSquareButton(int row, int col) {
         // 获取所有子节点
         ObservableList<Node> children = game_grid.getChildren();
@@ -458,6 +461,7 @@ public class Render {
         return null;
     }
 
+    // 左旋图片的渲染
     public static void rotateImage_l(ImageView imageView) {
         // 创建 RotateTransition，并设置持续时间和旋转角度
         RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.2), imageView);
@@ -477,6 +481,7 @@ public class Render {
         });
     }
 
+    // 右旋图片的渲染
     public static void rotateImage_r(ImageView imageView) {
         // 创建 RotateTransition，并设置持续时间和旋转角度
         RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.2), imageView);
@@ -496,8 +501,9 @@ public class Render {
 
     }
 
+    // DIY棋局的初始化
     public static void DIYBoardInitialize() {
-        DIYboard = new Board();
+        DIY_board = new Board();
         String music_name = "classic.mp3";
         root_panel.getStyleClass().add("root-classic");
 
@@ -559,7 +565,7 @@ public class Render {
                 image_view.setFitHeight(65); // 设置高度
 
                 // 全部的按钮一开始都初始化为背景图
-                Image background_image = Render.getBackgroundImage(board.backgroundBoard[row][col]);
+                Image background_image = Render.getBackgroundImage(game_board.backgroundBoard[row][col]);
                 image_view.setImage(background_image);
 
                 // 创建一个带有圆角的 Rectangle 作为 clip
@@ -604,6 +610,142 @@ public class Render {
         }
     }
 
+    public static void initializeBoard(int rows, int cols) {
+        String musicName = "";  // 配置音乐
+
+        switch (game_style) {
+            case classic -> {
+                root_panel.getStyleClass().add("root-classic");
+                musicName = "classic.mp3";
+            }
+            case elden -> {
+                root_panel.getStyleClass().add("root-elden");
+                musicName += "elden.mp3";
+            }
+            case PvZ -> {
+                root_panel.getStyleClass().add("root-PvZ");
+                musicName += "PvZ.mp3";
+            }
+        }
+
+        URL musicUrl = MainGame.class.getResource("/bgm/" + musicName);
+
+        // 设置棋盘的位置，使其居中
+        game_grid.getStyleClass().add("gameGrid");
+        game_grid.setPadding(new Insets(30, 0, 0, 300));
+
+        // 添加左旋转按钮
+        Button rotateLeftButton = new Button();
+        rotateLeftButton.setOnAction(event -> ButtonController.rotateChessLeft());
+
+        // 添加右旋转按钮
+        Button rotateRightButton = new Button();
+        rotateRightButton.setOnAction(event -> ButtonController.rotateChessRight());
+
+        // 添加保存并退出按钮
+        Button save_quit_button = new Button("保存并退出");
+        save_quit_button.setOnAction(event -> ButtonController.saveQuitClick());
+
+        // 为按钮添加图片
+        Image leftRotateImage = new Image(Objects.requireNonNull(MainGame.class.getResourceAsStream("/images/left_rotate.png")));
+        Image rightRotateImage = new Image(Objects.requireNonNull(MainGame.class.getResourceAsStream("/images/right_rotate.png")));
+
+        ImageView leftRotateImageView = new ImageView(leftRotateImage);
+        ImageView rightRotateImageView = new ImageView(rightRotateImage);
+
+        leftRotateImageView.setFitHeight(70);
+        leftRotateImageView.setFitWidth(70);
+        rightRotateImageView.setFitHeight(70);
+        rightRotateImageView.setFitWidth(70);
+
+        rotateLeftButton.setGraphic(leftRotateImageView);
+        rotateRightButton.setGraphic(rightRotateImageView);
+
+
+        // 将按钮添加到 HBox 中
+        HBox rotate_button_container = new HBox(10); // 设置垂直间隔
+        rotate_button_container.getChildren().addAll(rotateLeftButton, rotateRightButton);
+
+        VBox exit_button_container = new VBox();
+        exit_button_container.getChildren().add(save_quit_button);
+
+        rotateLeftButton.getStyleClass().add("rotate-button");
+        rotateRightButton.getStyleClass().add("rotate-button");
+        rotate_button_container.getStyleClass().add("rotate-button-container");
+        save_quit_button.getStyleClass().add("exit-button");
+
+        // 添加 HBox 到 BorderPane 的底部
+        root_panel.setBottom(rotate_button_container);
+        root_panel.setRight(save_quit_button);
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                Button square = new Button();
+                square.setMaxSize(65, 65);
+                switch (game_style) {
+                    case classic -> square.getStyleClass().add("classic-chess");
+                    case elden -> square.getStyleClass().add("elden-chess");
+                    case PvZ -> square.getStyleClass().add("PvZ-chess");
+                }
+
+                ImageView imageView = new ImageView();
+                imageView.setFitWidth(65); // 设置宽度
+                imageView.setFitHeight(65); // 设置高度
+
+                // Chess_type
+                if (game_board.chessboard[row][col] != null) {
+                    // 根据棋子的类型和颜色获取图片
+                    Image chessImage = getChessImage(game_board.chessboard[row][col]);
+
+                    // 设置ImageView的图片
+                    imageView.setImage(chessImage);
+
+                    // 为图片旋转到合适方向
+                    switch (game_board.chessboard[row][col].show_type()) {
+                        case LaserEmitter, OneWayMirror, TwoWayMirror, Shield:
+                            imageView.setRotate(-90 + game_board.chessboard[row][col].getrotate() * 90);
+                            break;
+                    }
+                } else {
+                    Image background_image = Render.getBackgroundImage(game_board.backgroundBoard[row][col]);
+                    imageView.setImage(background_image);
+                }
+
+                // 创建一个带有圆角的 Rectangle 作为 clip
+                Rectangle clip = new Rectangle(65, 65);
+                clip.setArcWidth(15); // 设置圆角的宽度
+                clip.setArcHeight(15); // 设置圆角的高度
+                imageView.setClip(clip);
+
+                // 设置按钮的图形内容为ImageView
+                square.setGraphic(imageView);
+
+                int finalRow = row;
+                int finalCol = col;
+                square.setOnAction(event -> ButtonController.handleChessPieceClick(finalRow, finalCol));
+
+                // 将按钮添加到 GridPane 中
+                game_grid.add(square, col, row);
+            }
+        }
+
+        // 添加棋盘到 BorderPane 的中心
+        root_panel.setCenter(game_grid);
+
+        // 开始播放音乐
+        MediaPlayer mediaPlayer;
+        if (musicUrl != null) {
+            Media sound = new Media(musicUrl.toExternalForm());
+            mediaPlayer = new MediaPlayer(sound);
+
+            mediaPlayer.setVolume(0.4);
+            mediaPlayer.play();
+        } else {
+            System.out.println("Resource not found: " + musicName);
+        }
+    }
+
+    // 选择不同棋子后，ComboBox要更新内容
     private static void updateDirectionComboBox(ComboBox<String> directionComboBox, String selectedType) {
         directionComboBox.getItems().clear(); // 清除现有选项
 
@@ -622,6 +764,7 @@ public class Render {
         }
     }
 
+    // 在DIY棋盘中，获取某个棋子属性
     public static Button getSquareButtonDIY(int row, int col) {
         // 获取所有子节点
         ObservableList<Node> children = DIY_grid.getChildren();
@@ -645,11 +788,12 @@ public class Render {
         return null;
     }
 
+    // DIY棋盘中的棋子渲染
     static void renderSquareDIY(int row, int col) {
         if (row < 0 || col < 0) return;
         // 获取与指定行列相对应的按钮
         Button square = getSquareButtonDIY(row, col);
-        Chess chess = DIYboard.chessboard[row][col];
+        Chess chess = DIY_board.chessboard[row][col];
 
         // 清空按钮的样式和图形内容
         if (square != null) {
@@ -665,7 +809,7 @@ public class Render {
             get_image = getChessImage(chess);
         } else {
             // 如果没有棋子，根据背景更新按钮的样式
-            Background background = DIYboard.backgroundBoard[row][col];
+            Background background = DIY_board.backgroundBoard[row][col];
             get_image = Render.getBackgroundImage(background);
         }
 
@@ -700,4 +844,6 @@ public class Render {
             square.setGraphic(imageView);
         }
     }
+
+    // 根据底层的board实现棋盘初始化
 }

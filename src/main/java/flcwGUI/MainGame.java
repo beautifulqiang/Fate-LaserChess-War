@@ -12,14 +12,15 @@ import javafx.stage.Stage;
 import java.util.Objects;
 
 public class MainGame extends Application {
-    static final BorderPane root_panel = new BorderPane();
-    static Stage root_stage;
-    //这里在12.21晚改了一下，多加了一个参数，因为我把棋盘类的构造函数给改了
+    static final BorderPane root_panel = new BorderPane();  // 根Panel
+    static Stage root_stage; // 根舞台
 
+    // 主应用入口
     public static void main(String[] args) {
         launch(args);
     }
 
+    // main函数只调用用户登录的函数
     public static void loginOrRegister() {
         Label label = new Label("欢迎！");
         Button login_button = new Button("登录");
