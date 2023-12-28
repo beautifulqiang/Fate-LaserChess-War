@@ -6,6 +6,8 @@ import flcwGUI.LaserChessGamePlay.chess.ChessLaserEmitter;
 import flcwGUI.LaserChessGamePlay.chess.Chess.Color;
 import flcwGUI.LaserChessGamePlay.operate.Operate;
 
+// 注意，本类并未在GUI开发中使用，本类更多的作为项目底层开发时的测试手段
+
 public class Game {
     private static Color turn = null;
     public static void main(String[] args) {

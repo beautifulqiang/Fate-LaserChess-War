@@ -60,7 +60,6 @@ public class Board {
             return;
         }
 
-        //TODO 加入读取用户存储的棋盘并初始化的功能
 
         //初始化激光发射器部分
         redLaserEmitterPos = new int[2];
@@ -76,11 +75,6 @@ public class Board {
         backgroundBoard = BoardInitializer.initializeBackground(type);
     }
 
-    public static void main(String[] args) {
-        //早期测试代码
-        //Board board = new Board(1);
-        //board.print();
-    }
 
     public void getLaserEmitter(int[] pos, Direction[] d, char char_color) {
         if (char_color == 'R') {

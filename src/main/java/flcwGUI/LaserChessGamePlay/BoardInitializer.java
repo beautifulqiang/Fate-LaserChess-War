@@ -30,22 +30,6 @@ public class BoardInitializer {
             blueP[1] = 9;
             d[1] = ChessLaserEmitter.Direction.TOP;
         }
-        // else if(type==4){
-        //     redP[0] = 0;
-        //     redP[1] = 0;
-        //     d[0] = ChessLaserEmitter.Direction.BOTTOM;
-        //     blueP[0] = 7;
-        //     blueP[1] = 9;
-        //     d[1] = ChessLaserEmitter.Direction.TOP;
-        // }
-        // else if(type==5){
-        //     redP[0] = 0;
-        //     redP[1] = 0;
-        //     d[0] = ChessLaserEmitter.Direction.BOTTOM;
-        //     blueP[0] = 7;
-        //     blueP[1] = 9;
-        //     d[1] = ChessLaserEmitter.Direction.TOP;
-        // }
     }
 
     public static Chess[][] initializeChess(int type){
@@ -111,9 +95,7 @@ public class BoardInitializer {
             chessboard[4][1] = new ChessOneWayMirror(ChessOneWayMirror.Direction.LEFT_TOP, ChessOneWayMirror.Color.BLUE);
 
             //第二列
-            //chessboard[1][2] = new ChessOneWayMirror(ChessOneWayMirror.Direction.LEFT_BOTTOM, ChessOneWayMirror.Color.RED);
             chessboard[7][2] = new ChessTwoWayMirror(ChessTwoWayMirror.Direction.LEFT_TOP, ChessTwoWayMirror.Color.BLUE);
-            //chessboard[7][2] = new ChessOneWayMirror(ChessOneWayMirror.Direction.LEFT_TOP, ChessOneWayMirror.Color.BLUE);
 
             //第三列
             chessboard[2][3] = new ChessOneWayMirror(ChessOneWayMirror.Direction.LEFT_TOP, ChessOneWayMirror.Color.BLUE);
@@ -167,7 +149,6 @@ public class BoardInitializer {
             chessboard[4][3] = new ChessOneWayMirror(ChessOneWayMirror.Direction.LEFT_TOP, ChessOneWayMirror.Color.RED);
             chessboard[5][3] = new ChessTwoWayMirror(ChessTwoWayMirror.Direction.LEFT_TOP, ChessTwoWayMirror.Color.BLUE);
             chessboard[7][3] = new ChessOneWayMirror(ChessOneWayMirror.Direction.LEFT_TOP, ChessOneWayMirror.Color.BLUE);
-            //chessboard[7][3] = new ChessShield(ChessShield.Direction.TOP, ChessShield.Color.BLUE);
 
             //第四列
             chessboard[0][4] = new ChessOneWayMirror(ChessOneWayMirror.Direction.LEFT_BOTTOM, ChessOneWayMirror.Color.RED);
@@ -296,66 +277,6 @@ public class BoardInitializer {
             
             return backgroundBoard;
         }
-        // else if(type==4){
-        //     Background[][] backgroundBoard = new Background[8][10];
-        //     // 第零列
-        //     backgroundBoard[1][0] = new Background(Background.Color.RED);
-        //     backgroundBoard[2][0] = new Background(Background.Color.RED);
-        //     backgroundBoard[3][0] = new Background(Background.Color.RED);
-        //     backgroundBoard[4][0] = new Background(Background.Color.RED);
-        //     backgroundBoard[5][0] = new Background(Background.Color.RED);
-        //     backgroundBoard[6][0] = new Background(Background.Color.RED);
-        //     backgroundBoard[7][0] = new Background(Background.Color.RED);
-
-        //     //第一列
-        //     backgroundBoard[0][1] = new Background(Background.Color.BLUE);
-        //     backgroundBoard[7][1] = new Background(Background.Color.BLUE);
-
-        //     //第八列
-        //     backgroundBoard[0][8] = new Background(Background.Color.RED);
-        //     backgroundBoard[7][8] = new Background(Background.Color.RED);
-
-        //     // 第九列
-        //     backgroundBoard[0][9] = new Background(Background.Color.BLUE);
-        //     backgroundBoard[1][9] = new Background(Background.Color.BLUE);
-        //     backgroundBoard[2][9] = new Background(Background.Color.BLUE);
-        //     backgroundBoard[3][9] = new Background(Background.Color.BLUE);
-        //     backgroundBoard[4][9] = new Background(Background.Color.BLUE);
-        //     backgroundBoard[5][9] = new Background(Background.Color.BLUE);
-        //     backgroundBoard[6][9] = new Background(Background.Color.BLUE);
-            
-        //     return backgroundBoard;
-        // }
-        // else if(type==5){
-        //     Background[][] backgroundBoard = new Background[8][10];
-        //     // 第零列
-        //     backgroundBoard[1][0] = new Background(Background.Color.RED);
-        //     backgroundBoard[2][0] = new Background(Background.Color.RED);
-        //     backgroundBoard[3][0] = new Background(Background.Color.RED);
-        //     backgroundBoard[4][0] = new Background(Background.Color.RED);
-        //     backgroundBoard[5][0] = new Background(Background.Color.RED);
-        //     backgroundBoard[6][0] = new Background(Background.Color.RED);
-        //     backgroundBoard[7][0] = new Background(Background.Color.RED);
-
-        //     //第一列
-        //     backgroundBoard[0][1] = new Background(Background.Color.BLUE);
-        //     backgroundBoard[7][1] = new Background(Background.Color.BLUE);
-
-        //     //第八列
-        //     backgroundBoard[0][8] = new Background(Background.Color.RED);
-        //     backgroundBoard[7][8] = new Background(Background.Color.RED);
-
-        //     // 第九列
-        //     backgroundBoard[0][9] = new Background(Background.Color.BLUE);
-        //     backgroundBoard[1][9] = new Background(Background.Color.BLUE);
-        //     backgroundBoard[2][9] = new Background(Background.Color.BLUE);
-        //     backgroundBoard[3][9] = new Background(Background.Color.BLUE);
-        //     backgroundBoard[4][9] = new Background(Background.Color.BLUE);
-        //     backgroundBoard[5][9] = new Background(Background.Color.BLUE);
-        //     backgroundBoard[6][9] = new Background(Background.Color.BLUE);
-            
-        //     return backgroundBoard;
-        // }
         return null;
     }
 }

@@ -25,9 +25,6 @@ public class User {
 
     public static void register(String username, String password) {
         try {
-            // 创建用户数据文件和用户数据文件夹
-            // File accountFile = new File(FOLDER_PATH + "account.txt");
-            // File userDirectory = new File(FOLDER_PATH);
 
             if (!DIRECTORY.exists()) {
                 DIRECTORY.mkdir();
@@ -40,18 +37,7 @@ public class User {
                     System.out.println("File already exists.");
                 }
             }
-
-            //这里应该不用再检查，因为在游戏主驱动函数中检查过了
-            // // 检查用户名格式
-            // if (!isValidUsername(username)) {
-            //     System.out.println("Invalid username format. Please choose another username.");
-            //     return;
-            // }
-            // // 检查是否存在同名用户
-            // if (userExists(username)) {
-            //     System.out.println("Username already exists. Please choose another username.");
-            //     return;
-            // }
+            //这里应该不用再检查用户名格式和是否重名，因为在游戏主驱动函数中检查过了
 
             // 将用户名和密码写入文件
             BufferedWriter writer = new BufferedWriter(new FileWriter(ACCOUNT, true));
@@ -116,7 +102,7 @@ public class User {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace(); // Handle or log the exception according to your application's needs
+            e.printStackTrace();
         }
 
         return false;

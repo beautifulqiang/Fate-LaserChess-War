@@ -12,6 +12,8 @@ import java.util.Scanner;
 import static flcwGUI.ButtonController.map_path;
 
 public class DIYBoard {
+
+    //注意，本方法因为接口与实现方式与GUI的工作模式不匹配，在GUI部分的工作中被参照着逻辑重写，本方法并未直接被使用，仅可在底层开发的测试过程中被调用
     public static void DIY(Chess[][] chessboard, Background[][] backgroundBoard, int[] redLaserEmitterPos, int[] blueLaserEmitterPos, Direction[] tempD) {
         Scanner scanner = new Scanner(System.in);
 
@@ -321,8 +323,6 @@ public class DIYBoard {
 
             chessboard[coordinates[0]][coordinates[1]] = chess;
             System.out.println("Placed " + type + " at position (" + coordinates[0] + "," + coordinates[1] + ").");
-            //GUI或许在此就可以渲染棋盘？我不懂
-
         }
     }
 
@@ -385,7 +385,7 @@ public class DIYBoard {
 
                 Chess chess;
                 boolean toRecordEmiter = false;
-                //后面的最终else错误情况的棋子是瞎生成的
+                //后面的最终else错误情况的棋子是乱生成的
                 if (type.equals("king")) {
                     if (color == Color.RED) {
                         if (!redKing) {
@@ -520,8 +520,6 @@ public class DIYBoard {
                 chessboard[coordinates[0]][coordinates[1]] = chess;
                 System.out.println("Placed " + type + " at position (" + coordinates[0] + "," + coordinates[1] + ").");
             }
-
-
             // 关闭资源
             reader.close();
             fis.close();

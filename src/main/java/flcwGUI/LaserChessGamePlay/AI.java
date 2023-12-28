@@ -293,18 +293,6 @@ public class AI {
             }
         }
         //在这里，双面镜的“朝向”不会改变，因为不改变坐标
-        // else if(board.chessboard[x][y] instanceof ChessTwoWayMirror){
-        //     //讨论双面镜，这里和单面镜是互斥的
-        //     //先讨论对于自己的王
-        //     originalFaceToMyKIng = testTwoFaceOrNot(color, x, y);
-        //     //再讨论对于别的王
-        //     if(color == Chess.Color.BLUE){
-        //         originalFaceToOtherKIng = testTwoFaceOrNot(Chess.Color.RED, x, y);
-        //     }
-        //     else{
-        //         originalFaceToOtherKIng = testTwoFaceOrNot(Chess.Color.BLUE, x, y);
-        //     }
-        // }
         
         
         // 先讨论左旋
@@ -399,7 +387,7 @@ public class AI {
         operations.add(ows);
         board.chessboard[x][y].rotate('r');//把棋盘复位
 
-        //TODO：只是在这里插个旗，标识左右#################################################
+        
         //接下来讨论右旋！
         rotate = new Rotate(x, y, Rotate.RotateDirection.RIGHT);
         score=0;

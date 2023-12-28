@@ -63,12 +63,12 @@ public class InputHandler {
     }
 
     public static boolean isChessColorMatching(Board board, int x, int y, Chess.Color expectedColor) {
-        Chess chessPiece = board.getChessAt(x, y); // 这里需要你实现 Board 类中的获取棋子的方法
+        Chess chessPiece = board.getChessAt(x, y);
         return chessPiece != null && chessPiece.color == expectedColor;
     }
 
     public static boolean isLaserEmitter(Board board, int x, int y) {
-        Chess chessPiece = board.getChessAt(x, y); // 这里需要你实现 Board 类中的获取棋子的方法
+        Chess chessPiece = board.getChessAt(x, y);
         return chessPiece instanceof ChessLaserEmitter;
     }
 
