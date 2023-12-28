@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane fx:id="root" prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="flcwGUI.GameController">
+    <center>
+        <GridPane fx:id="gameGrid" stylesheets="@style.css" hgap="5.0" vgap="5.0" />
+    </center>
+    <bottom>
+        <HBox spacing="10.0" fx:id="rotate_button_container">
+            <Button mnemonicParsing="false" onAction="#rotateChessBoardLeft" styleClass="rotate-button"
+                    text="Rotate Left"/>
+            <Button mnemonicParsing="false" onAction="#rotateChessBoardRight" styleClass="rotate-button"
+                    text="Rotate Right"/>
+        </HBox>
+    </bottom>
+    <right>
+        <Button mnemonicParsing="false" onAction="#exitGame" styleClass="exit-button" text="Exit" />
+    </right>
+</BorderPane>

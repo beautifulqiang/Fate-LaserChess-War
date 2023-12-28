@@ -1,0 +1,136 @@
+/* styles.css */
+
+.root-start {
+    -fx-background-image: url(../images/root_start.png);
+}
+
+/* 设置背景 */
+.root-classic {
+    -fx-background-image: url(../images/classic/background.png);
+    -fx-background-size: cover;
+    -fx-opacity: 0.85;
+}
+
+.root-elden {
+    -fx-background-image: url(../images/elden/background.png);
+    -fx-background-size: cover;
+    -fx-opacity: 0.85;
+}
+
+.root-PvZ {
+    -fx-background-image: url(../images/PvZ/background.png);
+    -fx-background-size: cover;
+    -fx-opacity: 0.85;
+}
+
+.label {
+    -fx-font-size: 50;
+    -fx-text-fill: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #fcdfe8ff 0.0%, #b6fefcff 100.0%);
+}
+
+.classic-button {
+    -fx-background-color:  linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #71defaff 0.0%, #fcd296ff 100.0%);
+    -fx-font-size: 40;
+    -fx-min-width: 70;
+    -fx-min-height: 70;
+}
+
+.elden-button {
+    -fx-background-color: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #fcdf57ff 0.0%, #fea350ff 100.0%);
+    -fx-font-size: 40;
+    -fx-min-width: 70;
+    -fx-min-height: 70;
+}
+
+.PvZ-button {
+    -fx-background-color: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #00c6fdff 0.0%, #fdfc1dff 100.0%);
+    -fx-font-size: 40;
+    -fx-min-width: 70;
+    -fx-min-height: 70;
+}
+
+/* 设置diy按钮格式 */
+.DIY-button {
+    -fx-background-color: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #4159d1ff 0.0%, #c750c0ff 50.0%, #fec871ff 100.0%);
+    -fx-font-size: 40;
+    -fx-min-width: 70;
+    -fx-min-height: 70;
+}
+
+/* 设置旋转按钮的样式 */
+.rotate-button {
+    -fx-background-color: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #9698efff 0.0%, #fac6d2ff 100.0%);
+    -fx-max-width:  70;
+    -fx-max-height: 70;
+    -fx-font-size: 20;
+    -fx-border-radius: 15;
+}
+
+/* 设置旋转按钮容器的样式 */
+.rotate-button-container {
+    -fx-spacing: 30;
+    -fx-alignment: center;
+    -fx-padding: 0 0 60 0;
+}
+
+/* 设置退出按钮的样式 */
+.exit-button {
+    -fx-background-color: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #ee2610ff 0.0%, #f7ad1dff 100.0%); /* Red */
+    -fx-min-width:  70;
+    -fx-min-height: 70;
+    -fx-text-fill: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #accafdff 0.0%, #febeebff 100.0%);
+    -fx-font-size: 30;
+}
+
+/* 设置返回按钮的样式 */
+.return-button {
+    -fx-background-color: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #76a0d2ff 0.0%, #7acbc9ff 50.0%, #e884b0ff 100.0%); /* Red */
+    -fx-min-width:  70;
+    -fx-min-height: 70;
+    -fx-text-fill: #990033;
+    -fx-font-size: 20;
+}
+
+.switch-mode-button {
+    -fx-background-color: #ffdd00;
+    -fx-min-width:  70;
+    -fx-min-height: 70;
+    -fx-text-fill: #ff3333;
+    -fx-font-size: 20;
+}
+
+.gameGrid {
+    /*-fx-border-color: #f8f2f2;*/
+    /*-fx-border-width: 10px;*/
+    -fx-hgap: 5;
+    -fx-vgap: 5;
+}
+
+/* 设置棋子的基础样式 */
+.elden-chess {
+    -fx-background-image: url("../images/elden/background/default.png");
+    -fx-min-width: 65;
+    -fx-min-height: 65;
+    -fx-background-radius: 15; /* 背景圆角 */
+    -fx-border-radius: 15; /* 边框圆角 */
+}
+
+.classic-chess {
+    -fx-background-color: #fae6cf;
+    -fx-min-width: 65;
+    -fx-min-height: 65;
+    -fx-background-radius: 15; /* 背景圆角 */
+    -fx-border-radius: 15; /* 边框圆角 */
+}
+
+.combo-box {
+    -fx-background-color: linear-gradient(from 0.0% 0.0% to 100.0% 0.0%, #23d0f3ff 0.0%, #d791f9ff 50.0%, #fe7b84ff 100.0%);
+    -fx-font-size: 20px;
+    -fx-width: 100px;
+    -fx-height: 30px;
+    -fx-border-radius: 5px;
+
+}
+
+
+

@@ -1,0 +1,16 @@
+B
+king
+0,0
+B
+le
+t
+0,1
+R
+king
+0,2
+R
+le
+t
+0,3
+B
+END
